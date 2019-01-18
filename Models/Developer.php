@@ -13,6 +13,7 @@ class Developer extends User
      * @var array
      */
     protected $fillable = [
+        'developer',
         'document_number',
         'document_type_id',
         'email',
@@ -20,7 +21,6 @@ class Developer extends User
         'last_name',
         'password',
         'slug',
-        'user_id',
     ];
 
     /**
@@ -28,7 +28,7 @@ class Developer extends User
      *
      * @var string
      */
-    protected $table = 'developers';
+    protected $table = 'users';
 
     /**
      * The relations to eager load on every query.
@@ -36,6 +36,22 @@ class Developer extends User
      * @var array
      */
     protected $with = 'investments';
+
+    /**
+     * The "booting" method of the model.
+     *
+     * @return void
+     */
+    public static function boot()
+    {
+        parent::boot();
+
+        static::creating(
+            function ($model) {
+                $model->developer = 1;
+            }
+        );
+    }
 
     /**
      * Get the investments for the developer.
@@ -51,5 +67,15 @@ class Developer extends User
     public function investors()
     {
         return $this->hasMany(Investor::class);
+    }
+
+    /**
+     * Get a new query builder for the model's table.
+     *
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
+    public function newQuery()
+    {
+        return parent::newQuery()->whereDeveloper('1');
     }
 }

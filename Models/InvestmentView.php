@@ -13,7 +13,7 @@ class InvestmentView extends Model
      */
     protected $fillable = [
         'investment_id',
-        'investor_id',
+        'user_id',
     ];
 
     /**
@@ -25,10 +25,10 @@ class InvestmentView extends Model
     }
 
     /**
-     * Get the investor that owns the investment view.
+     * Get the user that owns the investment view.
      */
-    public function investor()
+    public function user()
     {
-        return $this->belongsTo(Investor::class, 'investor_id');
+        return $this->belongsTo(Investor::class, 'user_id');
     }
 }

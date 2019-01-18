@@ -2,20 +2,55 @@
 
 namespace Raffles\Modules\Linkre\Models;
 
+use Raffles\Modules\Linkre\Models\Traits\InvestmentTrait;
+
 use Illuminate\Database\Eloquent\Model;
 
 class Investment extends Model
 {
+    use InvestmentTrait;
+
+    /**
+     * The accessors to append to the model's array form.
+     *
+     * @var array
+     */
+    protected $appends = [
+        'location',
+    ];
+
+    /**
+     * The attributes that should be mutated to dates.
+     *
+     * @var array
+     */
+    protected $dates = [
+        'published_at',
+    ];
+
     /**
      * The attributes that are mass assignable.
      *
      * @var array
      */
     protected $fillable = [
+        'amenities',
+        'city',
+        'company_id',
+        'country',
+        'context',
         'description',
-        'location',
+        'developer_id',
+        'featured',
         'name',
+        'promoter_id',
+        'published',
+        'published_at',
+        'resume',
         'slug',
+        'state',
+        'total_area',
+        'website',
     ];
 
     /**
@@ -23,7 +58,15 @@ class Investment extends Model
      *
      * @var array
      */
-    protected $with = ['featuredPhoto', 'financial', 'map', 'unfeaturedPhotos'];
+    protected $with = ['featured_photo', 'financial', 'map', 'unfeatured_photos'];
+
+    /**
+     * Get the company that owns the investment.
+     */
+    public function company()
+    {
+        return $this->belongsTo(Company::class);
+    }
 
     /**
      * Get the developer that owns the investment.
@@ -36,9 +79,9 @@ class Investment extends Model
     /**
      * Get the investment's featured photo.
      */
-    public function featuredPhoto()
+    public function featured_photo()
     {
-        return $this->morphOne(\Raffles\Models\FeaturedPhoto::class, 'photoable');
+        return $this->morphOne(\Raffles\Models\FeaturedPhoto::class, 'photoable')->withDefault();
     }
 
     /**
@@ -70,14 +113,22 @@ class Investment extends Model
      */
     public function map()
     {
-        return $this->morphOne(\Raffles\Models\Map::class, 'mapable');
+        return $this->morphOne(\Raffles\Models\Map::class, 'mapable')->withDefault();
+    }
+
+    /**
+     * Get the promoter that owns the investment.
+     */
+    public function promoter()
+    {
+        return $this->belongsTo(Promoter::class);
     }
 
     /**
      * Get all of the project's unfeatured photos.
      */
-    public function unfeaturedPhotos()
+    public function unfeatured_photos()
     {
-        return $this->morphMany(\Raffles\Models\Photo::class, 'photoable')->where('featured', '0');
+        return $this->morphMany(\Raffles\Models\UnfeaturedPhoto::class, 'photoable');
     }
 }

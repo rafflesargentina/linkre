@@ -17,7 +17,7 @@ class CreateInvestmentViewsTable extends Migration
             'investment_views', function (Blueprint $table) {
                 $table->increments('id');
                 $table->unsignedInteger('investment_id');
-                $table->unsignedInteger('investor_id');
+                $table->unsignedInteger('user_id');
                 $table->timestamps();
             }
         );
