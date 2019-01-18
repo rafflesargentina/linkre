@@ -13,8 +13,10 @@ use Illuminate\Http\Request;
 |
 */
 
-Route::get(
-    '/linkre', function (Request $request) {
-        // return $request->linkre();
+Route::middleware('auth:api')->group(
+    function () {
+        Route::apiResource('developer', 'DeveloperController');
+        Route::apiResource('investments', 'InvestmentController');
+        Route::apiResource('investors', 'InvestorController');
     }
-)->middleware('auth:api');
+);
