@@ -17,7 +17,7 @@ class CreateInvestmentInvestorTable extends Migration
             'investment_investor', function (Blueprint $table) {
                 $table->increments('id');
                 $table->unsignedInteger('investor_id');
-                $table->foreign('investor_id')->references('id')->on('investors')->onDelete('cascade');
+                $table->foreign('investor_id')->references('id')->on('users')->onDelete('cascade');
                 $table->unsignedInteger('investment_id');
                 $table->foreign('investment_id')->references('id')->on('investments')->onDelete('cascade');
             }
