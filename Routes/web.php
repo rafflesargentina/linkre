@@ -10,3 +10,6 @@
 | to using a Closure or controller method. Build something great!
 |
  */
+
+Route::post('login', 'Auth\LoginController@login');
+Route::post('register', 'Auth\RegisterController@register');
