@@ -14,14 +14,12 @@
         >
           <div
             class="logo-header"
-            style=""
           >
             <div class="logo-header-inner logo-header-one">
               <RouterLink :to="{ name: 'Home' }">
                 <img
                   src="/images/logo_linkRE-2.svg"
-                  alt=""
-                  style="height: 49px; margin-left: 170px; margin-top:-7px;"
+                  style="height: 49px;"
                 >
               </RouterLink>
             </div>

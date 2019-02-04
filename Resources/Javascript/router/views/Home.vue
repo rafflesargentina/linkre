@@ -10,22 +10,21 @@
       >
         <SiteHeader />
         <div
-          class="container-fluid"
+          class="container"
           style="height: 430px;"
         >
           <div class="wt-bnr-inr-entry">
             <div class="row">
               <h1
                 class="text-uppercase letter-spacing-5 font-weight-300 text-center"
-                style="font-size: 30px; line-height: 40px; color: #222222; margin-top:180px;"
+                style="font-size: 30px; line-height: 40px; color: #222222;"
               >
                 LA PRIMERA PLATAFORMA DE CROWDLENDING PARA INVERSIONES PROFESIONALES DEL REAL ESTATE EN LATINOAMÉRICA
               </h1>
             </div>
             <br>
             <div
-              class="row cont-responsive"
-              style="margin-left:420px;"
+              class="row cont-responsive justify-content-center"
             >
               <div class="sub-responsive cont-b-responsive">
                 <div class="sub-b-responsive right-responsive">
