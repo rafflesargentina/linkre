@@ -75,7 +75,7 @@
               </li>
               <li v-if="!isAuthenticated">
                 <RouterLink :to="{ name: 'Login' }">
-                  Ingresar
+                  Login
                 </RouterLink>
               </li>
             </ul>
