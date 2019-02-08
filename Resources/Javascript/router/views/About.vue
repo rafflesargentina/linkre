@@ -93,7 +93,7 @@
                     class="font-40"
                     style="font-size: 20px; line-height: 1.3;"
                   >
-                    LinkRE le acerca a los Developers llegar a los inversores de todo el mundo de una manera rápida, clara y eficaz
+                    LinkRE le acerca a los Desarrollistas inmobiliarios la posibilidad de llegar a los inversores de todo el mundo de una manera rápida, clara y eficaz.
                   </h2>
                   <p><b>Por la otra parte los inversores podrán encontrar de formar transparente y clasificada las opciones que mejor se acomoden a su perfil, expectativas y disponibilidad de inversión.</b></p>
                   <p class="">
@@ -187,7 +187,7 @@
                     <div class="wt-box">
                       <div class="wt-media text-primary m-b20 ">
                         <img
-                          src="Image/quienes-somos/quienes-SOMOS-2.jpg"
+                          src="/images/quienes-somos/quienes-SOMOS-2.jpg"
                           alt=""
                           style="width: 360px; height: 560px;"
                         >
@@ -202,7 +202,7 @@
                     <div class="wt-box">
                       <div class="wt-media text-primary m-b20">
                         <img
-                          src="Image/quienes-somos/quienes-SOMOS-2.jpg"
+                          src="/images/quienes-somos/quienes-SOMOS-2.jpg"
                           alt=""
                           style="width: 360px; height: 560px;"
                         >
@@ -217,7 +217,7 @@
                     <div class="wt-box">
                       <div class="wt-media text-primary m-b20">
                         <img
-                          src="Image/quienes-somos/quienes-SOMOS-2.jpg"
+                          src="/images/quienes-somos/quienes-SOMOS-2.jpg"
                           alt=""
                           style="width: 360px; height: 560px;"
                         >
@@ -232,7 +232,7 @@
                     <div class="wt-box">
                       <div class="wt-media text-primary m-b20">
                         <img
-                          src="Image/quienes-somos/quienes-SOMOS-2.jpg"
+                          src="/images/quienes-somos/quienes-SOMOS-2.jpg"
                           alt=""
                           style="width: 360px; height: 560px;"
                         >
@@ -247,7 +247,7 @@
                     <div class="wt-box">
                       <div class="wt-media text-primary m-b20">
                         <img
-                          src="Image/quienes-somos/quienes-SOMOS-2.jpg"
+                          src="/images/quienes-somos/quienes-SOMOS-2.jpg"
                           alt=""
                           style="width: 360px; height: 560px;"
                         >
@@ -262,7 +262,7 @@
                     <div class="wt-box">
                       <div class="wt-media text-primary m-b20">
                         <img
-                          src="Image/quienes-somos/quienes-SOMOS-2.jpg"
+                          src="/images/quienes-somos/quienes-SOMOS-2.jpg"
                           alt=""
                           style="width: 360px; height: 560px;"
                         >
