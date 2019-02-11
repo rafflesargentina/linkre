@@ -19,11 +19,26 @@ class Promoter extends Model
     ];
 
     /**
+     * The relations to eager load on every query.
+     *
+     * @var array
+     */
+    protected $with = 'featured_photo';
+
+    /**
      * Get the developer that owns the promoter.
      */
     public function developer()
     {
         return $this->belongsTo(Developer::class);
+    }
+
+    /**
+     * Get the promoter's featured photo.
+     */
+    public function featured_photo()
+    {
+        return $this->morphOne(\Raffles\Models\FeaturedPhoto::class, 'photoable')->withDefault();
     }
 
     /**
