@@ -4,26 +4,6 @@
 
     <!-- CONTENT START -->
     <div class="page-content">
-      <!-- INNER PAGE BANNER -->
-      <div class="overlay-main bg-black opacity-07" />
-      <div class="container">
-        <div class="wt-bnr-inr-entry">                      
-          <div class="p-tb20">
-            <div>
-              <ul class="wt-breadcrumb breadcrumb-style-2">
-                <li>
-                  <RouterLink :to="{ name: 'Home' }">
-                    Home
-                  </RouterLink>
-                </li>
-                <li>Invierta su capital</li>
-              </ul>
-            </div>
-          </div>                  
-        </div>
-      </div>
-      <!-- INNER PAGE BANNER END -->
-            
       <!-- SECTION CONTENT START -->
       <div
         class="section-full p-b90 m-b90"
