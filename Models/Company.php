@@ -16,6 +16,7 @@ class Company extends Model
         'developer_id',
         'name',
         'slug',
+        'website',
     ];
 
     /**
