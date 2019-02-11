@@ -3,7 +3,6 @@
 namespace Raffles\Modules\Linkre\Models;
 
 use Raffles\Models\User;
-use Raffles\Models\Traits\UserTrait;
 
 class Developer extends User
 {
@@ -35,7 +34,7 @@ class Developer extends User
      *
      * @var array
      */
-    protected $with = 'investments';
+    protected $with = 'avatar';
 
     /**
      * The "booting" method of the model.
@@ -54,14 +53,6 @@ class Developer extends User
     }
 
     /**
-     * Get the investments for the developer.
-     */
-    public function investments()
-    {
-        return $this->hasMany(Investment::class);
-    }
-
-    /**
      * Get the investors for the developer.
      */
     public function investors()
@@ -77,5 +68,25 @@ class Developer extends User
     public function newQuery()
     {
         return parent::newQuery()->whereDeveloper('1');
+    }
+
+    /**
+     * Developers can have many permissions.
+     *
+     * @return Illuminate\Database\Eloquent\Model
+     */
+    public function permissions()
+    {
+        return $this->belongsToMany(\Caffeinated\Shinobi\Models\Permission::class, 'permission_user', 'permission_id', 'user_id')->withTimestamps();
+    }
+
+    /**
+     * Developers can have many roles.
+     *
+     * @return Illuminate\Database\Eloquent\Model
+     */
+    public function roles()
+    {
+        return $this->belongsToMany(\Caffeinated\Shinobi\Models\Role::class, 'role_user', 'role_id', 'user_id')->withTimestamps();
     }
 }
