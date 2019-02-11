@@ -20,4 +20,12 @@ class User extends BaseUser
         'password',
         'slug'
     ];
+
+    /**
+     * The investments that belong to the user.
+     */
+    public function investments()
+    {
+        return $this->belongsToMany(Investment::class, 'investment_investor', 'investor_id');
+    }
 }
