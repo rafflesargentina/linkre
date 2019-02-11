@@ -58,7 +58,7 @@ class Investment extends Model
      *
      * @var array
      */
-    protected $with = ['featured_photo', 'financial', 'map', 'unfeatured_photos'];
+    protected $with = 'featured_photo';
 
     /**
      * Get the company that owns the investment.
