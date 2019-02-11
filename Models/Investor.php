@@ -32,13 +32,6 @@ class Investor extends User
     protected $table = 'users';
 
     /**
-     * The relations to eager load on every query.
-     *
-     * @var array
-     */
-    protected $with = 'investments';
-
-    /**
      * The "booting" method of the model.
      *
      * @return void
@@ -55,19 +48,19 @@ class Investor extends User
     }
 
     /**
-     * The investments that belong to the investor.
-     */
-    public function investments()
-    {
-        return $this->belongsToMany(Investment::class);
-    }
-
-    /**
      * Get the developer that owns the investor.
      */
     public function developer()
     {
         return $this->belongsTo(Developer::class);
+    }
+
+    /**
+     * The investments that belong to the investor.
+     */
+    public function investments()
+    {
+        return $this->belongsToMany(Investment::class);
     }
 
     /**
@@ -78,5 +71,25 @@ class Investor extends User
     public function newQuery()
     {
         return parent::newQuery()->whereInvestor('1');
+    }
+
+    /**
+     * Developers can have many permissions.
+     *
+     * @return Illuminate\Database\Eloquent\Model
+     */
+    public function permissions()
+    {
+        return $this->belongsToMany(\Caffeinated\Shinobi\Models\Permission::class, 'permission_user', 'permission_id', 'user_id')->withTimestamps();
+    }
+
+    /**
+     * Developers can have many roles.
+     *
+     * @return Illuminate\Database\Eloquent\Model
+     */
+    public function roles()
+    {
+        return $this->belongsToMany(\Caffeinated\Shinobi\Models\Role::class, 'role_user', 'role_id', 'user_id')->withTimestamps();
     }
 }
