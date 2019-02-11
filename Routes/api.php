@@ -1,7 +1,5 @@
 <?php
 
-use Illuminate\Http\Request;
-
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -13,10 +11,10 @@ use Illuminate\Http\Request;
 |
 */
 
-Route::middleware('auth:api')->group(
-    function () {
-        Route::apiResource('developer', 'DeveloperController');
-        Route::apiResource('investments', 'InvestmentController');
-        Route::apiResource('investors', 'InvestorController');
-    }
-);
+Route::apiResource('companies', 'CompanyController');
+Route::apiResource('developers', 'DeveloperController');
+Route::apiResource('investors', 'InvestorController');
+Route::apiResource('investments', 'InvestmentController');
+Route::apiResource('news', 'ArticleController');
+Route::apiResource('promoters', 'PromoterController');
+Route::apiResource('reports', 'ReportController');
