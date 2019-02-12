@@ -2,6 +2,7 @@
 
 namespace Raffles\Modules\Linkre\Http\Controllers;
 
+use Raffles\Modules\Linkre\Http\Requests\DeveloperRequest;
 use Raffles\Modules\Linkre\Repositories\DeveloperRepository;
 
 use Illuminate\Http\Request;
@@ -9,6 +10,8 @@ use RafflesArgentina\ResourceController\ApiResourceController;
 
 class DeveloperController extends ApiResourceController
 {
+    protected $formRequest = DeveloperRequest::class;
+
     protected $repository = DeveloperRepository::class;
 
     protected $resourceName = 'developers';

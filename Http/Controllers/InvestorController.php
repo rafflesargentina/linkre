@@ -2,6 +2,7 @@
 
 namespace Raffles\Modules\Linkre\Http\Controllers;
 
+use Raffles\Modules\Linkre\Http\Requests\InvestorRequest;
 use Raffles\Modules\Linkre\Repositories\InvestorRepository;
 
 use Illuminate\Http\Request;
@@ -9,6 +10,8 @@ use RafflesArgentina\ResourceController\ApiResourceController;
 
 class InvestorController extends ApiResourceController
 {
+    protected $formRequest = InvestorRequest::class;
+
     protected $repository = InvestorRepository::class;
 
     protected $resourceName = 'investors';
