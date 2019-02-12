@@ -24,12 +24,23 @@ class InvestorController extends ApiResourceController
     public function show(Request $request, $key)
     {
         $model = $this->findFirstByKey($key);
-        $model->load('investments');
 
         if (!$model) {
             return $this->validNotFoundJsonResponse();
         }
 
+        $model->load('investments');
+
         return response()->json($model, 200, [], JSON_PRETTY_PRINT);
+    }
+
+    /**
+     * Get default relative path.
+     *
+     * @return string
+     */
+    protected function getDefaultRelativePath()
+    {
+        return 'uploads/investors/';
     }
 }

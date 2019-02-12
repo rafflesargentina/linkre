@@ -2,15 +2,15 @@
 
 namespace Raffles\Modules\Linkre\Http\Controllers;
 
-use Raffles\Modules\Linkre\Repositories\CompanyRepository;
+use Raffles\Modules\Linkre\Repositories\ArticleRepository;
 
 use RafflesArgentina\ResourceController\ApiResourceController;
 
-class CompanyController extends ApiResourceController
+class ArticleController extends ApiResourceController
 {
-    protected $repository = CompanyRepository::class;
+    protected $repository = ArticleRepository::class;
 
-    protected $resourceName = 'companies';
+    protected $resourceName = 'news';
 
     /**
      * Get default relative path.
@@ -19,6 +19,6 @@ class CompanyController extends ApiResourceController
      */
     protected function getDefaultRelativePath()
     {
-        return 'uploads/companies/';
+        return 'uploads/news/';
     }
 }

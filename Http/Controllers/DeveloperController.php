@@ -24,12 +24,23 @@ class DeveloperController extends ApiResourceController
     public function show(Request $request, $key)
     {
         $model = $this->findFirstByKey($key);
-        $model->load('investors');
 
         if (!$model) {
             return $this->validNotFoundJsonResponse();
         }
 
+        $model->load('investors');
+
         return response()->json($model, 200, [], JSON_PRETTY_PRINT);
+    }
+
+    /**
+     * Get default relative path.
+     *
+     * @return string
+     */
+    protected function getDefaultRelativePath()
+    {
+        return 'uploads/developers/';
     }
 }
