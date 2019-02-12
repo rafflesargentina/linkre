@@ -5,10 +5,11 @@ namespace Raffles\Modules\Linkre\Models;
 use Raffles\Modules\Linkre\Models\Traits\InvestmentTrait;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Investment extends Model
 {
-    use InvestmentTrait;
+    use InvestmentTrait, SoftDeletes;
 
     /**
      * The accessors to append to the model's array form.
