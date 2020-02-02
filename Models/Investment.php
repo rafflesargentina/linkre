@@ -30,7 +30,6 @@ class Investment extends Model
         'company_id',
         'context',
         'description',
-        'developer_id',
         'featured',
         'name',
         'promoter_id',
@@ -39,6 +38,7 @@ class Investment extends Model
         'resume',
         'slug',
         'total_area',
+        'user_id',
     ];
 
     /**
@@ -62,14 +62,6 @@ class Investment extends Model
     public function company()
     {
         return $this->belongsTo(Company::class);
-    }
-
-    /**
-     * Get the developer that owns the investment.
-     */
-    public function developer()
-    {
-        return $this->belongsTo(Developer::class);
     }
 
     /**
@@ -134,5 +126,13 @@ class Investment extends Model
     public function unfeatured_photos()
     {
         return $this->morphMany(UnfeaturedPhoto::class, 'photoable');
+    }
+
+    /**
+     * Get the user that owns the investment.
+     */
+    public function user()
+    {
+        return $this->belongsTo(User::class);
     }
 }
