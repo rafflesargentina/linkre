@@ -2,8 +2,9 @@
 
 namespace Raffles\Modules\Linkre\Providers;
 
-use Raffles\Modules\Linkre\Models\Investment;
-use Raffles\Modules\Linkre\Policies\InvestmentPolicy;
+use Raffles\Models\Article;
+use Raffles\Modules\Linkre\Models\{ Company, Developer, Document, Investment, Investor, Promoter, Report };
+use Raffles\Modules\Linkre\Policies\{ ArticlePolicy, CompanyPolicy, DeveloperPolicy, DocumentPolicy, InvestmentPolicy, InvestorPolicy, PromoterPolicy, ReportPolicy };
 
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
 
@@ -15,7 +16,14 @@ class AuthServiceProvider extends ServiceProvider
      * @var array
      */
     protected $policies = [
+        Article::class => ArticlePolicy::class,
+        Company::class => CompanyPolicy::class,
+        Developer::class => DeveloperPolicy::class,
+        Document::class => DocumentPolicy::class,
         Investment::class => InvestmentPolicy::class,
+        Investor::class => InvestorPolicy::class,
+        Promoter::class => PromoterPolicy::class,
+        ReportPolicy::class => ReportPolicy::class,
     ];
 
     /**
