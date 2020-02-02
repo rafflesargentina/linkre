@@ -45,7 +45,7 @@ class DeveloperRequest extends ActionBasedFormRequest
             ],
             'first_name' => 'required',
             'last_name' => 'required',
-            'password' => 'required|confirmed|min:6',
+            'password' => 'nullable|confirmed|min:6',
             'slug' => [
                 Rule::unique('users')->ignore($id)
             ],

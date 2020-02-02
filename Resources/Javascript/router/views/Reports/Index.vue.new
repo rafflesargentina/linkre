@@ -1,0 +1,134 @@
+<template>
+  <div>        
+    <SiteHeader />
+
+    <!-- CONTENT START -->
+    <div class="page-content">
+      <!-- INNER PAGE BANNER -->
+      <div
+        class="wt-bnr-inr overlay-wraper bg-parallax bg-top-center"
+        data-stellar-background-ratio="0.5"
+        style="background-image:url(images/encabezado_informes.jpg);"
+      >
+        <div class="overlay-main bg-black opacity-07" />
+        <div class="container">
+          <div class="wt-bnr-inr-entry">
+            <div class="banner-title-outer">
+              <div class="banner-title-name">
+                <h2 class="text-white text-uppercase letter-spacing-5 font-18 font-weight-300">
+                  Informes
+                </h2>
+              </div>
+            </div>
+            <!-- BREADCRUMB ROW -->                            
+            <div class="p-tb20">
+              <div>
+                <ul class="wt-breadcrumb breadcrumb-style-2">
+                  <li>
+                    <RouterLink
+                      :to="{ name: 'Home' }"
+                    >
+                      Home
+                    </RouterLink>
+                  </li>
+                  <li>Informes</li>
+                </ul>
+              </div>
+            </div>
+            <!-- BREADCRUMB ROW END -->                        
+          </div>
+        </div>
+      </div>
+      <!-- INNER PAGE BANNER END -->
+            
+      <!-- SECTION CONTENT START -->
+      <div class="section-full p-tb90">
+        <div class="container-fluid">
+          <masonry
+            :cols="4"
+            :gutter="30"
+          >
+            <div
+              v-for="item in reports"
+              :key="item.id"
+              class="masonry-item"
+            >
+              <div class="blog-post">
+                <div class="embed-responsive embed-responsive-4by3">
+                  <img class="embed-responsive-item" :src="item.featured_photo.url" style="object-fit:cover;"/>
+                </div>
+                <div class="p-t30 text-black">
+                  <div class="wt-post-title">
+                    <h2 class="post-title">
+                      <RouterLink
+                        :to="{ name: 'ReportsShow', params: { id: item.id }}"
+                        class="text-black font-20 letter-spacing-4 font-weight-600"
+                      >
+                        {{ item.title }}
+                      </RouterLink>
+                    </h2>
+                  </div>
+                  <div class="wt-post-meta">
+                    <ul>
+                      <li>
+                        <strong>{{ item.published_at }}</strong>
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </masonry>
+        </div>
+      </div>
+      <!-- SECTION CONTENT END  -->
+    </div>
+    <!-- CONTENT END -->
+  </div>
+</template>
+
+<script>
+import { reportsComputed, reportsMethods } from "@linkre/store/helpers"
+
+export default {
+    data() {
+        return {
+            prepared: false,
+            reports: [],
+        }
+    },
+
+    computed: {
+        ...reportsComputed
+    },
+
+    watch: {
+        "$route" (value) {
+            if (value.name === "ReportsIndex" && this.prepared) {
+                return this.prepare()
+            }
+        }
+    },
+
+    created() {
+        return this.prepare().then(this.prepared = true)
+    },
+
+    methods: {
+        ...reportsMethods,
+
+        prepare() {
+            var reports = this.fetchPublishedReports()
+            .then(value => {
+                if (value) {
+                    this.reports = value
+                }
+
+                return value
+            })
+
+            return Promise.all([reports])
+        }
+    },
+}
+</script>

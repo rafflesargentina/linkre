@@ -11,18 +11,17 @@ class Financial extends Model
      *
      * @var array
      */
-    protected $attributes = [
-        'adquisition_cost' => 0,
-        'apr' => 0,
-        'development_cost' => 0,
-        'equity' => 0,
-        'funded' => 0,
-        'irr' => 0,
-        'mezzanine_debt' => 0,
-        'remaining' => 0,
-        'senior_debt' => 0,
-        'open_offer',
-    ];
+    //protected $attributes = [
+        //'adquisition_cost' => 0,
+        //'apr' => 0,
+        //'development_cost' => 0,
+        //'equity' => 0,
+        //'funded' => 0,
+        //'irr' => 0,
+        //'mezzanine_debt' => 0,
+        //'senior_debt' => 0,
+        //'open_offer',
+    //];
 
     /**
      * The attributes that should be cast to native types.

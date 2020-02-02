@@ -10,6 +10,10 @@ import * as VueGoogleMaps from "vue2-google-maps"
 import Chart from "chart.js"
 import Vue from "vue"
 import VueChartkick from "vue-chartkick"
+import VueMasonry from "vue-masonry-css"
+
+require("./router")
+require("./store")
 
 Vue.use(VueGoogleMaps, {
     load: {
@@ -18,9 +22,7 @@ Vue.use(VueGoogleMaps, {
 })
 
 Vue.use(VueChartkick, { adapter: Chart })
-
-require("./router")
-require("./store")
+Vue.use(VueMasonry)
 
 /**
  * The following block of code may be used to automatically register your
@@ -31,4 +33,5 @@ require("./store")
  */
 
 const files = require.context("./", true, /\.vue$/i)
-files.keys().map(key => Vue.component(key.split("/").pop().split(".")[0], files(key)))
+files.keys().map(key => Vue.component(key.split("/").pop().split(".")[0], (resolve) => resolve(files(key))))
+

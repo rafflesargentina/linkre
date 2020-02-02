@@ -1,3 +1,9 @@
+<style lang="scss" scoped>
+.home-client-carousel .owl-carousel .owl-item img {
+  height: 60px;
+}
+</style>
+
 <template>
   <div>
     <!-- CONTENT START -->
@@ -19,7 +25,7 @@
                 class="text-uppercase letter-spacing-5 font-weight-300 text-center"
                 style="font-size: 30px; line-height: 40px; color: #222222;"
               >
-                LA PRIMERA PLATAFORMA DE CROWDLENDING PARA INVERSIONES PROFESIONALES DEL REAL ESTATE EN LATINOAMÉRICA
+                LA PLATAFORMA DE BUSINESS INTELLIGENCE PARA INVERSIONES PROFESIONALES DEL REAL ESTATE EN LATINOAMERICA
               </h1>
             </div>
             <br>
@@ -270,12 +276,12 @@
 
 
                         <div class="pricingtable-footer">
-                          <a
-                            href="javascript:void(0);"
+                          <RouterLink
+                            :to="{ name: 'Contact' }"
                             class="site-button text-uppercase letter-spacing-2"
                           >
                             Ver Más
-                          </a>
+                          </RouterLink>
                         </div>
                       </div>
                     </div>
@@ -283,7 +289,7 @@
 
                   <div class="col-sm-4 col-md-4 col-lg-4 m-b40">
                     <div class="pricingtable-wrapper pricing-table-style-4">
-                      <div class="pricingtable-inner pricingtable-highlight bg-gray">
+                      <div class="pricingtable-inner bg-gray">
                         <div
                           class="overlay-wraper pricingtable-inner-overlay bg-no-repeat bg-cover"
                           style="background-image:url(/images/negocios-de-participacion.jpg);"
@@ -306,12 +312,12 @@
 
 
                         <div class="pricingtable-footer">
-                          <a
-                            href="javascript:void(0);"
+                          <RouterLink
+                            :to="{ name: 'Contact' }"
                             class="site-button text-uppercase letter-spacing-2"
                           >
                             Ver Más
-                          </a>
+                          </RouterLink>
                         </div>
                       </div>
                     </div>
@@ -340,15 +346,13 @@
                         </div>
 
 
-
-
                         <div class="pricingtable-footer">
-                          <a
-                            href="javascript:void(0);"
+                          <RouterLink
+                            :to="{ name: 'Contact' }"
                             class="site-button text-uppercase letter-spacing-2"
                           >
-                            Ver más
-                          </a>
+                            Ver Más
+                          </RouterLink>
                         </div>
                       </div>
                     </div>
@@ -396,7 +400,7 @@
                     <div class="icon-content text-center">
                       <div class="font-40 font-weight-600 m-b5">
                         <span class="counter">
-                          451
+                          200
                         </span>
                       </div>
                       <div class="wt-separator-outer m-b20">
@@ -413,14 +417,14 @@
                     <div class="icon-content text-center">
                       <div class="font-40 font-weight-600 m-b5">
                         <span class="counter">
-                          532
+                          25 
                         </span>
                       </div>
                       <div class="wt-separator-outer m-b20">
                         <div class="wt-separator bg-white" />
                       </div>
                       <span class="text-uppercase">
-                        Proyectos financiados
+                        Proyectos ofrecidos
                       </span>
                     </div>
                   </div>
@@ -430,7 +434,7 @@
                     <div class="icon-content text-center">
                       <div class="font-40 font-weight-600 m-b5">
                         <span class="counter">
-                          40
+                          25
                         </span>%
                       </div>
                       <div class="wt-separator-outer m-b20">
@@ -520,7 +524,6 @@
                   </div>
                 </div>
               </div>
-              </di>
             </div>
           </div>
         </div>
@@ -549,6 +552,30 @@
                   <div class="col-md-7 col-sm-12">
                     <div class="section-content bg-white p-tb10">
                       <div class="owl-carousel home-client-carousel owl-btn-center-v">
+                        <div class="item">
+                          <div class="ow-client-logo">
+                            <div class="client-logo client-logo-media">
+                              <a href="javascript:void(0);">
+                                <img
+                                  src="/images/logos-partners/GRI_Club.png"
+                                >
+                              </a>
+                            </div>
+                          </div>
+                        </div>
+
+                        <div class="item">
+                          <div class="ow-client-logo">
+                            <div class="client-logo client-logo-media">
+                              <a href="javascript:void(0);">
+                                <img
+                                  src="/images/logos-partners/prequin.png"
+                                >
+                              </a>
+                            </div>
+                          </div>
+                        </div>
+
                         <div class="item">
                           <div class="ow-client-logo">
                             <div class="client-logo client-logo-media">
@@ -657,7 +684,7 @@ import { shuffle, slice } from "lodash"
 
 import "waypoints/lib/jquery.waypoints.min.js"
 import "counterup/jquery.counterup.min.js"
-import "../../assets/js/jquery.owl-filter.js"
+//import "../../assets/js/jquery.owl-filter.js"
 
 export default {
     data() {
@@ -683,8 +710,22 @@ export default {
         return this.prepare()
     },
 
+    beforeDestroy() {
+        window.$(".footer-fixed .page-wraper").css("padding-bottom", 0)
+        window.$("body").removeClass("footer-fixed")
+    },
+
     methods: {
         ...investmentsMethods,
+
+        footer_fixed() {
+            window.$("body").addClass("footer-fixed")
+            window.$(".site-footer").css("display", "block")
+            window.$(".site-footer").css("height", "auto")
+            var footerHeight = window.$(".site-footer").outerHeight()
+            window.$(".footer-fixed .page-wraper").css("padding-bottom", footerHeight)
+            window.$(".site-footer").css("height", footerHeight)
+        },
 
         home_carousel_2(){
             window.$(".home-carousel-2").owlCarousel({
@@ -789,17 +830,23 @@ export default {
         },
 
         prepare() {
-            return this.fetchAllInvestments().then(value => {
+            this.footer_fixed()
+
+            window.$(window).on("resize",()=> {
+                this.footer_fixed()
+            })
+
+            this.home_carousel_2()
+            this.home_client_carousel()
+
+            window.$(".counter").counterUp({
+                delay: 10,
+                time: 1000
+            })
+
+            this.fetchAllInvestments().then(value => {
                 return this.investmentsFeaturedSlice = slice(shuffle(value), 0, 3),
-                this.home_carousel_2(),
-                this.home_client_carousel(),
                 this.home_projects_filter(),
-
-                window.$(".counter").counterUp({
-                    delay: 10,
-                    time: 1000
-                }),
-
                 this.prepared = true
             })
         }

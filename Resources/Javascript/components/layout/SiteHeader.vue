@@ -99,10 +99,18 @@
                     <ul class=" nav navbar">
                       <li>
                         <RouterLink
-                          :to="{ name: 'About' }"
+                          :to="{ name: 'Company' }"
                           style="padding: 10px 10px; border: none;"
                         >
                           Qué es LinkRE
+                        </RouterLink>
+                      </li>
+                      <li>
+                        <RouterLink
+                          :to="{ name: 'About' }"
+                          style="padding: 10px 10px; border: none;"
+                        >
+                          Nosotros
                         </RouterLink>
                       </li>
                       <li>
@@ -151,6 +159,14 @@
                           style="padding: 10px 10px;"
                         >
                           Contacto
+                        </RouterLink>
+                      </li>
+                      <li v-if="isAuthenticated && isAdmin">
+                        <RouterLink
+                          :to="{ name: 'Dashboard' }"
+                          style="padding: 10px 10px;"
+                        >
+                          Admin
                         </RouterLink>
                       </li>
                     </ul>

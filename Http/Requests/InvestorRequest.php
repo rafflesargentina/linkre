@@ -16,7 +16,7 @@ class InvestorRequest extends ActionBasedFormRequest
      */
     public static function store()
     {
-        if (request()->has('featured_photo')) {
+        if (request()->featured_photo) {
             return [
                 'featured_photo[]' => 'image',
             ];
@@ -45,10 +45,10 @@ class InvestorRequest extends ActionBasedFormRequest
             ],
             'first_name' => 'required',
             'last_name' => 'required',
-            'password' => 'required|confirmed|min:6',
-            'slug' => [
-                Rule::unique('users')->ignore($id)
-            ],
+            'password' => 'nullable|confirmed|min:6',
+            //'slug' => [
+                //Rule::unique('users')->ignore($id)
+            //],
         ];
     }
 

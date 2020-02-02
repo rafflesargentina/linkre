@@ -67,7 +67,10 @@ class PromotersTableSeeder extends Seeder
         ];
 
         foreach ($promoters as $promoter) {
-            Promoter::create($promoter);
+            $p = Promoter::create($promoter);
+            $p->address()->create();
+            $p->contact()->create();
+            $p->map()->create();
         }
     }
 }

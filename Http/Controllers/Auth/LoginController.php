@@ -37,6 +37,43 @@ class LoginController extends BaseLoginController
     }
 
     /**
+     * Send the response after the user was authenticated.
+     *
+     * @param  \Illuminate\Http\Request $request
+     * @return \Illuminate\Http\Response
+     */
+    protected function sendLoginResponse(Request $request)
+    {
+        $user = $this->guard()->user();
+
+        if ($request->wantsJson()) {
+            try {
+                $user->loadMissing('contact', 'developer_profile.investment_preferences', 'investments', 'investor_profile', 'investor_profile.investment_preferences', 'permissions', 'roles');
+                $token = $user->createToken(env('APP_NAME'));
+                $accessToken = $token->accessToken;
+            } catch (\Exception $e) {
+                return $this->validInternalServerErrorJsonResponse($e, $e->getMessage());
+            }
+
+            $data = [
+                'token' => $accessToken,
+                'remember' => $request->remember,
+                'user' => $user
+            ];
+
+            return $this->authenticated($request, $user)
+                    ?:  $this->validSuccessJsonResponse('Success', $data, $this->redirectPath());
+        }
+
+        $request->session()->regenerate();
+
+        $this->clearLoginAttempts($request);
+
+        return $this->authenticated($request, $user)
+                ?: redirect()->intended($this->redirectPath());
+    }
+
+    /**
      * Get the login username to be used by the controller.
      *
      * @return string

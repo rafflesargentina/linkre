@@ -1,6 +1,6 @@
-<style>
-.vue-map-container {
-  height: 32rem;
+<style lang="scss" scoped>
+.map {
+  height: 20rem;
 }
 </style>
 
@@ -10,11 +10,11 @@
     :class="[validated ? 'needs-validation' : 'needs-validation']"
     :method="method"
     novalidate
-    @submit.prevent="submitForm"
+    @submit.prevent="handleSubmitForm"
     @keydown="form.errors.clear($event.target.name)"
   >
     <ul
-      id="investmentPills"
+      id="investment-pills"
       class="nav nav-pills mb-3"
       role="tablist"
     >
@@ -32,81 +32,21 @@
       </li>
       <li class="nav-item">
         <a
-          id="description-tab"
-          aria-controls="description"
-          aria-selected="true"
+          id="product-tab"
+          aria-controls="product"
+          aria-selected="false"
           class="nav-link"
           data-toggle="tab"
-          href="#description"
+          href="#product"
         >
           Producto
         </a>
       </li>
       <li class="nav-item">
         <a
-          id="context-tab"
-          aria-controls="context"
-          aria-selected="false"
-          class="nav-link"
-          data-toggle="tab"
-          href="#context"
-        >
-          Contexto
-        </a>
-      </li>
-      <li class="nav-item">
-        <a
-          id="amenities-tab"
-          aria-controls="aminities"
-          aria-selected="false"
-          class="nav-link"
-          data-toggle="tab"
-          href="#amenities"
-        >
-          Amenities
-        </a>
-      </li>
-      <li class="nav-item">
-        <a
-          id="featured-photo-tab"
-          aria-controls="featured-photo"
-          aria-selected="false"
-          class="nav-link"
-          data-toggle="tab"
-          href="#featured-photo"
-        >
-          Foto destacada
-        </a>
-      </li>
-      <li class="nav-item">
-        <a
-          id="photos-gallery-tab"
-          aria-controls="photos-gallery"
-          aria-selected="false"
-          class="nav-link"
-          data-toggle="tab"
-          href="#photos-gallery"
-        >
-          Galería de fotos
-        </a>
-      </li>
-      <li class="nav-item">
-        <a
-          id="map-tab"
-          aria-controls="location"
-          aria-selected="true"
-          class="nav-link"
-          data-toggle="tab"
-          href="#map"
-        >
-          Mapa
-        </a>
-      </li>
-      <li class="nav-item">
-        <a
           id="financial-tab"
           aria-controls="financial"
-          aria-selected="true"
+          aria-selected="false"
           class="nav-link"
           data-toggle="tab"
           href="#financial"
@@ -114,696 +54,842 @@
           Financial
         </a>
       </li>
+      <li class="nav-item">
+        <a
+          id="documents-tab"
+          aria-controls="documents"
+          aria-selected="false"
+          class="nav-link"
+          data-toggle="tab"
+          href="#documents"
+        >
+          Documentos
+        </a>
+      </li>
     </ul>
 
-    <div class="card">
+    <div class="card shadow">
       <div
-        id="project-pills-content"
-        class="border-left border-right tab-content"
+        class="tab-content"
       >
         <div
           id="main"
-          class="card-body tab-pane fade show active"
+          class="tab-pane fade show active"
           role="tabpanel"
           aria-labelledby="main-tab"
         >
-          <h5
-            class="mb-2"
-          >
-            Principal
-          </h5>
-          <div class="form-group">
-            <label for="name">
-              Nombre *
-            </label>
-            <input
-              v-model="form.name"
-              :class="{ 'is-invalid': form.errors.has('name') }"
-              class="form-control"
-              name="name"
-              placeholder="Nombre"
-              required
-              type="text"
-              @keyup="form.slug = updateSlug($event.target.value)"
-            >
-            <span
-              v-if="form.errors.has('name')"
-              class="invalid-feedback"
-              role="alert"
-            >
-              <strong v-text="form.errors.get('name')" />
-            </span>
+          <div class="card-header bg-white p-2 p-md-4">
+            <h5 class="text-primary m-0">
+              Principal
+            </h5>
           </div>
+          <ul class="list-group list-group-flush">
+            <li class="list-group-item">
+              <div class="form-group row mb-0">
+                <label
+                  for="company_id"
+                  class="col-6 col-form-label text-muted"
+                >
+                  Compañía *
+                </label>
+                <div class="col-6 col-lg-4">
+                  <select
+                    v-model="form.company_id"
+                    :class="{ 'is-invalid': form.errors.has('company_id') }"
+                    class="form-control"
+                    name="company_id"
+                    required
+                  >
+                    <option
+                      value=""
+                      :selected="true"
+                    >
+                      Companía
+                    </option>
+                    <option
+                      v-for="item in companies"
+                      :key="item.id"
+                      :value="item.id"
+                    >
+                      {{ item.name }}
+                    </option>
+                  </select>
+                  <span
+                    v-if="form.errors.has('company_id')"
+                    class="invalid-feedback"
+                    role="alert"
+                  >
+                    <strong v-text="form.errors.get('company_id')" />
+                  </span>
+                </div>
+              </div>
+            </li>
 
-          <div class="form-group">
-            <label for="slug">
-              Identificador amistoso *
-            </label>
-            <input
-              v-model="form.slug"
-              v-slugify
-              :class="{ 'is-invalid': form.errors.has('slug') }"
-              class="form-control"
-              name="slug"
-              placeholder="Identificador amistoso"
-              required
-              type="text"
-            >
-            <span
-              v-if="form.errors.has('slug')"
-              class="invalid-feedback"
-              role="alert"
-            >
-              <strong v-text="form.errors.get('slug')" />
-            </span>
-          </div>
-
-          <div class="row">
-            <div class="col-md-4 form-group">
-              <label for="city">
-                Ciudad *
-              </label>
-              <input
-                v-model="form.city"
-                :class="{ 'is-invalid': form.errors.has('city') }"
-                class="form-control"
-                name="city"
-                placeholder="Ciudad"
-                required
-                type="text"
-              >
-              <span
-                v-if="form.errors.has('city')"
-                class="invalid-feedback"
-                role="alert"
-              >
-                <strong v-text="form.errors.get('city')" />
-              </span>
-            </div>
-
-            <div class="col-md-4 form-group">
-              <label for="state">
-                Provincia
-              </label>
-              <input
-                v-model="form.state"
-                :class="{ 'is-invalid': form.errors.has('state') }"
-                class="form-control"
-                name="state"
-                placeholder="Estado"
-                type="text"
-              >
-              <span
-                v-if="form.errors.has('state')"
-                class="invalid-feedback"
-                role="alert"
-              >
-                <strong v-text="form.errors.get('state')" />
-              </span>
-            </div>
-  
-            <div class="col-md-4 form-group">
-              <label for="country">
-                País
-              </label>
-              <input
-                v-model="form.country"
-                :class="{ 'is-invalid': form.errors.has('country') }"
-                class="form-control"
-                name="country"
-                placeholder="País"
-                type="text"
-              >
-              <span
-                v-if="form.errors.has('country')"
-                class="invalid-feedback"
-                role="alert"
-              >
-                <strong v-text="form.errors.get('country')" />
-              </span>
-            </div>
-          </div>
-
-          <div class="form-group">
-            <label for="total_area">
-              Superficie total *
-            </label>
-            <input
-              v-model="form.total_area"
-              :class="{ 'is-invalid': form.errors.has('total_area') }"
-              class="form-control"
-              name="total_area"
-              placeholder="Superficie total"
-              required
-              type="number"
-            >
-            <span
-              v-if="form.errors.has('total_area')"
-              class="invalid-feedback"
-              role="alert"
-            >
-              <strong v-text="form.errors.get('total_area')" />
-            </span>
-          </div>
+            <li class="list-group-item">
+              <div class="form-group row mb-0">
+                <label
+                  for="promoter_id"
+                  class="col-6 col-form-label text-muted"
+                >
+                  Promotor
+                </label>
+                <div class="col-6 col-lg-4">
+                  <select
+                    v-model="form.promoter_id"
+                    :class="{ 'is-invalid': form.errors.has('promoter_id') }"
+                    class="form-control"
+                    name="promoter_id"
+                  >
+                    <option
+                      value=""
+                      :selected="true"
+                    >
+                      Promotor
+                    </option>
+                    <option
+                      v-for="item in promoters"
+                      :key="item.id"
+                      :value="item.id"
+                    >
+                      {{ item.name }}
+                    </option>
+                  </select>
+                  <span
+                    v-if="form.errors.has('promoter_id')"
+                    class="invalid-feedback"
+                    role="alert"
+                  >
+                    <strong v-text="form.errors.get('promoter_id')" />
+                  </span>
+                </div>
+              </div>
+            </li>
+            <li class="list-group-item">
+              <div class="form-group row mb-0">
+                <label
+                  for="name"
+                  class="col-6 col-form-label text-muted"
+                >
+                  Nombre *
+                </label>
+                <div class="col-6 col-lg-4">
+                  <input
+                    v-model="form.name"
+                    :class="{ 'is-invalid': form.errors.has('name') }"
+                    class="form-control"
+                    name="name"
+                    placeholder="Nombre"
+                    required
+                    type="text"
+                    @keyup="form.slug = updateSlug($event.target.value)"
+                  >
+                  <span
+                    v-if="form.errors.has('name')"
+                    class="invalid-feedback"
+                    role="alert"
+                  >
+                    <strong v-text="form.errors.get('name')" />
+                  </span>
+                </div>
+              </div>
+            </li>
+            <li class="list-group-item">
+              <div class="form-group row mb-0">
+                <label
+                  for="slug"
+                  class="col-6 col-form-label text-muted"
+                >
+                  Identificador URI *
+                </label>
+                <div class="col-6 col-lg-4">
+                  <input
+                    v-model="form.slug"
+                    v-slugify
+                    :class="{ 'is-invalid': form.errors.has('slug') }"
+                    class="form-control"
+                    name="slug"
+                    placeholder="Identificador amistoso"
+                    required
+                    type="text"
+                  >
+                  <span
+                    v-if="form.errors.has('slug')"
+                    class="invalid-feedback"
+                    role="alert"
+                  >
+                    <strong v-text="form.errors.get('slug')" />
+                  </span>
+                </div>
+              </div>
+            </li>
+            <li class="list-group-item">
+              <div class="form-group row mb-0">
+                <label
+                  for="description"
+                  class="col-lg-3 col-form-label text-muted"
+                >
+                  Descripción *
+                </label>
+                <div class="col-lg-9">
+                  <VueEditor
+                    v-model="form.description"
+                    :class="{ 'is-invalid': form.errors.has('description') }"
+                    class="bg-white"
+                    name="description"
+                    placeholder="Descripción"
+                  />
+                  <span
+                    v-if="form.errors.has('description')"
+                    class="d-block invalid-feedback"
+                    role="alert"
+                  >
+                    <strong v-text="form.errors.get('description')" />
+                  </span>
+                </div>
+              </div>
+            </li>
+          </ul>
         </div>
 
         <div
-          id="context"
-          class="card-header tab-pane fade show"
+          id="product"
+          class="tab-pane fade show"
           role="tabpanel"
-          aria-labelledby="context-tab"
+          aria-labelledby="product-tab"
         >
-          <h5 class="mb-2">
-            Contexto
-          </h5>
-          <div class="form-group">
-            <label
-              class="sr-only"
-              for="contexto"
-            >
+          <div class="card-header bg-white p-2 p-md-4">
+            <h5 class="text-primary m-0">
+              Foto destacada
+            </h5>
+          </div>
+          <ul class="list-group list-group-flush">
+            <li class="list-group-item">
+              <div class="form-group row mb-0">
+                <label
+                  for="featured_photo"
+                  class="col-md-6 col-form-label text-muted"
+                >
+                  Foto destacada
+                </label>
+                <div class="col-md-4">
+                  <VueDropzone
+                    id="dzFeaturedPhoto"
+                    ref="dzFeaturedPhoto"
+                    :options="dzFeaturedPhotoOptions"
+                    @vdropzone-error="dzFeaturedPhotoError"
+                    @vdropzone-removed-file="dzFeaturedPhotoRemovedFile"
+                    @vdropzone-processing="dzFeaturedPhotoProcessing"
+                    @vdropzone-success-multiple="dzFeaturedPhotoSuccess"
+                    @vdropzone-upload-progress="dzFeaturedPhotoUploadProgress"
+                  />
+                </div>
+              </div>
+            </li>
+          </ul>
+          <div class="card-header bg-white p-2 p-md-4">
+            <h5 class="text-primary m-0">
+              Resúmen / Ficha técnica
+            </h5>
+          </div>
+          <ul class="list-group list-group-flush">
+            <li class="list-group-item">
+              <div class="form-group row mb-0">
+                <label
+                  for="resume"
+                  class="col-lg-3 col-form-label text-muted"
+                >
+                  Resúmen / Ficha técnica
+                </label>
+                <div class="col-lg-9">
+                  <VueEditor
+                    v-model="form.resume"
+                    :class="{ 'is-invalid': form.errors.has('resume') }"
+                    class="bg-white"
+                    name="resume"
+                    placeholder="Resúmen / Ficha técnica"
+                  />
+                  <span
+                    v-if="form.errors.has('resume')"
+                    class="invalid-feedback"
+                    role="alert"
+                  >
+                    <strong v-text="form.errors.get('resume')" />
+                  </span>
+                </div>
+              </div>
+            </li>
+          </ul>
+          <div class="card-header bg-white p-2 p-md-4">
+            <h5 class="text-primary m-0">
               Contexto
-            </label>
-            <VueEditor
-              v-model="form.context"
-              :class="{ 'is-invalid': form.errors.has('context') }"
-              class="bg-white"
-              name="context"
-              placeholder="Contexto"
-            />
-            <span
-              v-if="form.errors.has('context')"
-              class="invalid-feedback"
-              role="alert"
-            >
-              <strong v-text="form.errors.get('context')" />
-            </span>
+            </h5>
           </div>
-        </div>
+          <ul class="list-group list-group-flush">
+            <li class="list-group-item">
+              <div class="form-group row mb-0">
+                <label
+                  for="context"
+                  class="col-lg-3 col-form-label text-muted"
+                >
+                  Contexto
+                </label>
+                <div class="col-lg-9">
+                  <VueEditor
+                    v-model="form.context"
+                    :class="{ 'is-invalid': form.errors.has('context') }"
+                    class="bg-white"
+                    name="context"
+                    placeholder="Contexto"
+                  />
+                  <span
+                    v-if="form.errors.has('context')"
+                    class="invalid-feedback"
+                    role="alert"
+                  >
+                    <strong v-text="form.errors.get('context')" />
+                  </span>
+                </div>
+              </div>
+            </li>
+          </ul>
 
-        <div
-          id="description"
-          class="card-header tab-pane fade show"
-          role="tabpanel"
-          aria-labelledby="description-tab"
-        >
-          <h5 class="mb-2">
-            Producto
-          </h5>
-          <div class="form-group">
-            <label
-              class="sr-only"
-              for="description"
-            >
-              Producto
-            </label>
-            <VueEditor
-              v-model="form.description"
-              :class="{ 'is-invalid': form.errors.has('description') }"
-              class="bg-white"
-              name="description"
-              placeholder="Descripción"
-            />
-            <span
-              v-if="form.errors.has('description')"
-              class="invalid-feedback"
-              role="alert"
-            >
-              <strong v-text="form.errors.get('description')" />
-            </span>
+          <div class="card-header bg-white p-2 p-md-4">
+            <h5 class="text-primary m-0">
+              Ubicación y Mapa
+            </h5>
           </div>
-        </div>
+          <ul class="list-group list-group-flush">
+            <li class="list-group-item">
+              <div class="form-group row mb-0">
+                <label
+                  for="autocomplete"
+                  class="col-6 col-form-label text-muted"
+                >
+                  Ubicación *
+                </label>
+                <div class="col-6 col-lg-4">
+                  <input
+                    id="autocomplete"
+                    v-model="location"
+                    name="autocomplete"
+                    class="form-control"
+                    @input="geolocate"
+                  >
+                  <input
+                    id="country"
+                    v-model="form.address.country"
+                    name="address.country"
+                    class="form-control"
+                    type="hidden"
+                  >
+                  <input
+                    id="route"
+                    v-model="form.address.street_name"
+                    name="address.street_name"
+                    class="form-control"
+                    type="hidden"
+                  >
+                  <input
+                    id="locality"
+                    v-model="form.address.locality"
+                    name="address.locality"
+                    class="form-control"
+                    type="hidden"
+                  >
+                  <input
+                    id="administrative_area_level_1"
+                    v-model="form.address.state"
+                    name="address.state"
+                    class="form-control"
+                    type="hidden"
+                  >
+                  <input
+                    id="postal_code"
+                    v-model="form.address.zip"
+                    name="address.zip"
+                    class="form-control"
+                    type="hidden"
+                  >
+                </div>
+              </div>
+            </li>
+            <li class="list-group-item">
+              <div class="form-group row mb-0">
+                <label
+                  for="map.lat"
+                  class="col-6 col-form-label text-muted"
+                >
+                  Latitud
+                </label>
+                <div class="col-6 col-lg-4">
+                  <input
+                    v-model="form.map.lat"
+                    :class="{ 'is-invalid': form.errors.has('map.lat') }"
+                    class="form-control"
+                    name="map.lat"
+                    placeholder="Latitud"
+                    type="number"
+                  >
+                  <span
+                    v-if="form.errors.has('map.lat')"
+                    class="invalid-feedback"
+                    role="alert"
+                  >
+                    <strong v-text="form.errors.get('map.lat')" />
+                  </span>
+                </div>
+              </div>
+            </li>
+            <li class="list-group-item">
+              <div class="form-group row mb-0">
+                <label
+                  for="map.lng"
+                  class="col-6 col-form-label text-muted"
+                >
+                  Longitud
+                </label>
+                <div class="col-6 col-lg-4">
+                  <input
+                    v-model="form.map.lng"
+                    :class="{ 'is-invalid': form.errors.has('map.lng') }"
+                    class="form-control"
+                    name="map.lng"
+                    placeholder="Longitud"
+                    type="number"
+                  >
+                  <span
+                    v-if="form.errors.has('map.lng')"
+                    class="invalid-feedback"
+                    role="alert"
+                  >
+                    <strong v-text="form.errors.get('map.lng')" />
+                  </span>
+                </div>
+              </div>
+            </li>
+            <li class="list-group-item">
+              <div class="form-group row mb-0">
+                <label
+                  for="map.zoom"
+                  class="col-6 col-form-label text-muted"
+                >
+                  Zoom
+                </label>
+                <div class="col-6 col-lg-4">
+                  <input
+                    v-model="form.map.zoom"
+                    :class="{ 'is-invalid': form.errors.has('map.zoom') }"
+                    class="form-control"
+                    name="map.zoom"
+                    placeholder="Zoom"
+                    type="number"
+                  >
+                  <span
+                    v-if="form.errors.has('map.zoom')"
+                    class="invalid-feedback"
+                    role="alert"
+                  >
+                    <strong v-text="form.errors.get('map.zoom')" />
+                  </span>
+                </div>
+              </div>
+            </li>
+            <li class="list-group-item">
+              <div
+                id="map"
+                ref="map"
+                class="map"
+              />
+            </li>
+          </ul>
 
-        <div
-          id="amenities"
-          class="card-header tab-pane fade show"
-          role="tabpanel"
-          aria-labelledby="amenities-tab"
-        >
-          <h5 class="mb-2">
-            Amenities
-          </h5>
-          <div class="form-group">
-            <label
-              class="sr-only"
-              for="description"
-            >
-              Descripción
-            </label>
-            <VueEditor
-              v-model="form.amenities"
-              :class="{ 'is-invalid': form.errors.has('amenities') }"
-              class="bg-white"
-              name="amenities"
-              placeholder="Amenities"
-            />
-            <span
-              v-if="form.errors.has('amenities')"
-              class="invalid-feedback"
-              role="alert"
-            >
-              <strong v-text="form.errors.get('amenities')" />
-            </span>
+          <div class="card-header bg-white p-2 p-md-4">
+            <h5 class="text-primary m-0">
+              Galería de fotos
+            </h5>
           </div>
-        </div>
-
-        <div
-          id="featured-photo"
-          class="card-header tab-pane fade show"
-          role="tabpanel"
-          aria-labelledby="featured-photo-tab"
-        >
-          <h5 class="mb-2">
-            Foto destacada
-          </h5>
-          <VueDropzone
-            id="dzFeaturedPhoto"
-            ref="dzFeaturedPhoto"
-            :options="dzFeaturedPhotoOptions"
-            @vdropzone-error="dzFeaturedPhotoFail"
-            @vdropzone-files-added="dzFeaturedPhotoAddOrRemoveFiles"
-            @vdropzone-removed-file="dzFeaturedPhotoRemoveFile"
-            @vdropzone-processing="dzFeaturedPhotoSetUrl"
-            @vdropzone-success-multiple="dzFeaturedPhotoSucceed"
-          />
-        </div>
-
-        <div
-          id="photos-gallery"
-          class="card-header tab-pane fade show"
-          role="tabpanel"
-          aria-labelledby="photos-gallery-tab"
-        >
-          <h5 class="mb-2">
-            Galería de fotos
-          </h5>
-          <VueDropzone
-            id="dzUnfeaturedPhotos"
-            ref="dzUnfeaturedPhotos"
-            :options="dzUnfeaturedPhotosOptions"
-            @vdropzone-error="dzUnfeaturedPhotosFail"
-            @vdropzone-files-added="dzUnfeaturedPhotosAddOrRemoveFiles"
-            @vdropzone-removed-file="dzUnfeaturedPhotosRemoveFile"
-            @vdropzone-processing="dzUnfeaturedPhotosSetUrl"
-            @vdropzone-success-multiple="dzUnfeaturedPhotosSucceed"
-          />
-        </div>
-
-        <div
-          v-if="form.map"
-          id="map"
-          class="card-header tab-pane fade show"
-          role="tabpanel"
-          aria-labelledby="map-tab"
-        >
-          <h5 class="mb-2">
-            Mapa
-          </h5>
-          <div class="row mb-3">
-            <div class="col-sm-4 form-group">
-              <label for="map.lat">
-                Latitud
-              </label>
-              <input
-                v-model="form.map.lat"
-                :class="{ 'is-invalid': form.errors.has('map.lat') }"
-                class="form-control"
-                name="map.lat"
-                placeholder="Latitud"
-                type="text"
-              >
-              <span
-                v-if="form.errors.has('map.lat')"
-                class="invalid-feedback"
-                role="alert"
-              >
-                <strong v-text="form.errors.get('map.lat')" />
-              </span>
-            </div>
-            <div class="col-sm-4 form-group">
-              <label for="map.lng">
-                Longitud
-              </label>
-              <input
-                v-model="form.map.lng"
-                :class="{ 'is-invalid': form.errors.has('map.lng') }"
-                class="form-control"
-                name="map.lng"
-                placeholder="Longitud"
-                type="text"
-              >
-              <span
-                v-if="form.errors.has('map.lng')"
-                class="invalid-feedback"
-                role="alert"
-              >
-                <strong v-text="form.errors.get('map.lng')" />
-              </span>
-            </div>
-
-            <div class="col-sm-4 form-group">
-              <label for="map.zoom">
-                Zoom
-              </label>
-              <input
-                v-model="form.map.zoom"
-                :class="{ 'is-invalid': form.errors.has('map.zoom') }"
-                :disabled="true"
-                class="form-control"
-                name="map.zoom"
-                placeholder="Zoom"
-                type="number"
-              >
-              <span
-                v-if="form.errors.has('map.zoom')"
-                class="invalid-feedback"
-                role="alert"
-              >
-                <strong v-text="form.errors.get('map.zoom')" />
-              </span>
-            </div>
-          </div>
-
-          <gmap-map
-            ref="map"
-            :center="center"
-            :zoom="form.map.zoom"
-            @zoom_changed="form.map.zoom = $event"
-          >
-            <gmap-marker
-              ref="marker"
-              :draggable="true"
-              :position="center"
-              @dragend="setMapPositionFromMarker"
-            />
-          </gmap-map>
+          <ul class="list-group list-group-flush">
+            <li class="list-group-item">
+              <div class="form-group row mb-0">
+                <div class="col">
+                  <VueDropzone
+                    id="dzUnfeaturedPhotos"
+                    ref="dzUnfeaturedPhotos"
+                    :options="dzUnfeaturedPhotosOptions"
+                    @vdropzone-error="dzUnfeaturedPhotosError"
+                    @vdropzone-removed-file="dzUnfeaturedPhotosRemovedFile"
+                    @vdropzone-processing="dzUnfeaturedPhotosProcessing"
+                    @vdropzone-success-multiple="dzUnfeaturedPhotosSuccess"
+                    @vdropzone-complete-multiple="isProcessingUnfeaturedPhotos = false"
+                    @vdropzone-upload-progress="dzUnfeaturedPhotosUploadProgress"
+                  />
+                </div>
+              </div>
+            </li>
+          </ul>
         </div>
 
         <div
           id="financial"
-          class="card-header tab-pane fade show"
+          class="tab-pane fade show"
           role="tabpanel"
           aria-labelledby="financial-tab"
         >
-          <h5>Retornos</h5>
-          <div class="card card-body mb-3">
-            <div class="row">
-              <div class="col-md-6">
-                <div class="row">
-                  <div class="col-12 form-group">
-                    <label for="financial.open_offer">
-                      Oferta abierta
-                    </label>
-                    <input
-                      v-model="form.financial.open_offer"
-                      :class="{ 'is-invalid': form.errors.has('financial.open_offer') }"
-                      class="form-control"
-                      name="financial.open_offer"
-                      placeholder="Oferta abierta"
-                      type="number"
-                    >
-                    <span
-                      v-if="form.errors.has('financial.open_offer')"
-                      class="invalid-feedback"
-                      role="alert"
-                    >
-                      <strong v-text="form.errors.get('financial.open_offer')" />
-                    </span>
-                  </div>
-      
-                  <div class="col-12 form-group">
-                    <label for="financial.funded">
-                      Financiado
-                    </label>
-                    <input
-                      v-model="form.financial.funded"
-                      :class="{ 'is-invalid': form.errors.has('financial.funded') }"
-                      class="form-control"
-                      name="financial.funded"
-                      placeholder="Financiado"
-                      type="number"
-                    >
-                    <span
-                      v-if="form.errors.has('financial.funded')"
-                      class="invalid-feedback"
-                      role="alert"
-                    >
-                      <strong v-text="form.errors.get('financial.funded')" />
-                    </span>
-                  </div>
-                </div>
-
-                <div class="row">
-                  <div class="col-sm-4 form-group">
-                    <label for="financial.irr">
-                      TIR (%)
-                    </label>
-                    <input
-                      v-model="form.financial.irr"
-                      :class="{ 'is-invalid': form.errors.has('financial.irr') }"
-                      class="form-control"
-                      name="financial.irr"
-                      placeholder="Tasa Interna de Retorno (%)"
-                      type="number"
-                    >
-                    <span
-                      v-if="form.errors.has('financial.irr')"
-                      class="invalid-feedback"
-                      role="alert"
-                    >
-                      <strong v-text="form.errors.get('financial.irr')" />
-                    </span>
-                  </div>
-                  <div class="col-sm-4 form-group">
-                    <label for="financial.apr">
-                      TAP (%)
-                    </label>
-                    <input
-                      v-model="form.financial.apr"
-                      :class="{ 'is-invalid': form.errors.has('financial.apr') }"
-                      class="form-control"
-                      name="financial.apr"
-                      placeholder="Tasa Anual de Preferencia (%)"
-                      type="number"
-                    >
-                    <span
-                      v-if="form.errors.has('financial.apr')"
-                      class="invalid-feedback"
-                      role="alert"
-                    >
-                      <strong v-text="form.errors.get('financial.apr')" />
-                    </span>
-                  </div>
-                  <div class="col-sm-4 form-group">
-                    <label for="financial.ehp">
-                      PET (meses)
-                    </label>
-                    <input
-                      v-model="form.financial.ehp"
-                      :class="{ 'is-invalid': form.errors.has('financial.ehp') }"
-                      class="form-control"
-                      name="financial.ehp"
-                      placeholder="Período Estimado de Tenencia (meses)"
-                      type="number"
-                    >
-                    <span
-                      v-if="form.errors.has('financial.ehp')"
-                      class="invalid-feedback"
-                      role="alert"
-                    >
-                      <strong v-text="form.errors.get('financial.ehp')" />
-                    </span>
-                  </div>
-                </div>
-              </div>
-
-              <div class="col-md-6">
-                <pie-chart
-                  :donut="true"
-                  :data="[['Financiado', form.financial.funded], ['Restante', (form.financial.open_offer - form.financial.funded)]]"
-                />
-              </div>
-            </div>
+          <div class="card-header bg-white p-2 p-md-4">
+            <h5 class="text-primary m-0">
+              Retornos
+            </h5>
           </div>
+          <ul class="list-group list-group-flush">
+            <li class="list-group-item">
+              <div class="row">
+                <div class="col-md-6 order-2 order-md-1">
+                  <div class="row">
+                    <div class="col-12 form-group">
+                      <label for="financial.open_offer">
+                        Oferta abierta
+                      </label>
+                      <input
+                        v-model="form.financial.open_offer"
+                        :class="{ 'is-invalid': form.errors.has('financial.open_offer') }"
+                        class="form-control"
+                        name="financial.open_offer"
+                        placeholder="Oferta abierta"
+                        type="number"
+                      >
+                      <span
+                        v-if="form.errors.has('financial.open_offer')"
+                        class="invalid-feedback"
+                        role="alert"
+                      >
+                        <strong v-text="form.errors.get('financial.open_offer')" />
+                      </span>
+                    </div>
 
-          <h5>Capitalización</h5>
-          <div class="card card-body mb-3">
-            <div class="row">
-              <div class="col-md-6">
-                <div class="form-group">
-                  <label for="financial.senior_debt">
-                    Deuda Senior
-                  </label>
-                  <input
-                    v-model="form.financial.senior_debt"
-                    :class="{ 'is-invalid': form.errors.has('financial.senior_debt') }"
-                    class="form-control"
-                    name="financial.senior_debt"
-                    placeholder="Deuda Senior"
-                    type="number"
-                  >
-                  <span
-                    v-if="form.errors.has('financial.senior_debt')"
-                    class="invalid-feedback"
-                    role="alert"
-                  >
-                    <strong v-text="form.errors.get('financial.senior_debt')" />
-                  </span>
+                    <div class="col-12 form-group">
+                      <label for="financial.funded">
+                        Financiado
+                      </label>
+                      <input
+                        v-model="form.financial.funded"
+                        :class="{ 'is-invalid': form.errors.has('financial.funded') }"
+                        class="form-control"
+                        name="financial.funded"
+                        placeholder="Financiado"
+                        type="number"
+                      >
+                      <span
+                        v-if="form.errors.has('financial.funded')"
+                        class="invalid-feedback"
+                        role="alert"
+                      >
+                        <strong v-text="form.errors.get('financial.funded')" />
+                      </span>
+                    </div>
+                  </div>
+
+                  <div class="row">
+                    <div class="col-sm-4 form-group">
+                      <label for="financial.irr">
+                        TIR (%)
+                      </label>
+                      <input
+                        v-model="form.financial.irr"
+                        :class="{ 'is-invalid': form.errors.has('financial.irr') }"
+                        class="form-control"
+                        name="financial.irr"
+                        placeholder="Tasa Interna de Retorno (%)"
+                        type="number"
+                      >
+                      <span
+                        v-if="form.errors.has('financial.irr')"
+                        class="invalid-feedback"
+                        role="alert"
+                      >
+                        <strong v-text="form.errors.get('financial.irr')" />
+                      </span>
+                    </div>
+                    <div class="col-sm-4 form-group">
+                      <label for="financial.apr">
+                        TAP (%)
+                      </label>
+                      <input
+                        v-model="form.financial.apr"
+                        :class="{ 'is-invalid': form.errors.has('financial.apr') }"
+                        class="form-control"
+                        name="financial.apr"
+                        placeholder="Tasa Anual de Preferencia (%)"
+                        type="number"
+                      >
+                      <span
+                        v-if="form.errors.has('financial.apr')"
+                        class="invalid-feedback"
+                        role="alert"
+                      >
+                        <strong v-text="form.errors.get('financial.apr')" />
+                      </span>
+                    </div>
+                    <div class="col-sm-4 form-group">
+                      <label for="financial.ehp">
+                        PET (meses)
+                      </label>
+                      <input
+                        v-model="form.financial.ehp"
+                        :class="{ 'is-invalid': form.errors.has('financial.ehp') }"
+                        class="form-control"
+                        name="financial.ehp"
+                        placeholder="Período Estimado de Tenencia (meses)"
+                        type="number"
+                      >
+                      <span
+                        v-if="form.errors.has('financial.ehp')"
+                        class="invalid-feedback"
+                        role="alert"
+                      >
+                        <strong v-text="form.errors.get('financial.ehp')" />
+                      </span>
+                    </div>
+                  </div>
                 </div>
-  
-                <div class="form-group">
-                  <label for="financial.mezzanine_debt">
-                    Deuda Mezzanine
-                  </label>
-                  <input
-                    v-model="form.financial.mezzanine_debt"
-                    :class="{ 'is-invalid': form.errors.has('financial.mezzanine_debt') }"
-                    class="form-control"
-                    name="financial.mezzanine_debt"
-                    placeholder="Deuda Mezzanine"
-                    type="number"
-                  >
-                  <span
-                    v-if="form.errors.has('financial.mezzanine_debt')"
-                    class="invalid-feedback"
-                    role="alert"
-                  >
-                    <strong v-text="form.errors.get('financial.mezzanine_debt')" />
-                  </span>
-                </div>
-      
-                <div class="form-group">
-                  <label for="financial.equity">
-                    Capital existente
-                  </label>
-                  <input
-                    v-model="form.financial.equity"
-                    :class="{ 'is-invalid': form.errors.has('financial.equity') }"
-                    class="form-control"
-                    name="financial.equity"
-                    placeholder="Capital Existente"
-                    type="number"
-                  >
-                  <span
-                    v-if="form.errors.has('financial.equity')"
-                    class="invalid-feedback"
-                    role="alert"
-                  >
-                    <strong v-text="form.errors.get('financial.equity')" />
-                  </span>
+
+                <div class="col-md-6 mb-5">
+                  <pie-chart
+                    :donut="true"
+                    :data="[['Financiado', form.financial.funded], ['Restante', (form.financial.open_offer - form.financial.funded)]]"
+                  />
                 </div>
               </div>
+            </li>
+          </ul>
 
-              <div class="col-md-6">
-                <pie-chart
-                  :donut="true"
-                  :data="[['Deuda Senior', form.financial.senior_debt], ['Deuda Mezzanine', form.financial.mezzanine_debt], ['Capital existente', form.financial.equity]]"
-                />
-              </div>
-            </div>
+          <div class="card-header bg-white p-2 p-md-4">
+            <h5 class="text-primary m-0">
+              Capitalización
+            </h5>
           </div>
+          <ul class="list-group list-group-flush">
+            <li class="list-group-item">
+              <div class="row">
+                <div class="col-md-6 order-2 order-md-1">
+                  <div class="form-group">
+                    <label for="financial.senior_debt">
+                      Deuda Senior
+                    </label>
+                    <input
+                      v-model="form.financial.senior_debt"
+                      :class="{ 'is-invalid': form.errors.has('financial.senior_debt') }"
+                      class="form-control"
+                      name="financial.senior_debt"
+                      placeholder="Deuda Senior"
+                      type="number"
+                    >
+                    <span
+                      v-if="form.errors.has('financial.senior_debt')"
+                      class="invalid-feedback"
+                      role="alert"
+                    >
+                      <strong v-text="form.errors.get('financial.senior_debt')" />
+                    </span>
+                  </div>
 
-          <h5>Fondeo</h5>
-          <div class="card card-body mb-2">
-            <div class="row">
-              <div class="col-md-6">
-                <div class="form-group">
-                  <label for="financial.adquisition_cost">
-                    Costos de Adquisición
-                  </label>
-                  <input
-                    v-model="form.financial.adquisition_cost"
-                    :class="{ 'is-invalid': form.errors.has('financial.adquisition_cost') }"
-                    class="form-control"
-                    name="financial.adquisition_cost"
-                    placeholder="Costos de Adquisición"
-                    type="number"
-                  >
-                  <span
-                    v-if="form.errors.has('financial.adquisition_cost')"
-                    class="invalid-feedback"
-                    role="alert"
-                  >
-                    <strong v-text="form.errors.get('financial.adquisition_cost')" />
-                  </span>
-                </div>
-  
-                <div class="form-group">
-                  <label for="financial.development_cost">
-                    Costos de Desarrollo
-                  </label>
-                  <input
-                    v-model="form.financial.development_cost"
-                    :class="{ 'is-invalid': form.errors.has('financial.development_cost') }"
-                    class="form-control"
-                    name="financial.development_cost"
-                    placeholder="Costos de Desarrollo"
-                    type="number"
-                  >
-                  <span
-                    v-if="form.errors.has('financial.development_cost')"
-                    class="invalid-feedback"
-                    role="alert"
-                  >
-                    <strong v-text="form.errors.get('financial.development_cost')" />
-                  </span>
-                </div>
-      
-                <div class="row">
-                  <div class="col-sm-6 form-group">
-                    <label for="financial.bank">
-                      Banco
+                  <div class="form-group">
+                    <label for="financial.mezzanine_debt">
+                      Deuda Mezzanine
                     </label>
                     <input
-                      v-model="form.financial.bank"
-                      :class="{ 'is-invalid': form.errors.has('financial.bank') }"
+                      v-model="form.financial.mezzanine_debt"
+                      :class="{ 'is-invalid': form.errors.has('financial.mezzanine_debt') }"
                       class="form-control"
-                      name="financial.bank"
-                      placeholder="Banco"
-                      type="text"
+                      name="financial.mezzanine_debt"
+                      placeholder="Deuda Mezzanine"
+                      type="number"
                     >
                     <span
-                      v-if="form.errors.has('financial.bank')"
+                      v-if="form.errors.has('financial.mezzanine_debt')"
                       class="invalid-feedback"
                       role="alert"
                     >
-                      <strong v-text="form.errors.get('financial.bank')" />
+                      <strong v-text="form.errors.get('financial.mezzanine_debt')" />
                     </span>
                   </div>
-      
-                  <div class="col-sm-6 form-group">
-                    <label for="financial.crowdfunding">
-                      Crowdfunding
+
+                  <div class="form-group">
+                    <label for="financial.equity">
+                      Capital existente
                     </label>
                     <input
-                      v-model="form.financial.crowdfunding"
-                      :class="{ 'is-invalid': form.errors.has('financial.crowdfunding') }"
+                      v-model="form.financial.equity"
+                      :class="{ 'is-invalid': form.errors.has('financial.equity') }"
                       class="form-control"
-                      name="financial.crowdfunding"
-                      placeholder="Crowdfunding"
-                      type="text"
+                      name="financial.equity"
+                      placeholder="Capital Existente"
+                      type="number"
                     >
                     <span
-                      v-if="form.errors.has('financial.crowdfunding')"
+                      v-if="form.errors.has('financial.equity')"
                       class="invalid-feedback"
                       role="alert"
                     >
-                      <strong v-text="form.errors.get('financial.crowdfunding')" />
+                      <strong v-text="form.errors.get('financial.equity')" />
                     </span>
                   </div>
                 </div>
+
+                <div class="col-md-6 mb-5">
+                  <pie-chart
+                    :donut="true"
+                    :data="[['Deuda Senior', form.financial.senior_debt], ['Deuda Mezzanine', form.financial.mezzanine_debt], ['Capital existente', form.financial.equity]]"
+                  />
+                </div>
               </div>
-              <div class="col-md-6">
-                <pie-chart
-                  :donut="true"
-                  :data="[['Desarrollo', form.financial.development_cost], ['Adquisición', form.financial.adquisition_cost]]"
-                />
+            </li>
+          </ul>
+
+          <div class="card-header bg-white p-2 p-md-4">
+            <h5 class="text-primary m-0">
+              Fondeo
+            </h5>
+          </div>
+          <ul class="list-group list-group-flush">
+            <li class="list-group-item">
+              <div class="row">
+                <div class="col-md-6 order-2 order-md-1">
+                  <div class="form-group">
+                    <label for="financial.adquisition_cost">
+                      Costos de Adquisición
+                    </label>
+                    <input
+                      v-model="form.financial.adquisition_cost"
+                      :class="{ 'is-invalid': form.errors.has('financial.adquisition_cost') }"
+                      class="form-control"
+                      name="financial.adquisition_cost"
+                      placeholder="Costos de Adquisición"
+                      type="number"
+                    >
+                    <span
+                      v-if="form.errors.has('financial.adquisition_cost')"
+                      class="invalid-feedback"
+                      role="alert"
+                    >
+                      <strong v-text="form.errors.get('financial.adquisition_cost')" />
+                    </span>
+                  </div>
+
+                  <div class="form-group">
+                    <label for="financial.development_cost">
+                      Costos de Desarrollo
+                    </label>
+                    <input
+                      v-model="form.financial.development_cost"
+                      :class="{ 'is-invalid': form.errors.has('financial.development_cost') }"
+                      class="form-control"
+                      name="financial.development_cost"
+                      placeholder="Costos de Desarrollo"
+                      type="number"
+                    >
+                    <span
+                      v-if="form.errors.has('financial.development_cost')"
+                      class="invalid-feedback"
+                      role="alert"
+                    >
+                      <strong v-text="form.errors.get('financial.development_cost')" />
+                    </span>
+                  </div>
+
+                  <div class="row">
+                    <div class="col-sm-6 form-group">
+                      <label for="financial.bank">
+                        Banco
+                      </label>
+                      <input
+                        v-model="form.financial.bank"
+                        :class="{ 'is-invalid': form.errors.has('financial.bank') }"
+                        class="form-control"
+                        name="financial.bank"
+                        placeholder="Banco"
+                        type="text"
+                      >
+                      <span
+                        v-if="form.errors.has('financial.bank')"
+                        class="invalid-feedback"
+                        role="alert"
+                      >
+                        <strong v-text="form.errors.get('financial.bank')" />
+                      </span>
+                    </div>
+
+                    <div class="col-sm-6 form-group">
+                      <label for="financial.crowdfunding">
+                        Crowdfunding
+                      </label>
+                      <input
+                        v-model="form.financial.crowdfunding"
+                        :class="{ 'is-invalid': form.errors.has('financial.crowdfunding') }"
+                        class="form-control"
+                        name="financial.crowdfunding"
+                        placeholder="Crowdfunding"
+                        type="text"
+                      >
+                      <span
+                        v-if="form.errors.has('financial.crowdfunding')"
+                        class="invalid-feedback"
+                        role="alert"
+                      >
+                        <strong v-text="form.errors.get('financial.crowdfunding')" />
+                      </span>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-md-6 mb-5">
+                  <pie-chart
+                    :donut="true"
+                    :data="[['Desarrollo', form.financial.development_cost], ['Adquisición', form.financial.adquisition_cost]]"
+                  />
+                </div>
               </div>
-            </div>
-          </div> 
+            </li>
+          </ul>
+        </div>
+
+        <div
+          id="documents"
+          class="tab-pane fade show"
+          role="tabpanel"
+          aria-labelledby="documents-tab"
+        >
+          <div class="card-header bg-white p-2 p-md-4">
+            <h5 class="text-primary m-0">
+              Documentos adjuntos
+            </h5>
+          </div>
+          <ul class="list-group list-group-flush">
+            <li class="list-group-item">
+              <div class="form-group row mb-0">
+                <label
+                  for="documents"
+                  class="col-md-3 col-form-label text-muted"
+                >
+                  Documentos adjuntos
+                </label>
+                <div class="col-md-9">
+                  <VueDropzone
+                    id="dzDocuments"
+                    ref="dzDocuments"
+                    :options="dzDocumentsOptions"
+                    @vdropzone-error="dzDocumentsError"
+                    @vdropzone-removed-file="dzDocumentsRemovedFile"
+                    @vdropzone-processing="dzDocumentsProcessing"
+                    @vdropzone-success-multiple="dzDocumentsSuccess"
+                    @vdropzone-upload-progress="dzDocumentsUploadProgress"
+                  />
+                </div>
+              </div>
+            </li>
+          </ul>
         </div>
       </div>
 
-      <div class="card-footer text-right">
+      <div class="card-footer bg-white text-right">
         <router-link 
           :to="{ name: 'AdminInvestmentsIndex' }" 
           class="btn btn-outline-primary mr-2"
@@ -823,27 +909,31 @@
 </template>
 
 <script>
-import * as VueGoogleMaps from "vue2-google-maps"
-import { VueEditor } from "vue2-editor"
-import { getSavedState, mapDzMockFile, previewDzThumbnailFromFile } from "@/utilities/helpers"
-import { investmentsComputed } from "../../store/helpers"
+import { companiesComputed, companiesMethods, documentsComputed, documentsMethods, investmentsComputed, investmentsMethods, promotersComputed, promotersMethods } from "@linkre/store/helpers"
+import { alertErrorMessage, alertSuccessMessage, deepClone, getSavedState } from "@/utilities/helpers"
+import { dz } from "@/utilities/mixins/dz"
+import { EventBus } from "@/eventBus"
+import { gmaps } from "@/utilities/mixins/gmaps"
 import { photosMethods } from "@/store/helpers"
-import { pick } from "lodash"
 import { slugify } from "@/utilities/helpers"
+import { VueEditor } from "vue2-editor"
+
+import store from "@/store"
 import vue2Dropzone from "vue2-dropzone"
 import Form from "@/utilities/Form"
 
 const token = getSavedState("auth.token")
 const csrfToken = document.head.querySelector("meta[name=\"csrf-token\"]").content
 
+var fields = deepClone(store.state.investments.initialState.one)
+
 export default {
-
-    name: "InvestmentForm",
-
     components: {
         VueDropzone: vue2Dropzone,
-        VueEditor
+        VueEditor,
     },
+
+    mixins: [dz, gmaps],
 
     props: {
         action: {
@@ -859,9 +949,22 @@ export default {
 
     data() {
         return {
-            center: {},
-            dzFeaturedPhotoHasAcceptedFiles: false,
-            dzFeaturedPhotoHasError: false,
+            companies: [],
+            dzDocumentsOptions: {
+                addRemoveLinks: true,
+                autoProcessQueue: false,
+                dictDefaultMessage: "<i class='fa fa-cloud-upload'></i><br/>Hacé click o arrastrá una foto hacía acá",
+                headers: {
+                    "X-CSRF-TOKEN": csrfToken,
+                    "Authorization": "Bearer " + token
+                },
+                maxFiles: 8,
+                maxFilesize: 50,
+                method: "put",
+                paramName: "documents",
+                uploadMultiple: true,
+                url: "/api/investments",
+            },
             dzFeaturedPhotoOptions: {
                 addRemoveLinks: true,
                 autoProcessQueue: false,
@@ -871,210 +974,195 @@ export default {
                     "Authorization": "Bearer " + token
                 },
                 maxFiles: 1,
-                maxFilesize: 0.4,
+                maxFilesize: 1,
                 method: "put",
                 paramName: "featured_photo",
                 uploadMultiple: true,
                 url: "/api/investments",
             },
-            dzUnfeaturedPhotosHasAcceptedFiles: false,
-            dzUnfeaturedPhotosHasError: false,
             dzUnfeaturedPhotosOptions: {
                 addRemoveLinks: true,
                 autoProcessQueue: false,
-                dictDefaultMessage: "<i class='fa fa-cloud-upload'></i><br/>Hacé click o arrastrá una o más fotos hacía acá",
+                dictDefaultMessage: "<i class='fa fa-cloud-upload'></i><br/>Hacé click o arrastrá una foto hacía acá",
                 headers: {
                     "X-CSRF-TOKEN": csrfToken,
                     "Authorization": "Bearer " + token
                 },
                 maxFiles: 8,
-                maxFilesize: 0.4,
+                maxFilesize: 1,
                 method: "put",
-                parallelUploads: 8,
                 paramName: "unfeatured_photos",
                 uploadMultiple: true,
                 url: "/api/investments",
             },
-            form: {},
-            marker: {},
+            form: new Form(fields),
+            investments: [],
+            isDestroying: false,
+            isProcessingUnfeaturedPhotos: false,
+            location: "",
+            promoters: [],
             submitted: false,
-            tab: "main",
-            url: "/api/investments",
+            url: "/api/investments/",
         }
     },
 
     computed: {
+        ...companiesComputed,
         ...investmentsComputed,
-
-        dzFeaturedPhoto() {
-            return this.$refs.dzFeaturedPhoto
-        },
-
-        dzUnfeaturedPhotos() {
-            return this.$refs.dzUnfeaturedPhotos
-        },
-
-        gmapApi: VueGoogleMaps.gmapApi,
+        ...promotersComputed,
 
         validated() {
             return this.form.errors.any()
         }
     },
 
+    watch: {
+        "$route" (value) {
+            var routeName = value.name
+            if (routeName === "AdminInvestmentsCreate") {
+                this.prepareCreate().then(this.prepared = true)
+            }
+
+            if (routeName === "AdminInvestmentsEdit") {
+                this.prepareEdit().then(this.prepared = true)
+            }
+        }
+    },
+
+    beforeDestroy() {
+        this.isDestroying = true
+    },
+
     created() {
-        this.form = new Form(this.oneInvestment),
-        this.center = pick(this.oneInvestment.map, ["lat","lng"])
+        var routeName = this.$route.name
+        if (routeName === "AdminInvestmentsCreate") {
+            return this.prepareCreate().then(this.prepared = true)
+        }
 
-        this.$store.watch(state => state.investments.one, (value)=> {
-            this.form = new Form(value)
-            this.center = pick(value.map, ["lat","lng"])
-
-            this.dzFeaturedPhotoCancel()
-            this.dzUnfeaturedPhotosCancel()
-
-        })
+        if (routeName === "AdminInvestmentsEdit") {
+            return this.prepareEdit().then(this.prepared = true)
+        }
     },
 
     mounted() {
-        return this.setMap()
+        return this.initAutocomplete("autocomplete", { types: ["geocode"] })
     },
 
     methods: {
+        ...companiesMethods,
+        ...documentsMethods,
+        ...investmentsMethods,
         ...photosMethods, 
+        ...promotersMethods,
 
-        dzFeaturedPhotoAddOrRemoveFiles() {
-            return this.dzFeaturedPhotoHasAcceptedFiles = this.dzFeaturedPhoto.getAcceptedFiles().length > 0
+        dzDocumentsSuccess() {
+            alertSuccessMessage("La inversión fue guardada correctamente.")
+            return this.$router.push({ name: "AdminInvestmentsIndex" })
         },
 
-        dzFeaturedPhotoCancel() {
-            if (this.dzFeaturedPhoto.getQueuedFiles().length > 0) {
-                this.dzFeaturedPhoto.removeAllFiles()
-                return this.dzFeaturedPhotoMounted()
+        dzFeaturedPhotoSuccess() {
+            return this.dzUnfeaturedPhotosProcessQueue()
+        },
+
+        dzUnfeaturedPhotosSuccess() {
+            if (!this.isProcessingUnfeaturedPhotos) {
+                this.isProcessingUnfeaturedPhotos = true
+                return this.dzDocumentsProcessQueue()
             }
 
-            if (this.dzFeaturedPhoto.getAcceptedFiles().length === 0) {
-                return this.dzFeaturedPhotoMounted()
-            }
-
-            return
+            return Promise.resolve()
         },
 
-        dzFeaturedPhotoRemoveFile(file) {
-            if (file.id) {
-                this.deleteOnePhoto(file.id)
-            }
+        prepareCreate() {
+            this.geolocate().then(coordinates => {
+                return this.geolocation = coordinates
+            })
 
-            this.dzFeaturedPhotoAddOrRemoveFiles()
-        },
+            window.$(()=> {
+                if (this.$refs.map) {
+                    this.initMap("map", { center: this.geolocation, zoom: 14 })
+                }
+            })
 
-        dzFeaturedPhotoFail() {
-            return this.dzFeaturedPhotoHasError = true
-        },
+            var companies = this.fetchAllCompanies()
+                .then(value => {
+                    if (value) {
+                        this.companies = value
+                    }
 
-        dzFeaturedPhotoMounted() {
-            if (this.oneInvestment.featured_photo) {
-                return previewDzThumbnailFromFile(this.dzFeaturedPhoto.dropzone, mapDzMockFile(this.oneInvestment.featured_photo))
-            }
-        },
-
-        dzFeaturedPhotoProcessQueue() {
-            if (this.dzFeaturedPhoto) {
-                this.dzFeaturedPhotoHasError = false
-                return Promise.resolve(this.dzFeaturedPhoto.processQueue())
-            }
-        },
-
-        dzFeaturedPhotoSetUrl() {
-            if (this.dzFeaturedPhoto) {
-                return this.dzFeaturedPhoto.setOption("url", this.url)
-            }
-        },
-
-        dzFeaturedPhotoSucceed(file, response) {
-            return Promise.resolve([file, response])
-        },
-
-        dzUnfeaturedPhotosAddOrRemoveFiles() {
-            return this.dzUnfeaturedPhotosHasAcceptedFiles = this.dzUnfeaturedPhotos.getAcceptedFiles().length > 0
-        },
-
-        dzUnfeaturedPhotosCancel() {
-            if (this.dzUnfeaturedPhotos.getQueuedFiles().length > 0) {
-                this.dzUnfeaturedPhotos.removeAllFiles()
-                return this.dzUnfeaturedPhotosMounted()
-            }
-
-            if (this.dzUnfeaturedPhotos.getAcceptedFiles().length === 0) {
-                return this.dzUnfeaturedPhotosMounted()
-            }
-
-            return
-        },
-
-        dzUnfeaturedPhotosFail() {
-            return this.dzUnfeaturedPhotosHasError = true
-        },
-
-        dzUnfeaturedPhotosMounted() {
-            var unfeaturedPhotos = this.oneInvestment.unfeatured_photos
-            if (unfeaturedPhotos) {
-                return unfeaturedPhotos.forEach(unfeaturedPhoto => {
-                    return previewDzThumbnailFromFile(this.dzUnfeaturedPhotos.dropzone, mapDzMockFile(unfeaturedPhoto))
+                    return value
                 })
-            }
-        },
 
-        dzUnfeaturedPhotosProcessQueue() {
-            if (this.dzUnfeaturedPhotos) {
-                this.dzUnfeaturedPhotosHasError = false
-                return Promise.resolve(this.dzUnfeaturedPhotos.processQueue())
-            }
-        },
+            var promoters = this.fetchAllPromoters()
+                .then(value => {
+                    if (value) {
+                        this.promoters = value
+                    }
 
-        dzUnfeaturedPhotosRemoveFile(file) {
-            if (file.id) {
-                this.deleteOnePhoto(file.id)
-            }
-
-            this.dzUnfeaturedPhotosAddOrRemoveFiles()
-        },
-
-        dzUnfeaturedPhotosSetUrl() {
-            if (this.dzUnfeaturedPhotos) {
-                return this.dzUnfeaturedPhotos.setOption("url", this.url)
-            }
-        },
-
-        dzUnfeaturedPhotosSucceed(file, response) {
-            return Promise.resolve([file, response])
-        },
-
-        setMap: function() {
-            if (this.gmapApi) {
-                var maps = this.gmapApi.maps
-                this.$refs.map.$mapPromise.then(map => {
-                    this.bounds = new maps.LatLngBounds()
-                    this.bounds.extend(this.center)
-
-                    //map.fitBounds(this.bounds)
-                    map.panToBounds(this.bounds)
-
-                    return maps.event.trigger(map, "resize")
+                    return value
                 })
-                    .catch(map => {
-                        console.error(map)
-                    })
-            }
+
+            return Promise.all([companies, promoters])
         },
 
-        setMapPositionFromMarker(marker) {
-            this.form.map["lat"] = marker.latLng.lat()
-            this.form.map["lng"] = marker.latLng.lng()
+        prepareEdit() {
+            var investment = this.fetchOneInvestment(this.$route.params.id)
+                .then(value => {
+                    if (value) {
+                        this.investment = value
+                        this.location = value.address.location
+
+                        this.form = new Form(value)
+
+                        this.dzFeaturedPhotoMounted(value.featured_photo)
+                        this.dzUnfeaturedPhotosMounted(value.unfeatured_photos)
+                        this.dzDocumentsMounted(value.documents)
+
+                        this.geolocate().then(coordinates => {
+                            if (null !== this.investment.map.lat && null !== this.investment.map.lng) {
+                                return this.geolocation = this.investment.map.coordinates
+                            }
+                        })
+
+                        window.$(()=> {
+                            if (this.$refs.map) {
+                                this.initMap("map", { center: this.geolocation, zoom: value.map.zoom })
+                            }
+                        })
+                    }
+
+                    return value
+                })
+
+            var companies = this.fetchAllCompanies()
+                .then(value => {
+                    if (value) {
+                        this.companies = value
+                    }
+
+                    return value
+                })
+
+            var promoters = this.fetchAllPromoters()
+                .then(value => {
+                    if (value) {
+                        this.promoters = value
+                    }
+
+                    return value
+                })
+
+            return Promise.all([investment, companies, promoters])
         },
 
-        submitForm() {
+        handleSubmitForm() {
             this.submitted = true
 
+            delete this.form.address.location
+            delete this.form.map.coordinates
+
+            // Let Dropzone handle this relations.
+            this.form.documents = []
             this.form.featured_photo = {}
             this.form.unfeatured_photos = []
 
@@ -1083,18 +1171,15 @@ export default {
                 .then(response => {
                     id = response.data[0].id
                     this.url = "/api/investments/" + id
-                    return this.dzFeaturedPhotoProcessQueue()
-                })
-                .then(() => {
-                    return this.dzUnfeaturedPhotosProcessQueue()
-                })
-                .then(() => {
-                    this.$snotify.success("El registro nº " + id + " fue guardado correctamente.")
-                    this.$router.push({ name: "AdminInvestmentsIndex" })
+
+                    EventBus.$emit("investment-saved", response.data[0])
+
+                    this.dzFeaturedPhotoProcessQueue()
+
                     return this.submitted = false
                 }).catch(error => {
                     if (error.status > 422) {
-                        this.$snotify.error("Ocurrió un error con el siguiente mensaje: " + error.data.message)
+                        alertErrorMessage("Ocurrió un error con el siguiente mensaje: " + error.data.message)
                     }
 
                     return this.submitted = false

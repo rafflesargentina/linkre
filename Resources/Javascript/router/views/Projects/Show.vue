@@ -23,7 +23,7 @@
             <img
               :src="photo.url"
               alt=""
-              style="height:32rem;"
+              style="background-size:cover;height:32rem;"
             >
           </div>
         </div>
@@ -52,7 +52,7 @@
                 <div class="section-content">
                   <ul
                     id="investmentTabs"
-                    class="nav nav-tabs mb-3"
+                    class="nav nav-pills mb-3"
                     role="tablist"
                   >
                     <li class="nav-item">
@@ -65,7 +65,20 @@
                         aria-controls="company"
                         aria-selected="true"
                       >
-                        Compañía
+                        Desarrollista
+                      </a>
+                    </li>
+                    <li class="nav-item">
+                      <a
+                        id="promoter-tab"
+                        class="nav-link"
+                        data-toggle="tab"
+                        href="#promoter"
+                        role="tab"
+                        aria-controls="promoter"
+                        aria-selected="false"
+                      >
+                        Promotor
                       </a>
                     </li>
                     <li class="nav-item">
@@ -143,13 +156,56 @@
                           <div class="wt-separator bg-black" />
                         </div>
                       </div>
+                      <div class="row">
+                        <div class="col-md-6">
+                          <div
+                            class="text-font-sz mb-5"
+                            v-html="oneInvestment.company.description"
+                          />
+                          <div class="text-font-sz">
+                            Sitio web: <a :href="oneInvestment.company.contact.website">
+                              {{ oneInvestment.company.contact.website }}
+                            </a>
+                          </div>
+                        </div>
+
+                        <div class="col-md-6">
+                          <div
+                            v-if="oneInvestment.company.video"
+                            class="embed-responsive embed-responsive-16by9"
+                          >
+                            <iframe
+                              class="embed-responsive-item"
+                              :src="oneInvestment.company.video"
+                              allowfullscreen
+                            />
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div
+                      v-if="oneInvestment.promoter"
+                      id="promoter"
+                      class="tab-pane fade show"
+                      role="tabpanel"
+                      aria-labelledby="promoter-tab"
+                    >
+                      <div class="mb-3">
+                        <h2 class="mb-0">
+                          {{ oneInvestment.promoter.name }}
+                        </h2>
+                        <div class="wt-separator-outer">
+                          <div class="wt-separator bg-black" />
+                        </div>
+                      </div>
                       <div
                         class="text-font-sz mb-5"
-                        v-html="oneInvestment.company.description"
+                        v-html="oneInvestment.promoter.description"
                       />
                       <div class="text-font-sz">
-                        Sitio web: <a :href="oneInvestment.company.website">
-                          {{ oneInvestment.company.website }}
+                        Sitio web: <a :href="oneInvestment.promoter.contact.website">
+                          {{ oneInvestment.promoter.contact.website }}
                         </a>
                       </div>
                     </div>
@@ -197,7 +253,7 @@
 
                       <div
                         class="text-font-sz mb-5"
-                        v-html="oneInvestment.resumen"
+                        v-html="oneInvestment.resume"
                       />
 
                       <div class="mb-3">
@@ -426,8 +482,9 @@
 
 <script>
 import * as VueGoogleMaps from "vue2-google-maps"
-import { investmentsComputed, investmentsMethods } from "../../../store/helpers"
+import { investmentsComputed, investmentsMethods, investmentViewsComputed, investmentViewsMethods } from "@linkre/store/helpers"
 import { pick } from "lodash"
+import store from "@/store"
 
 import "magnific-popup/dist/jquery.magnific-popup.min.js"
 
@@ -441,17 +498,29 @@ export default {
 
     computed: {
         ...investmentsComputed,
+        ...investmentViewsComputed,
 
         gmapApi: VueGoogleMaps.gmapApi,
     },
 
     watch: {
         "$route" (value) {
+            if (this.lastCreatedInvestmentView) {
+                this.deleteOneInvestmentView(this.lastCreatedInvestmentView.id)
+            }
+
             if (value.name === "ProjectsShow") {
                 return this.prepare()
             }
         }
     },
+
+    beforeDestroy() {
+        console.log("DESTROY")
+        if (this.lastCreatedInvestmentView) {
+            this.deleteOneInvestmentView(this.lastCreatedInvestmentView.id)
+        }
+    }, 
 
     created() {
         return this.prepare()
@@ -459,6 +528,7 @@ export default {
 
     methods: {
         ...investmentsMethods,
+        ...investmentViewsMethods,
 
         magnific_popup() {
             window.$(".mfp-gallery").magnificPopup({
@@ -519,7 +589,9 @@ export default {
                     this.setMap(),
 
                     this.portfolio_nogap_carousel(),
-                    this.magnific_popup()
+                    this.magnific_popup(),
+
+                    this.createOneInvestmentView({ investment_id: this.$route.params.id, user_id: store.state.auth.user.id })
                 })
         },
 

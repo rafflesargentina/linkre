@@ -2,18 +2,19 @@
 
 namespace Raffles\Modules\Linkre\Http\Controllers\Auth;
 
+use Raffles\Http\Controllers\Auth\RegisterController as Controller;
 use Raffles\Modules\Linkre\Models\User;
-use Raffles\Http\Controllers\Auth\RegisterController as BaseRegisterController;
 
 use Illuminate\Validation\Rule;
 use Validator;
 
-class RegisterController extends BaseRegisterController
+class RegisterController extends Controller
 {
     /**
      * Get a validator for an incoming registration request.
      *
      * @param  array $data
+     *
      * @return \Illuminate\Contracts\Validation\Validator
      */
     protected function validator(array $data)
@@ -39,11 +40,12 @@ class RegisterController extends BaseRegisterController
      * Create a new user instance after a valid registration.
      *
      * @param  array $data
-     * @return \Raffles\Models\User
+     *
+     * @return User
      */
     protected function create(array $data)
     {
-        return User::create(
+        $user = User::create(
             [
             'developer' => $data['developer'],
             'document_number' => $data['document_number'],
@@ -55,5 +57,17 @@ class RegisterController extends BaseRegisterController
             'password' => $data['password'],
             ]
         );
+
+        $user->contact()->create([]);
+
+        if ($user->investor) {
+            $user->investor_profile()->create([]);
+        }
+
+        if ($user->developer) {
+            $user->developer_profile()->create([]);
+        }
+
+        return $user;
     }
 }

@@ -2,7 +2,7 @@
 
 namespace Raffles\Modules\Linkre\Models;
 
-use Raffles\Models\User;
+use Raffles\Models\{ Address, Contact, FeaturedPhoto, Map, User };
 use Raffles\Models\Traits\UserTrait;
 
 class Investor extends User
@@ -48,6 +48,22 @@ class Investor extends User
     }
 
     /**
+     * Get the investor's address.
+     */
+    public function address()
+    {
+        return $this->morphOne(Address::class, 'addressable');
+    }
+
+    /**
+     * Get the investor's contact.
+     */
+    public function contact()
+    {
+        return $this->morphOne(Contact::class, 'contactable');
+    }
+
+    /**
      * Get the developer that owns the investor.
      */
     public function developer()
@@ -56,11 +72,27 @@ class Investor extends User
     }
 
     /**
+     * Get the investor's featured photo.
+     */
+    public function featured_photo()
+    {
+        return $this->morphOne(FeaturedPhoto::class, 'photoable')->withDefault();
+    }
+
+    /**
      * The investments that belong to the investor.
      */
     public function investments()
     {
         return $this->belongsToMany(Investment::class);
+    }
+
+    /**
+     * Get the investor's map.
+     */
+    public function map()
+    {
+        return $this->morphOne(Map::class, 'mapable');
     }
 
     /**

@@ -17,6 +17,18 @@ class DeveloperController extends ApiResourceController
     protected $resourceName = 'developers';
 
     /**
+     * Create a new DeveloperController instance.
+     *
+     * @return void
+     */
+    public function __construct()
+    {
+        parent::__construct();
+
+        $this->middleware('auth:api')->only('store', 'update', 'destroy');
+    }
+
+    /**
      * Display the specified resource.
      *
      * @param Request $request The request object.
@@ -32,7 +44,7 @@ class DeveloperController extends ApiResourceController
             return $this->validNotFoundJsonResponse();
         }
 
-        $model->load('investors');
+        $model->load('address', 'contact', 'featured_photo', 'map');
 
         return response()->json($model, 200, [], JSON_PRETTY_PRINT);
     }

@@ -19,6 +19,7 @@ class CreateInvestmentViewsTable extends Migration
                 $table->unsignedInteger('investment_id');
                 $table->unsignedInteger('user_id');
                 $table->timestamps();
+                $table->softDeletes();
             }
         );
     }

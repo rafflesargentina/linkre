@@ -2,6 +2,8 @@
 
 namespace Raffles\Modules\Linkre\Models;
 
+use Raffles\Models\{ Contact, FeaturedPhoto };
+
 use Illuminate\Database\Eloquent\Model;
 
 class Promoter extends Model
@@ -26,6 +28,14 @@ class Promoter extends Model
     protected $with = 'featured_photo';
 
     /**
+     * Get the promoter's contact.
+     */
+    public function contact()
+    {
+        return $this->morphOne(Contact::class, 'contactable');
+    }
+
+    /**
      * Get the developer that owns the promoter.
      */
     public function developer()
@@ -38,11 +48,11 @@ class Promoter extends Model
      */
     public function featured_photo()
     {
-        return $this->morphOne(\Raffles\Models\FeaturedPhoto::class, 'photoable')->withDefault();
+        return $this->morphOne(FeaturedPhoto::class, 'photoable')->withDefault();
     }
 
     /**
-     * Get the investments for the developer.
+     * Get the investments for the promoter.
      */
     public function investments()
     {

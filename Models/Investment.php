@@ -2,23 +2,14 @@
 
 namespace Raffles\Modules\Linkre\Models;
 
-use Raffles\Modules\Linkre\Models\Traits\InvestmentTrait;
+use Raffles\Models\{ Address, FeaturedPhoto, Map, UnfeaturedPhoto };
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Investment extends Model
 {
-    use InvestmentTrait, SoftDeletes;
-
-    /**
-     * The accessors to append to the model's array form.
-     *
-     * @var array
-     */
-    protected $appends = [
-        'location',
-    ];
+    use SoftDeletes;
 
     /**
      * The attributes that should be mutated to dates.
@@ -36,9 +27,7 @@ class Investment extends Model
      */
     protected $fillable = [
         'amenities',
-        'city',
         'company_id',
-        'country',
         'context',
         'description',
         'developer_id',
@@ -49,9 +38,7 @@ class Investment extends Model
         'published_at',
         'resume',
         'slug',
-        'state',
         'total_area',
-        'website',
     ];
 
     /**
@@ -60,6 +47,14 @@ class Investment extends Model
      * @var array
      */
     protected $with = 'featured_photo';
+
+    /**
+     * Get the investment's address.
+     */
+    public function address()
+    {
+        return $this->morphOne(Address::class, 'addressable');
+    }
 
     /**
      * Get the company that owns the investment.
@@ -78,11 +73,19 @@ class Investment extends Model
     }
 
     /**
+     * Get all of the investment's documents.
+     */
+    public function documents()
+    {
+        return $this->morphMany(Document::class, 'documentable');
+    }
+
+    /**
      * Get the investment's featured photo.
      */
     public function featured_photo()
     {
-        return $this->morphOne(\Raffles\Models\FeaturedPhoto::class, 'photoable')->withDefault();
+        return $this->morphOne(FeaturedPhoto::class, 'photoable')->withDefault();
     }
 
     /**
@@ -90,7 +93,7 @@ class Investment extends Model
      */
     public function financial()
     {
-        return $this->hasOne(Financial::class);
+        return $this->hasOne(Financial::class)->withDefault();
     }
 
     /**
@@ -114,7 +117,7 @@ class Investment extends Model
      */
     public function map()
     {
-        return $this->morphOne(\Raffles\Models\Map::class, 'mapable')->withDefault();
+        return $this->morphOne(Map::class, 'mapable')->withDefault();
     }
 
     /**
@@ -126,10 +129,10 @@ class Investment extends Model
     }
 
     /**
-     * Get all of the project's unfeatured photos.
+     * Get all of the investment's unfeatured photos.
      */
     public function unfeatured_photos()
     {
-        return $this->morphMany(\Raffles\Models\UnfeaturedPhoto::class, 'photoable');
+        return $this->morphMany(UnfeaturedPhoto::class, 'photoable');
     }
 }

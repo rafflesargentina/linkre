@@ -1,3 +1,38 @@
+<style lang="scss" scoped>
+.tab-pane {
+  &--join {
+    background-image: url(/images/bg_login.jpg);
+    background-repeat: no-repeat;
+    background-size: cover;
+  }
+
+  &--company {
+    background-image: url(/images/bg_big.jpg);
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+  }
+
+  &--project {
+    background-image: url(/images/slider-pla-developer/step3.jpg);
+    background-repeat: no-repeat;
+    background-size: cover;
+  }
+
+  &--due-diligence {
+    background-image: url(/images/slider-pla-developer/step4.jpg);
+    background-repeat: no-repeat;
+    background-size: cover;
+  }
+
+  &--approval {
+    background-image: url(/images/slider-pla-developer/step5.jpg);
+    background-repeat: no-repeat;
+    background-size: cover;
+  }
+}
+</style>
+
 <template>
   <div>        
     <SiteHeader />
@@ -21,15 +56,16 @@
                   <div class="bg-white p-lr30 p-tb50 text-black">
                     <h2 class="m-t0">
                       <span class="font-34 text-uppercase">
-                        ACCEDA A LAS POSIBILIDADES EN OFERTA DE INVERSIÓN COMERCIAL
+                        EL FUTURO DE LA FINANCIACIÓN EN LÍNEA ESTÁ AQUÍ.
                       </span>
                     </h2>
-                    <p>Unirse a LinkRE le dará acceso a las oportunidades comerciales de bienes raíces de calidad institucional, previamente evaluadas por un equipo profesional para invertir directamente en los mejores preseleccionados<br><br>¿Eres inversor? ¿Que tipo de inversor eres?, contesta la siguiente linea de preguntas y definete a ti mismo, que perfil tienes de inversor o cuales son tus objetivos de Rentas/Activos</p>
+                    <p>Existe un Mercado de inversores profesionales ávidos de apoyar a los desarrollistas, ellos quieren saber de Ud. y de su empresa. Family Office, Private Equity y Fondos de Inversión o Crowdfunding están dispuestos a escuchar todas sus necesidades de Capital o alianzas estratégicas.</p>
+                    <p>Descubra una nueva forma de estructurar sus negocios de manera inteligente, más cerca del mercado de capitales con certeza de que sus inversores son altamente confiables y flexibles para adecuarse a la oportunidades que usted les está acercando.</p>
                     <div class="product-block">
                       <div class="row">
                         <div class="col-md-6 col-sm-6 m-b30">
                           <RouterLink
-                            :to="{ name: 'Register' }"
+                            :to="{ name: 'DeveloperRegister' }"
                             class="m-b15 site-button black radius-no text-uppercase"
                           >
                             <span class="font-12 letter-spacing-5">
@@ -43,8 +79,8 @@
                       <ul class="social-icons social-square social-darkest m-b0">
                         <li>
                           <a
-                            href="javascript:void(0);"
                             class="fa fa-linkedin"
+                            href="javascript:void(0);"
                           />
                         </li>
                       </ul>
@@ -62,7 +98,7 @@
 
     <div class="container">
       <div class="row">
-        <div class="m-b50"> 
+        <div class="col-12 m-b50"> 
           <!-- TITLE START -->
           <div class="section-head">
             <h3>Reuna su capital</h3>
@@ -75,42 +111,46 @@
           <!-- TAB DEFAULT -->
           <div class="section-content">
             <div class="wt-tabs tabs-default">
-              <ul class="nav nav-tabs">
-                <li>
+              <ul class="nav nav-tabs mb-5">
+                <li class="nav-item">
                   <a
-                    class="active"
+                    class="nav-link active"
                     data-toggle="tab"
                     href="#uns-lnk"
                   >
                     Unirse a LinkRE
                   </a>
                 </li>
-                <li>
+                <li class="nav-item">
                   <a
+                    class="nav-link"
                     data-toggle="tab"
                     href="#oprtnd"
                   >
                     Perfil empresa
                   </a>
                 </li>
-                <li>
+                <li class="nav-item">
                   <a
+                    class="nav-link"
                     data-toggle="tab"
                     href="#invtr"
                   >
                     Presentar Proyecto
                   </a>
                 </li>
-                <li>
+                <li class="nav-item">
                   <a
+                    class="nav-link"
                     data-toggle="tab"
                     href="#sgmto"
                   >
                     Due Diligence
                   </a>
                 </li>
-                <li>
+                <li class="nav-item">
                   <a
+                    class="nav-link"
                     data-toggle="tab"
                     href="#actlizc"
                   >
@@ -121,23 +161,22 @@
               <div class="tab-content">
                 <div
                   id="uns-lnk"
-                  class="tab-pane active"
+                  class="p-5 tab-pane tab-pane--join text-center text-white active"
                 >
                   <p
-                    class="m-b0"
-                    style="font-size: 15px; color: black;"
+                    class="m-b0 pt-sm-5"
                   >
                     <strong /><br> Envíenos sus datos para pertenecer al centro latinoamericano más grande de inversión de capitales en proyectos inmobiliarios.
                   </p>
                   <br><br>
-                  <div class="row">
-                    <div class="col-md-6 col-sm-6 m-b30">
+                  <div class="row cont-responsive justify-content-center">
+                    <div class="m-b30">
                       <RouterLink
-                        :to="{ name: 'Register' }"
+                        :to="{ name: 'DeveloperRegister' }"
                         class="m-b15 site-button black radius-no text-uppercase"
                       >
                         <span class="font-12 letter-spacing-5">
-                          Unirse a LinkRE
+                          Reuna su capital
                         </span>
                       </RouterLink>
                     </div>
@@ -146,20 +185,20 @@
                                 
                 <div
                   id="oprtnd"
-                  class="tab-pane"
+                  class="p-5 tab-pane tab-pane--company text-center text-white"
                 >
-                  <p class="m-b0">
+                  <p class="m-b0 pt-sm-5">
                     <strong /><br> Comience a crear un perfil de su empresa, incluyendo su experiencia, trayectoria, proyectos anteriores y toda la información que crea pertinente.
                   </p>
                   <br><br>
-                  <div class="row">
-                    <div class="col-md-6 col-sm-6 m-b30">
+                  <div class="row cont-responsive justify-content-center">
+                    <div class="m-b30">
                       <RouterLink
-                        :to="{ name: 'Register' }"
+                        :to="{ name: 'DeveloperRegister' }"
                         class="m-b15 site-button black radius-no text-uppercase"
                       >
                         <span class="font-12 letter-spacing-5">
-                          Reunir capital
+                          Reuna su capital
                         </span>
                       </RouterLink>
                     </div>
@@ -168,20 +207,20 @@
                                 
                 <div
                   id="invtr"
-                  class="tab-pane"
+                  class="p-5 tab-pane tab-pane--project text-center text-white"
                 >
-                  <p class="m-b0">
+                  <p class="m-b0 pt-sm-5">
                     <strong /><br>Complete por favor el siguiente formulario para someter fácilmente su proyecto para su financiación mediante nuestro simplificado proceso de gestión.
                   </p>
                   <br><br>
-                  <div class="row">
-                    <div class="col-md-6 col-sm-6 m-b30">
+                  <div class="row cont-responsive justify-content-center">
+                    <div class="m-b30">
                       <RouterLink
-                        :to="{ name: 'Register' }"
+                        :to="{ name: 'DeveloperRegister' }"
                         class="m-b15 site-button black radius-no text-uppercase"
                       >
                         <span class="font-12 letter-spacing-5">
-                          Reunir capital
+                          Reuna su capital
                         </span>
                       </RouterLink>
                     </div>
@@ -190,20 +229,20 @@
 
                 <div
                   id="sgmto"
-                  class="tab-pane"
+                  class="p-5 tab-pane tab-pane--due-diligence text-center text-white"
                 >
-                  <p class="m-b0">
+                  <p class="m-b0 pt-sm-5">
                     <strong /><br>Nuestro experimentado equipo interno le proporcionará una breve lista de comprobación y una guía para efectuar un PRE Due Diligence.
                   </p>
                   <br><br>
-                  <div class="row">
-                    <div class="col-md-6 col-sm-6 m-b30">
+                  <div class="row cont-responsive justify-content-center">
+                    <div class="m-b30">
                       <RouterLink
-                        :to="{ name: 'Register' }"
+                        :to="{ name: 'DeveloperRegister' }"
                         class="m-b15 site-button black radius-no text-uppercase"
                       >
                         <span class="font-12 letter-spacing-5">
-                          Reunir capital
+                          Reuna su capital
                         </span>
                       </RouterLink>
                     </div>
@@ -212,20 +251,20 @@
 
                 <div
                   id="actlizc"
-                  class="tab-pane"
+                  class="p-5 tab-pane tab-pane--approval text-center text-white"
                 >
-                  <p class="m-b0">
+                  <p class="m-b0 pt-sm-5">
                     <strong /><br>
                   </p>
                   <br><br>
-                  <div class="row">
-                    <div class="col-md-6 col-sm-6 m-b30">
+                  <div class="row cont-responsive justify-content-center">
+                    <div class="m-b30">
                       <RouterLink
-                        :to="{ name: 'Register' }"
+                        :to="{ name: 'DeveloperRegister' }"
                         class="m-b15 site-button black radius-no text-uppercase"
                       >
                         <span class="font-12 letter-spacing-5">
-                          Reunir capital
+                          Reuna su capital
                         </span>
                       </RouterLink>
                     </div>

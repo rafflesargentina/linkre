@@ -12,9 +12,9 @@
         <div
           class="wt-bnr-inr overlay-wraper bg-parallax bg-top-center"
           data-stellar-background-ratio="0.5"
-          style="background-image:url(images/banner/6.jpg); height: 600px; margin-top:"
+          style="background-image:url(images/Corporate-Booing-Tool.jpg); height: 600px; margin-top:"
         >
-          <div class="overlay-main bg-black opacity-07" />
+          <div class="overlay-main bg-black opacity-03" />
           <div class="container">
             <div class="wt-bnr-inr-entry">
               <div class="banner-title-outer">
@@ -29,9 +29,9 @@
                 <div>
                   <ul class="wt-breadcrumb breadcrumb-style-2">
                     <li>
-                      <a href="index.html">
+                      <RouterLink :to="{ name: 'Home' }">
                         Home
-                      </a>
+                      </RouterLink>
                     </li>
                     <li>Contactenos</li>
                   </ul>
@@ -58,99 +58,19 @@
             </div>
           </div>
           <!-- TITLE END -->                
-          <!-- GOOGLE MAP & CONTACT FORM -->
+
+          <!-- CONTACT FORM -->
           <div class="section-content">
             <!-- CONTACT FORM-->
             <div class="wt-box">
-              <form
-                class="contact-form cons-contact-form"
-                method="post"
-                action="form-handler.php"
-              >
-                <div class="contact-one p-a40 p-r150">
-                  <div class="form-group">
-                    <input
-                      name="username"
-                      type="text"
-                      required
-                      class="form-control"
-                      placeholder="Nombre"
-                    >
-                  </div>
-                                       
-                  <div class="form-group">
-                    <input
-                      name="email"
-                      type="text"
-                      class="form-control"
-                      required
-                      placeholder="Correo"
-                    >
-                  </div>
-                                       
-                  <div class="form-group">
-                    <textarea
-                      name="message"
-                      rows="3"
-                      class="form-control "
-                      required
-                      placeholder="Mensaje"
-                    />
-                  </div>
-                                        
-                  <button
-                    name="submit"
-                    type="submit"
-                    value="Submit"
-                    class="site-button black radius-no text-uppercase"
-                  >
-                    <span class="font-12 letter-spacing-5">
-                      Enviar
-                    </span>
-                  </button>
-                                            
-                  <div class="contact-info bg-black text-white p-a30">
-                    <div class="wt-icon-box-wraper left p-b30">
-                      <div class="icon-sm">
-                        <i class="iconmoon-smartphone-1" />
-                      </div>
-                      <div class="icon-content text-white ">
-                        <h5 class="m-t0 text-uppercase">
-                          Teléfono
-                        </h5>
-                        <p class="text-white">
-                          4001-3126
-                        </p>
-                      </div>
-                    </div>
-                                                
-                    <!-- <div class="wt-icon-box-wraper left p-b30">
-                                                    <div class="icon-sm"><i class="iconmoon-email"></i></div>
-                                                    <div class="icon-content text-white">
-                                                        <h5 class="m-t0  text-uppercase">Email address</h5>
-                                                        <p>Moderninfo@gmail.com</p>
-                                                    </div>
-                                                </div> -->
-                                                
-                    <div class="wt-icon-box-wraper left">
-                      <div class="icon-sm">
-                        <i class="iconmoon-travel" />
-                      </div>
-                      <div class="icon-content text-white">
-                        <h5 class="m-t0  text-uppercase">
-                          Dirección
-                        </h5>
-                        <p>Av. Corrientes 222 Piso 10, C1043AAP Catalinas Norte</p>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </form>
+              <ContactForm
+                :action="'/contact'"
+                :method="'post'"
+              />
             </div>
           </div>
         </div>
       </div>
-           
                  
       <!-- SECTION CONTENT END -->
     </div>

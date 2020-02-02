@@ -14,11 +14,13 @@
     >
       <label
         class="btn btn-secondary active"
-        @click="form.developer = 0,form.investor = 1"
+        :disabled="submitted"
+        @click="setProfile('investor')"
       >
         <input
           id="investor"
           v-model="form.investor"
+          :disabled="submitted"
           type="radio"
           name="investor"
           autocomplete="off"
@@ -28,17 +30,49 @@
       </label>
       <label
         class="btn btn-secondary"
-        :class="form.developer === 1"
-        @click="form.developer = 1,form.investor = 0"
+        :disabled="submitted"
+        @click="setProfile('developer')"
       >
         <input
           id="developer"
           v-model="form.developer"
+          :disabled="submitted"
           type="radio"
           name="developer"
           autocomplete="off"
           value="1"
-        > Developer
+        > Promotor
+      </label>
+      <label
+        class="btn btn-secondary"
+        :disabled="submitted"
+        @click="setProfile('developer')"
+      >
+        <input
+          id="developer"
+          v-model="form.developer"
+          :disabled="submitted"
+          type="radio"
+          name="developer"
+          autocomplete="off"
+          value="1"
+        > Desarrollista
+      </label>
+
+      <label
+        class="btn btn-secondary"
+        :disabled="submitted"
+        @click="setProfile('developer')"
+      >
+        <input
+          id="developer"
+          v-model="form.developer"
+          :disabled="submitted"
+          type="radio"
+          name="developer"
+          autocomplete="off"
+          value="1"
+        > Constructora
       </label>
     </div>
     <div class="row">
@@ -52,6 +86,7 @@
         <select
           v-model="form.document_type_id"
           :class="{ 'is-invalid': form.errors.has('document_type_id') }"
+          :disabled="submitted"
           class="form-control form-control-lg"
           name="document_type_id"
           required
@@ -88,12 +123,13 @@
         <input
           v-model="form.document_number"
           :class="{ 'is-invalid': form.errors.has('document_number') }"
+          :disabled="submitted" 
           autocomplete="username"
           class="form-control form-control-lg"
           name="document_number"
           placeholder="Número"
           required
-          type="number"
+          type="text"
         >
         <span
           v-if="form.errors.has('document_number')"
@@ -115,6 +151,7 @@
         <input 
           v-model="form.first_name" 
           :class="{ 'is-invalid': form.errors.has('first_name') }"
+          :disabled="submitted"
           class="form-control form-control-lg" 
           name="first_name" 
           placeholder="Nombre"
@@ -139,6 +176,7 @@
         <input
           v-model="form.last_name"
           :class="{ 'is-invalid': form.errors.has('last_name') }"
+          :disabled="submitted"
           class="form-control form-control-lg"
           name="last_name"
           placeholder="Apellido"
@@ -164,6 +202,7 @@
       <input 
         v-model="form.email" 
         :class="{ 'is-invalid': form.errors.has('email') }"
+        :disabled="submitted"
         autocomplete="username"
         class="form-control form-control-lg" 
         name="email"
@@ -190,6 +229,7 @@
       <input 
         v-model="form.password" 
         :class="{ 'is-invalid': form.errors.has('password') }"
+        :disabled="submitted"
         autocomplete="new-password"
         class="form-control form-control-lg" 
         name="password"
@@ -216,6 +256,7 @@
       <input 
         v-model="form.password_confirmation" 
         :class="{ 'is-invalid': form.errors.has('password_confirmation') }"
+        :disabled="submitted"
         autocomplete="new-password"
         class="form-control form-control-lg" 
         name="password_confirmation"
@@ -230,6 +271,7 @@
         <input
           v-model="form.accepted"
           :class="{ 'is-invalid': form.errors.has('accepted') }"
+          :disabled="submitted"
           class="form-check-input"
           name="accepted"
           required
@@ -240,19 +282,17 @@
           for="accepted" 
           class="form-check-label"
         >
-          Acepto los <u
-            data-toggle="modal" 
-            data-target="#modalTermsAndConditions"
-            role="button"
+          Acepto los <RouterLink
+            :to="{ name: 'TermsAndConditions' }"
+            target="_blank"
           >
             Términos y Condiciones
-          </u> y la <u 
-            data-toggle="modal" 
-            data-target="#modalPolicyOfPrivacy"
-            role="button"
+          </RouterLink> y la <RouterLink
+            :to="{ name: 'PolicyOfPrivacy' }"
+            target="_blank"
           >
             Política de Privacidad
-          </u>.
+          </RouterLink>.
         </label>
         <div
           v-if="form.errors.has('accepted')"
@@ -275,7 +315,9 @@
 </template>
 
 <script>
+import { alertErrorMessage, alertSuccessMessage } from "@/utilities/helpers"
 import { documentTypesComputed } from "@/store/helpers"
+
 import Form from "@/utilities/Form"
 
 let fields = {
@@ -292,9 +334,6 @@ let fields = {
 }
 
 export default {
-
-    name: "RegisterForm",
-
     props: {
         action: {
             type: String,
@@ -331,15 +370,37 @@ export default {
                 redirect = response.redirect
                 return this.$store.dispatch("auth/login", response)
             }).then(()=> {
-                this.$snotify.success("Fuiste registrado correctamente.")
-                return this.$router.push({ path: redirect })
+                alertSuccessMessage("Registro", "Fuiste registrado correctamente y has iniciado sesión con tu cuenta.<br>En breve recibirás un correo electrónico confirmando tu registro.")
+                this.$router.push({ path: redirect })
+                return this.submitted = false
             }).catch(error => {
-                this.submitted = false
                 if (error.status > 422) {
-                    this.$snotify.error("Ocurrió un error con el siguiente mensaje: " + error.data.message)
+                    alertErrorMessage("Registro", error.data.message)
                 }
+
+                return this.submitted = false
             })
         },
-    },
+
+        setProfile(profile) {
+            if (this.submitted) {
+                return
+            }
+
+            if (profile === "investor") {
+                this.form.developer = 0
+                this.form.investor = 1
+                window.$("#investor").attr("checked", true)
+                window.$("#developer").attr("checked", false)
+            }
+
+            if (profile === "developer") {
+                this.form.developer = 1
+                this.form.investor = 0
+                window.$("#investor").attr("checked", false)
+                window.$("#developer").attr("checked", true)
+            }
+        }
+    }
 }
 </script>

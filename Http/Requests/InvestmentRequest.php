@@ -16,13 +16,19 @@ class InvestmentRequest extends ActionBasedFormRequest
      */
     public static function store()
     {
-        if (request()->has('featured_photo')) {
+        if (request()->documents) {
+            return [
+                'documents[]' => 'file',
+            ];
+        }
+
+        if (request()->featured_photo) {
             return [
                 'featured_photo[]' => 'image',
             ];
         }
 
-        if (request()->has('unfeatured_photos')) {
+        if (request()->unfeatured_photos) {
             return [
                 'unfeatured_photos[]' => 'image',
             ];
@@ -39,8 +45,7 @@ class InvestmentRequest extends ActionBasedFormRequest
         $id = $model ? $model->id : null;
 
         return [
-            'city' => 'required_without:state',
-            'country' => 'required',
+            'company_id' => 'required',
             'description' => 'required',
             'financial.adquisition_cost' => 'numeric',
             'financial.apr' => 'numeric',
@@ -61,8 +66,7 @@ class InvestmentRequest extends ActionBasedFormRequest
             ],
             'slug' => [
                 Rule::unique('investments')->ignore($id)
-            ],
-            'state' => 'required_without:city',
+            ]
         ];
     }
 

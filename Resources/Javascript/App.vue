@@ -1,7 +1,6 @@
 <template>
   <div
     id="app"
-    class="footer-fixed"
   >
     <!-- LOADING AREA START ===== -->
     <div class="loading-area">
@@ -25,8 +24,8 @@
     <!-- LOADING AREA  END ====== -->
 
     <div class="page-wraper">
-      <RouterView />
-      <SiteFooter />
+      <router-view />
+      <SiteFooter v-if="false !== $route.meta.footer" />
     </div>
 
     <!-- BUTTON TOP START -->
@@ -44,19 +43,28 @@
 <script>
 import "owl.carousel"
 import "jquery-ui-dist/jquery-ui.js"
-import "jquery.stellar/jquery.stellar.js"
+//import "jquery.stellar/jquery.stellar.js"
 
 export default {
     name: "App",
 
+    data() {
+        return {
+            prepared: false
+        }
+    },
+
     watch: {
         "$route" () {
-            this.prepare()
+            if (this.prepared === true) {
+                return this.prepare()
+            }
         }
     },
 
     mounted() {
-        return this.prepare()
+        return this.prepare(),
+        this.prepared = true
     },
 
     methods: {
@@ -106,14 +114,6 @@ export default {
             })
         },
 
-        footer_fixed() {
-            window.$(".site-footer").css("display", "block")
-            window.$(".site-footer").css("height", "auto")
-            var footerHeight = window.$(".site-footer").outerHeight()
-            window.$(".footer-fixed > .page-wraper").css("padding-bottom", footerHeight)
-            window.$(".site-footer").css("height", footerHeight)
-        },
-
         masonryBox() {
             if (window.$().isotope) {
                 var $container = window.$(".portfolio-wrap")
@@ -138,17 +138,15 @@ export default {
         },
 
         prepare() {
+            //if (this.$route.name.indexOf("Admin") === -1) {
             this.equalheight(".equal-wraper .equal-col")
-            this.footer_fixed()
             //this.animate_content()
-            this.masonryBox()
-            this.bg_image_stellar()
-            this.page_loader()
-            this.work_carousel()
+            //this.masonryBox()
+            //this.bg_image_stellar()
+            //this.work_carousel()
+            //}
 
-            window.$(window).on("resize",()=> {
-                this.footer_fixed()
-            })
+            this.page_loader()
         },
 
         work_carousel(){

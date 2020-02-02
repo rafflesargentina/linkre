@@ -1,0 +1,139 @@
+<template>
+  <div>
+    <h4 class="mb-3">
+      Inversores (LP)
+    </h4>
+
+    <div class="card">
+      <div class="card-header bg-white">
+        <div class="row">
+          <div class="col-md-5">
+            <quick-search
+              ref="quickSearch"
+              :items="investors"
+            />
+          </div>
+          <div class="col-md-3 offset-md-4">
+            <RouterLink
+              class="btn btn-block btn-primary text-white"
+              :to="{ name: 'AdminInvestorsCreate' }"
+            >
+              <span class="fa fa-plus pr-2" />Nuevo Inversor (LP)
+            </RouterLink>
+          </div>
+        </div>
+      </div>
+      <div v-if="$refs.quickSearch">
+        <dynamic-table
+          v-if="$refs.quickSearch.filteredItems.length > 0"
+          :columns="columns"
+          :items="$refs.quickSearch.filteredItems"
+          :per-page="25"
+          :sort-direction="'desc'"
+          :sort-key="'updated_at'"
+        >
+          <th 
+            slot="th" 
+            class="th--acciones"
+          >
+            Acciones
+          </th>
+          <td 
+            slot="td" 
+            slot-scope="item"
+          >
+            <RouterLink 
+              :to="{ name: 'AdminInvestorsEdit', params: { id: item.id } }" 
+              class="mr-2"
+            >
+              <span class="fa fa-pencil pr-1" />Editar
+            </RouterLink>
+            <a 
+              href="#" 
+              @click="destroyRecord('/api/investors/' + item.id, item.id)"
+            >
+              <span class="fa fa-trash pr-1" />Borrar
+            </a>
+          </td>
+        </dynamic-table>
+
+        <div v-if="$refs.quickSearch.filteredItems.length === 0">
+          <div class="card-body">
+            <p class="mb-0">
+              No hay resultados para mostrar.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</template>
+
+<script>
+import { alertDestroyRecordConfirmation } from "@/utilities/helpers"
+import { investorsComputed, investorsMethods } from "@linkre/store/helpers"
+import { EventBus } from "@/eventBus"
+
+export default {
+    data() {
+        return {
+            columns: {
+                id: "Id.",
+                name: "Nombre",
+                email: "Email",
+                created_at: "Registro",
+                updated_at: "Actualización"
+            },
+            investors: [],
+            prepared: false,
+        }
+    },
+
+    computed: {
+        ...investorsComputed
+    },
+
+    watch: {
+        "$route" (value) {
+            if (value.name === "AdminInvestorsIndex" && this.prepared) {
+                this.$refs.quickSearch.search = ""
+                this.prepare()
+            }
+        }
+    },
+
+    created() {
+        EventBus.$on("investor-saved", ()=> {
+            this.prepare()
+        })
+
+        return this.prepare().then(this.prepared = true)
+    },
+
+    methods: {
+        ...investorsMethods,
+
+        destroyRecord(url, id) {
+            return alertDestroyRecordConfirmation(url, id)
+                .then(value => {
+                    if (value) {
+                        return this.prepare()
+                    }
+                })
+        },
+
+        prepare() {
+            var investors = this.fetchAllInvestors()
+                .then(value => {
+                    if (value) {
+                        this.investors = value
+                    }
+
+                    return value
+                })
+
+            return Promise.all([value])
+        }
+    }
+}
+</script>

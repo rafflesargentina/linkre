@@ -2,7 +2,7 @@
 
 namespace Raffles\Modules\Linkre\Models;
 
-use Raffles\Models\User;
+use Raffles\Models\{ Address, Contact, FeaturedPhoto, Map, User };
 
 class Developer extends User
 {
@@ -34,7 +34,7 @@ class Developer extends User
      *
      * @var array
      */
-    protected $with = 'avatar';
+    protected $with = 'featured_photo';
 
     /**
      * The "booting" method of the model.
@@ -53,11 +53,52 @@ class Developer extends User
     }
 
     /**
+     * Get the investor's address.
+     */
+    public function address()
+    {
+        return $this->morphOne(Address::class, 'addressable');
+    }
+
+    /**
+     * Get the investor's contact.
+     */
+    public function contact()
+    {
+        return $this->morphOne(Contact::class, 'contactable');
+    }
+
+    /**
+     * Get the investor's featured photo.
+     */
+    public function featured_photo()
+    {
+        return $this->morphOne(FeaturedPhoto::class, 'photoable')->withDefault();
+    }
+
+    /**
+     * Get the investments for the developer.
+     */
+    public function investments()
+    {
+        return $this->hasMany(Investment::class);
+    }
+
+    /**
      * Get the investors for the developer.
      */
     public function investors()
     {
         return $this->hasMany(Investor::class);
+    }
+
+
+    /**
+     * Get the investor's map.
+     */
+    public function map()
+    {
+        return $this->morphOne(Map::class, 'mapable');
     }
 
     /**

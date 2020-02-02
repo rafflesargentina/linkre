@@ -2,6 +2,8 @@ import * as types from "../../mutation-types"
 import { initialState } from "./investments"
 
 export default {
+    [types.INVESTMENTS_DELETE_ONE] () {},
+
     [types.INVESTMENTS_ERROR] (state, payload) {
         state.error = JSON.stringify(payload)
     },

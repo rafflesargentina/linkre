@@ -2,7 +2,7 @@
 
 namespace Raffles\Modules\Linkre\Models;
 
-use Illuminate\Database\Eloquent\Model;
+use Raffles\Models\Company as Model;
 
 class Company extends Model
 {
@@ -13,10 +13,9 @@ class Company extends Model
      */
     protected $fillable = [
         'description',
-        'developer_id',
         'name',
+        'video',
         'slug',
-        'website',
     ];
 
     /**
@@ -24,23 +23,7 @@ class Company extends Model
      *
      * @var array
      */
-    protected $with = 'featured_photo';
-
-    /**
-     * Get the developer that owns the company.
-     */
-    public function developer()
-    {
-        return $this->belongsTo(Developer::class);
-    }
-
-    /**
-     * Get the company's featured photo.
-     */
-    public function featured_photo()
-    {
-        return $this->morphOne(\Raffles\Models\FeaturedPhoto::class, 'photoable')->withDefault();
-    }
+    protected $with = ['contact', 'featured_photo'];
 
     /**
      * Get the investments for the company.

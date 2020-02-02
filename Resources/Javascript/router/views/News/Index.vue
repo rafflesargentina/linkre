@@ -8,9 +8,9 @@
       <div
         class="wt-bnr-inr overlay-wraper bg-parallax bg-top-center"
         data-stellar-background-ratio="0.5"
-        style="background-image:url(images/banner/1.jpg);"
+        style="background-image:url(images/encabezado_noticias.jpg);"
       >
-        <div class="overlay-main bg-black opacity-07" />
+        <div class="overlay-main bg-black opacity-04" />
         <div class="container">
           <div class="wt-bnr-inr-entry">
             <div class="banner-title-outer">
@@ -45,11 +45,11 @@
       <div class="section-full p-tb90">
         <div class="container-fluid">
           <masonry
-            :cols="4"
+            :cols="{ default: 4, 1024: 3, 768: 2, 414: 1 }"
             :gutter="30"
           >
             <div
-              v-for="item in allArticles"
+              v-for="item in articles"
               :key="item.id"
               class="masonry-item"
             >
@@ -64,12 +64,12 @@
                 <div class="p-t30 text-black">
                   <div class="wt-post-title">
                     <h2 class="post-title">
-                      <a
-                        href="javascript:void(0);"
+                      <RouterLink
+                        :to="{ name: 'NewsShow', params: { id: item.id }}"
                         class="text-black font-20 letter-spacing-4 font-weight-600"
                       >
                         {{ item.title }}
-                      </a>
+                      </RouterLink>
                     </h2>
                   </div>
                   <div class="wt-post-meta">
@@ -80,7 +80,7 @@
                     </ul>
                   </div>
                   <div class="wt-post-text">
-                    <p>{{ item.extract }}</p>
+                    <div v-html="item.extract" />
                   </div>
                 </div>
               </div>
@@ -95,11 +95,12 @@
 </template>
 
 <script>
-import { articlesComputed, articlesMethods } from "../../../store/helpers"
+import { articlesComputed, articlesMethods } from "@/store/helpers"
 
 export default {
     data() {
         return {
+            articles: [],
             prepared: false
         }
     },
@@ -110,21 +111,30 @@ export default {
 
     watch: {
         "$route" (value) {
-            if (value.name === "NewsIndex" && this.prepared === false) {
+            if (value.name === "NewsIndex" && this.prepared) {
                 return this.prepare()
             }
         }
     },
 
     created() {
-        return this.prepare()
+        return this.prepare().then(this.prepared = true)
     },
 
     methods: {
         ...articlesMethods,
 
         prepare() {
-            return this.fetchAllArticles().then(()=> this.prepared = true)
+            var articles = this.fetchPublishedArticles()
+                .then(value => {
+                    if (value) {
+                        this.articles = value
+                    }
+
+                    return value
+                })
+
+            return Promise.all([articles])
         }
     },
 }

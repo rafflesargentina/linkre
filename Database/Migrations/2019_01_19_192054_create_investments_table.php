@@ -29,14 +29,12 @@ class CreateInvestmentsTable extends Migration
                 $table->text('context')->nullable();
                 $table->text('description')->nullable();
                 $table->text('resume')->nullable();
-                $table->string('city')->nullable();
-                $table->string('state')->nullable();
-                $table->string('country')->nullable();
                 $table->string('website')->nullable();
                 $table->boolean('featured')->nullable()->default(0);
                 $table->boolean('published')->nullable()->default(0);
                 $table->datetime('published_at')->nullable();
                 $table->timestamps();
+                $table->SoftDeletes();
             }
         );
     }

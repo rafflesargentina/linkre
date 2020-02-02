@@ -2,6 +2,8 @@
 
 namespace Raffles\Modules\Linkre\Providers;
 
+use Raffles\Modules\Linkre\Models\Investment;
+
 use Illuminate\Foundation\Support\Providers\RouteServiceProvider as ServiceProvider;
 use Illuminate\Support\Facades\Route;
 
@@ -23,9 +25,9 @@ class RouteServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        //
-
         parent::boot();
+
+        Route::model('investments', Investment::class);
     }
 
     /**

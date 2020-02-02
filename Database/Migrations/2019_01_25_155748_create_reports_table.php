@@ -20,6 +20,7 @@ class CreateReportsTable extends Migration
             $table->string('slug')->nullable();
             $table->string('title');
             $table->text('body')->nullable();
+            $table->boolean('download')->default(0)->nullable();
             $table->boolean('published')->default(0)->nullable();
             $table->timestamp('published_at')->nullable();
             $table->timestamps();

@@ -2,6 +2,20 @@ import { filter } from "lodash"
 import * as types from "../../mutation-types"
 
 export default {
+    deleteOneInvestment ({ commit }, id) {
+        return window.axios.delete("/api/investments/" + id)
+            .then(response => {
+                const r = response.data.data
+                commit(types.INVESTMENTS_DELETE_ONE, r)
+                return r
+            })
+            .catch(error => {
+                console.error(error)
+                commit(types.INVESTMENTS_ERROR, error)
+                return error
+            })
+    },
+
     fetchAllInvestments ({ commit, dispatch }) {
         return window.axios.get("/api/investments")
             .then(response => {

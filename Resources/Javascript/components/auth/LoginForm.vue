@@ -19,6 +19,7 @@
         <select
           v-model="form.document_type_id"
           :class="{ 'is-invalid': form.errors.has('document_type_id') }"
+          :disabled="submitted"
           class="form-control form-control-lg"
           name="document_type_id"
           required
@@ -55,6 +56,7 @@
         <input 
           v-model="form.document_number" 
           :class="{ 'is-invalid': form.errors.has('document_number') }"
+          :disabled="submitted"
           autocomplete="username"
           class="form-control form-control-lg"
           name="document_number" 
@@ -82,6 +84,7 @@
       <input 
         v-model="form.password" 
         :class="{ 'is-invalid': form.errors.has('password') }"
+        :disabled="submitted"
         autocomplete="current-password"
         class="form-control form-control-lg" 
         name="password"
@@ -105,12 +108,17 @@
     >
       Ingresá
     </button>
+    <a
+      class="btn btn-block btn-secondary mb-3"
+      href="/auth/linkedin"
+    >Ingrese mediante LinkedIn</a>
 
     <div class="form-check">
       <label class="w-100">
         <input 
           v-model="form.remember" 
           class="form-check-input"
+          :disabled="submitted"
           name="remember"
           type="checkbox"
         > Recordame.
@@ -137,9 +145,6 @@ let fields = {
 }
 
 export default {
-
-    name: "LoginForm",
-
     props: {
         action: {
             type: String,
@@ -177,11 +182,15 @@ export default {
                 })
                 .then(response => {
                     let intended = this.$route.query.intended
-                    let redirect = intended || response.redirect
-                    return this.$router.push({ path: redirect })
-                })
-                .catch(()=> {
-                    this.submitted = false
+                    let redirect = intended||response.redirect
+                    this.$router.push({ path: redirect })
+                    return this.submitted = false
+                }).catch(error => {
+                    if (error.status > 422) {
+                        alertErrorMessage("Login", error.data.message)
+                    }
+
+                    return this.submitted = false
                 })
         },
     }

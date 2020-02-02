@@ -19,7 +19,6 @@ class CompaniesTableSeeder extends Seeder
             [
                 'name' => 'AGB S.A.',
                 'slug' => 'agb-sa',
-                'website' => 'http://www.agbsa.com.ar',
             ],
             [
                 'name' => 'Lennar International',
@@ -68,7 +67,10 @@ class CompaniesTableSeeder extends Seeder
         ];
 
         foreach ($companies as $company) {
-            Company::create($company);
+            $c = Company::create($company);
+            $c->address()->create();
+            $c->contact()->create();
+            $c->map()->create();
         }
     }
 }

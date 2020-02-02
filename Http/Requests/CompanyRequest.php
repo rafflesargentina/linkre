@@ -16,7 +16,7 @@ class CompanyRequest extends ActionBasedFormRequest
      */
     public static function store()
     {
-        if (request()->has('featured_photo')) {
+        if (request()->featured_photo) {
             return [
                 'featured_photo[]' => 'image',
             ];

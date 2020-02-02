@@ -3,6 +3,7 @@
 namespace Raffles\Modules\Linkre\Providers;
 
 use Caffeinated\Modules\Support\ServiceProvider;
+use Illuminate\Database\Eloquent\Relations\Relation;
 
 class ModuleServiceProvider extends ServiceProvider
 {
@@ -18,6 +19,11 @@ class ModuleServiceProvider extends ServiceProvider
         $this->loadMigrationsFrom(module_path('linkre', 'Database/Migrations', 'app'), 'linkre');
         $this->loadConfigsFrom(module_path('linkre', 'Config', 'app'));
         $this->loadFactoriesFrom(module_path('linkre', 'Database/Factories', 'app'));
+
+        Relation::morphMap([
+            'investments' => 'Raffles\Modules\Linkre\Models\Investment',
+            'users' => 'Raffles\Modules\Linkre\Models\User',
+        ]);
     }
 
     /**
@@ -27,6 +33,8 @@ class ModuleServiceProvider extends ServiceProvider
      */
     public function register()
     {
+        $this->app->register(AuthServiceProvider::class);
+        $this->app->register(EventServiceProvider::class);
         $this->app->register(RouteServiceProvider::class);
     }
 }

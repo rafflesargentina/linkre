@@ -9,7 +9,7 @@
         data-stellar-background-ratio="0.5"
         style="background-image:url(images/banner/2.jpg);"
       >
-        <div class="overlay-main bg-black opacity-07" />
+        <div class="overlay-main bg-black opacity-03" />
         <div class="container">
           <div class="wt-bnr-inr-entry">
             <div class="banner-title-outer">
@@ -108,7 +108,7 @@
               :gutter="30"
             >
               <div
-                v-for="item in allInvestments"
+                v-for="item in investments"
                 :key="item.id"
                 class="masonry-item m-b30"
               >
@@ -124,7 +124,7 @@
                             :to="{ name: 'ProjectsShow', params: { id: item.id }}"
                             class="text-white font-24 font-weight-300"
                           >
-                            {{ item.name }} - {{ item.location }}
+                            {{ item.name }}<br><small />
                           </RouterLink>
                         </h2>
                         <RouterLink
@@ -150,11 +150,12 @@
 </template>
 
 <script>
-import { investmentsComputed, investmentsMethods } from "../../../store/helpers"
+import { investmentsComputed, investmentsMethods } from "@linkre/store/helpers"
 
 export default {
     data() {
         return {
+            investments: [],
             prepared: false
         }
     },
@@ -165,8 +166,8 @@ export default {
 
     watch: {
         "$route" (value) {
-            if (value.name === "ProjectsIndex" && this.prepared === false) {
-                return this.prepare()
+            if (value.name === "ProjectsIndex" && this.prepared) {
+                this.prepare()
             }
         }
     },
@@ -179,7 +180,16 @@ export default {
         ...investmentsMethods,
 
         prepare() {
-            return this.fetchAllInvestments().then(()=> this.prepared = true)
+            var investments = this.fetchAllInvestments()
+                .then(value => {
+                    if (value) {
+                        this.investments = value
+                    }
+
+                    return value
+                })
+
+            return Promise.all([investments])
         }
     },
 }

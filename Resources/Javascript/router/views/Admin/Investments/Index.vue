@@ -4,13 +4,13 @@
       Proyectos
     </h4>
 
-    <div class="card">
+    <div class="card shadow">
       <div class="card-header bg-white">
         <div class="row">
           <div class="col-md-5">
             <quick-search
               ref="quickSearch"
-              :items="allInvestments"
+              :items="investments"
             />
           </div>
           <div class="col-md-3 offset-md-4">
@@ -28,7 +28,7 @@
           v-if="$refs.quickSearch.filteredItems.length > 0"
           :columns="columns"
           :items="$refs.quickSearch.filteredItems"
-          :per-page="12"
+          :per-page="50"
           :sort-direction="'desc'"
           :sort-key="'updated_at'"
         >
@@ -50,7 +50,7 @@
             </router-link>
             <a 
               href="#" 
-              @click="destroyRecordConfirmation('/api/investments/' + item.id, item.id)"
+              @click="destroyRecord('/api/investments/' + item.id, item.id)"
             >
               <span class="fa fa-trash pr-1" />Borrar
             </a>
@@ -70,17 +70,20 @@
 </template>
 
 <script>
-import { investmentsComputed, investmentsMethods } from "../../../../store/helpers"
+import { alertDestroyRecordConfirmation } from "@/utilities/helpers"
+import { EventBus } from "@/eventBus"
+import { investmentsComputed, investmentsMethods } from "@linkre/store/helpers"
 
 export default {
     data() {
         return {
+            investments: [],
             prepared: false,
             columns: {
                 id: "Id.",
                 name: "Nombre",
-                location: "Ubicación",
                 created_at: "Creación",
+                updated_at: "Actualización"
             }
         }
     },
@@ -91,21 +94,45 @@ export default {
 
     watch: {
         "$route" (value) {
-            if (value.name === "InvestmentsIndex" && this.prepared === false) {
-                return this.prepare()
+            if (value.name === "AdminInvestmentsIndex" && this.prepared) {
+                this.prepare()
             }
         }
     },
 
     created() {
-        return this.prepare()
+        EventBus.$on("investment-saved", ()=> {
+            this.prepare()
+        })
+
+        return this.prepare().then(this.prepared = true)
     },
 
     methods: {
         ...investmentsMethods,
 
+        destroyRecord(url, id) {
+            return alertDestroyRecordConfirmation(url, id)
+                .then(value => {
+                    if (value) {
+                        return this.prepare()
+                    }
+
+                    return value
+                })
+        },
+
         prepare() {
-            return this.$store.dispatch("investments/fetchAllInvestments").then(() => this.prepared = true)
+            var investments = this.fetchAllInvestments()
+                .then(value => {
+                    if (value) {
+                        this.investments = value
+                    }
+
+                    return value
+                })
+
+            return Promise.all([investments])
         }
     }
 }

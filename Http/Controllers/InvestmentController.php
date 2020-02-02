@@ -3,6 +3,7 @@
 namespace Raffles\Modules\Linkre\Http\Controllers;
 
 use Raffles\Modules\Linkre\Http\Requests\InvestmentRequest;
+use Raffles\Modules\Linkre\Models\Investment;
 use Raffles\Modules\Linkre\Repositories\InvestmentRepository;
 
 use Illuminate\Http\Request;
@@ -12,11 +13,39 @@ class InvestmentController extends ApiResourceController
 {
     protected $formRequest = InvestmentRequest::class;
 
-    protected $pruneHasOne = true;
-
     protected $repository = InvestmentRepository::class;
 
     protected $resourceName = 'investments';
+
+    /**
+     * Create a new InvestmentController instance.
+     *
+     * @return void
+     */
+    public function __construct()
+    {
+        parent::__construct();
+
+        $this->middleware('auth:api')->only('store', 'update', 'destroy');
+    }
+
+    /**
+     * Store a newly created resource in storage.
+     *
+     * @param Request $request The request object.
+     *
+     * @throws ResourceControllerException
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function store(Request $request)
+    {
+        $user = $request->user('api');
+        $investment = new Investment;
+        $user->can('create', $investment);
+
+        parent::store($request);
+    }
 
     /**
      * Display the specified resource.
@@ -29,14 +58,68 @@ class InvestmentController extends ApiResourceController
     public function show(Request $request, $key)
     {
         $model = $this->findFirstByKey($key);
+        $user = $request->user('api');
+        $user->can('view', $model);
 
         if (!$model) {
             return $this->validNotFoundJsonResponse();
         }
 
-        $model->load('company', 'financial', 'map', 'unfeatured_photos');
+        $model->loadMissing('address', 'company', 'documents', 'financial', 'map', 'unfeatured_photos');
 
         return response()->json($model, 200, [], JSON_PRETTY_PRINT);
+    }
+
+    /**
+     * Update the specified resource in storage.
+     *
+     * @param Request $request The request object.
+     * @param string  $key     The model key.
+     *
+     * @throws ResourceControllerException
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function update(Request $request, $key)
+    {
+        $model = $this->findFirstByKey($key);
+        $user = $request->user('api');
+        $user->can('update', $model);
+
+        return parent::update($request, $key);
+    }
+
+    /**
+     * Remove the specified resource from storage.
+     *
+     * @param Request $request The request object.
+     * @param string  $key     The model key.
+     *
+     * @throws ResourceControllerException
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function destroy(Request $request, $key)
+    {
+        $model = $this->findFirstByKey($key); 
+        $user = $request->user('api');
+        $user->can('delete', $model);
+
+        return parent::destroy($request, $key);
+    }
+
+
+    /**
+     * Get items collection.
+     *
+     * @param string $orderBy The order key.
+     * @param string $order   The order direction.
+     *
+     * @return \Illuminate\Database\Eloquent\Collection
+     */
+    public function getItemsCollection($orderBy = 'updated_at', $order = 'desc')
+    {
+        return $this->repository->findAll();
     }
 
     /**
@@ -46,6 +129,6 @@ class InvestmentController extends ApiResourceController
      */
     protected function getDefaultRelativePath()
     {
-        return 'uploads/investments/';
+        return 'uploads/projects/';
     }
 }
