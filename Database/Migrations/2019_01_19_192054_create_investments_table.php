@@ -16,13 +16,13 @@ class CreateInvestmentsTable extends Migration
         Schema::create(
             'investments', function (Blueprint $table) {
                 $table->increments('id');
-                $table->string('slug')->nullable();
+                $table->unsignedInteger('user_id')->nullable();
+                //$table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
                 $table->unsignedInteger('company_id')->nullable();
-                $table->foreign('company_id')->references('id')->on('companies')->onDelete('cascade');
-                $table->unsignedInteger('developer_id')->nullable();
-                $table->foreign('developer_id')->references('id')->on('users')->onDelete('cascade');
+                //$table->foreign('company_id')->references('id')->on('companies')->onDelete('cascade');
                 $table->unsignedInteger('promoter_id')->nullable();
-                $table->foreign('promoter_id')->references('id')->on('promoters')->onDelete('cascade');
+                //$table->foreign('promoter_id')->references('id')->on('promoters')->onDelete('cascade');
+                $table->string('slug')->nullable();
                 $table->string('name');
                 $table->unsignedInteger('total_area')->nullable()->default(0);
                 $table->text('amenities')->nullable();
