@@ -23,7 +23,7 @@ class AuthServiceProvider extends ServiceProvider
         Investment::class => InvestmentPolicy::class,
         Investor::class => InvestorPolicy::class,
         Promoter::class => PromoterPolicy::class,
-        ReportPolicy::class => ReportPolicy::class,
+        Report::class => ReportPolicy::class,
     ];
 
     /**
