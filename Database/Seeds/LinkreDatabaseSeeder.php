@@ -22,6 +22,8 @@ class LinkreDatabaseSeeder extends Seeder
         $this->call(InvestmentsTableSeeder::class);
         $this->call(InvestorTypesTableSeeder::class);
         $this->call(ReportsTableSeeder::class);
+        $this->call(RolesTableSeeder::class);
+        $this->call(PermissionsTableSeeder::class);
         $this->call(UsersTableSeeder::class);
     }
 }
