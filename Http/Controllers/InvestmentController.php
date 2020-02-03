@@ -6,11 +6,14 @@ use Raffles\Modules\Linkre\Http\Requests\InvestmentRequest;
 use Raffles\Modules\Linkre\Models\Investment;
 use Raffles\Modules\Linkre\Repositories\InvestmentRepository;
 
+use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Http\Request;
 use RafflesArgentina\ResourceController\ApiResourceController;
 
 class InvestmentController extends ApiResourceController
 {
+    use AuthorizesRequests;
+
     protected $formRequest = InvestmentRequest::class;
 
     protected $repository = InvestmentRepository::class;
@@ -40,11 +43,13 @@ class InvestmentController extends ApiResourceController
      */
     public function store(Request $request)
     {
-        $user = $request->user('api');
         $investment = new Investment;
-        $user->can('create', $investment);
+        $this->authorize('create', $investment);
 
-        parent::store($request);
+        $user = $request->user('api');
+        $request->request->add(['user_id' => $user->id]);
+
+        return parent::store($request);
     }
 
     /**
@@ -58,8 +63,7 @@ class InvestmentController extends ApiResourceController
     public function show(Request $request, $key)
     {
         $model = $this->findFirstByKey($key);
-        $user = $request->user('api');
-        $user->can('view', $model);
+        $this->authorize('view', $model);
 
         if (!$model) {
             return $this->validNotFoundJsonResponse();
@@ -83,8 +87,7 @@ class InvestmentController extends ApiResourceController
     public function update(Request $request, $key)
     {
         $model = $this->findFirstByKey($key);
-        $user = $request->user('api');
-        $user->can('update', $model);
+        $this->authorize('update', $model);
 
         return parent::update($request, $key);
     }
@@ -102,12 +105,10 @@ class InvestmentController extends ApiResourceController
     public function destroy(Request $request, $key)
     {
         $model = $this->findFirstByKey($key); 
-        $user = $request->user('api');
-        $user->can('delete', $model);
+        $this->authorize('delete', $model);
 
         return parent::destroy($request, $key);
     }
-
 
     /**
      * Get items collection.

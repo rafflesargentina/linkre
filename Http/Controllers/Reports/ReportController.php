@@ -3,15 +3,19 @@
 namespace Raffles\Modules\Linkre\Http\Controllers\Reports;
 
 use Raffles\Modules\Linkre\Http\Requests\ReportRequest;
+use Raffles\Modules\Linkre\Models\Report;
 use Raffles\Modules\Linkre\Repositories\ReportRepository;
 
 use DB;
+use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Http\Request;
 use RafflesArgentina\ResourceController\ApiResourceController;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 
 class ReportController extends ApiResourceController
 {
+    use AuthorizesRequests;
+
     protected $formRequest = ReportRequest::class;
 
     protected $repository = ReportRepository::class;
@@ -41,10 +45,65 @@ class ReportController extends ApiResourceController
      */
     public function store(Request $request)
     {
+        $report = new Report;
+        $this->authorize('create', $report);
+
         $user = $request->user('api');
-        $request->merge(['user_id' => $user->id]);
+        $request->request->add(['user_id' => $user->id]);
 
         return parent::store($request);
+    }
+
+    /**
+     * Display the specified resource.
+     *
+     * @param Request $request The request object.
+     * @param string  $key     The model key.
+     *
+     * @return mixed
+     */
+    public function show(Request $request, $key)
+    {
+        $model = $this->findFirstByKey($key);
+        $this->authorize('view', $model);
+
+        return parent::show($request, $key);
+    }
+
+    /**
+     * Update the specified resource in storage.
+     *
+     * @param Request $request The request object.
+     * @param string  $key     The model key.
+     *
+     * @throws ResourceControllerException
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function update(Request $request, $key)
+    {
+        $model = $this->findFirstByKey($key);
+        $this->authorize('update', $model);
+
+        return parent::update($request, $key);
+    }
+
+    /**
+     * Remove the specified resource from storage.
+     *
+     * @param Request $request The request object.
+     * @param string  $key     The model key.
+     *
+     * @throws ResourceControllerException
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function destroy(Request $request, $key)
+    {
+        $model = $this->findFirstByKey($key);
+        $this->authorize('delete', $model);
+
+        return parent::destroy($request, $key);
     }
 
     /**

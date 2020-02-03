@@ -6,12 +6,15 @@ use Raffles\Modules\Linkre\Http\Requests\InvestorRequest;
 use Raffles\Modules\Linkre\Repositories\UserRepository;
 
 use DB;
+use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Http\Request;
 use RafflesArgentina\ResourceController\ApiResourceController;
 use RafflesArgentina\ResourceController\Exceptions\ResourceControllerException;
 
 class InvestorController extends ApiResourceController
 {
+    use AuthorizesRequests;
+
     protected $formRequest = InvestorRequest::class;
 
     protected $repository = UserRepository::class;

@@ -13,7 +13,7 @@ class RegisterController extends Controller
     /**
      * Get a validator for an incoming registration request.
      *
-     * @param  array $data
+     * @param array $data
      *
      * @return \Illuminate\Contracts\Validation\Validator
      */
@@ -25,7 +25,11 @@ class RegisterController extends Controller
             'document_number' => [
                 'required',
                 'alpha_num',
-                Rule::unique('users')->where(function ($query) { return $query->where('document_type_id', request()->document_type_id); })
+                Rule::unique('users')->where(
+                    function ($query) {
+                        return $query->where('document_type_id', request()->document_type_id); 
+                    }
+                )
             ],
             'document_type_id' => 'required|numeric',
             'email' => 'required|string|email|unique:users',
@@ -39,7 +43,7 @@ class RegisterController extends Controller
     /**
      * Create a new user instance after a valid registration.
      *
-     * @param  array $data
+     * @param array $data
      *
      * @return User
      */
