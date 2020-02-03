@@ -16,6 +16,7 @@ export function initialState()
             name: "",
             video: "",
             slug: "",
+            user_id: "",
         },
     }
 }
