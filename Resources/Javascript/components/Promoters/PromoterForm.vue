@@ -63,44 +63,6 @@
             <li class="list-group-item">
               <div class="form-group row mb-0">
                 <label
-                  for="developer_id"
-                  class="col-6 col-form-label text-muted"
-                >
-                  Desarrolladora
-                </label>
-                <div class="col-6 col-lg-4">
-                  <select
-                    v-model="form.developer_id"
-                    :class="{ 'is-invalid': form.errors.has('developer_id') }"
-                    class="form-control"
-                    name="developer_id"
-                    placeholder="Desarrolladora"
-                    required
-                  >
-                    <option :value="null">
-                      Desarrolladora
-                    </option>
-                    <option
-                      v-for="item in developers"
-                      :key="'developer-' + item.id"
-                    >
-                      {{ item.name }}
-                    </option>
-                  </select>
-                  <span
-                    v-if="form.errors.has('developer_id')"
-                    class="invalid-feedback"
-                    role="alert"
-                  >
-                    <strong v-text="form.errors.get('developer_id')" />
-                  </span>
-                </div>
-              </div>
-            </li>
-
-            <li class="list-group-item">
-              <div class="form-group row mb-0">
-                <label
                   for="name"
                   class="col-6 col-form-label text-muted"
                 >
@@ -314,7 +276,7 @@
 
 <script>
 import { dz } from "@/utilities/mixins/dz"
-import { developersComputed, developersMethods, promotersComputed, promotersMethods } from "@linkre/store/helpers"
+import { promotersComputed, promotersMethods } from "@linkre/store/helpers"
 import { alertErrorMessage, alertSuccessMessage, getSavedState } from "@/utilities/helpers"
 import { photosMethods } from "@/store/helpers"
 import { deepClone, slugify } from "@/utilities/helpers"
@@ -376,7 +338,6 @@ export default {
     },
 
     computed: {
-        ...developersComputed,
         ...promotersComputed,
 
         validated() {
@@ -413,7 +374,6 @@ export default {
     },
 
     methods: {
-        ...developersMethods,
         ...photosMethods,
         ...promotersMethods,
 
@@ -426,16 +386,7 @@ export default {
         prepareCreate() {
             this.submitted = false
 
-            var developers = this.fetchAllDevelopers()
-                .then(value => {
-                    if (value) {
-                        this.developers = value
-                    }
-
-                    return value
-                })
-
-            return Promise.all([developers])
+            return Promise.all([])
         },
 
         prepareEdit() {
@@ -453,16 +404,7 @@ export default {
                     return value
                 })
 
-            var developers = this.fetchAllDevelopers()
-                .then(value => {
-                    if (value) {
-                        this.developers = value
-                    }
-
-                    return value
-                })
-
-            return Promise.all([promoter, developers])
+            return Promise.all([promoter])
         },
 
         handleSubmitForm() {
@@ -482,7 +424,7 @@ export default {
                     return this.submitted = false
                 }).catch(error => {
                     if (error.status > 422) {
-                        alertErrorMessage("Ocurrió un error con el siguiente mensaje: " + error.data.message)
+                        alertErrorMessage(error.data.message)
                     }
 
                     return this.submitted = false

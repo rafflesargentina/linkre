@@ -117,6 +117,8 @@ export default {
                     if (value) {
                         return this.prepare()
                     }
+
+                    return value
                 })
         },
 

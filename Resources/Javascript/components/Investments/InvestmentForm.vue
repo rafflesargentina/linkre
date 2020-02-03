@@ -1179,7 +1179,7 @@ export default {
                     return this.submitted = false
                 }).catch(error => {
                     if (error.status > 422) {
-                        alertErrorMessage("Ocurrió un error con el siguiente mensaje: " + error.data.message)
+                        alertErrorMessage(error.data.message)
                     }
 
                     return this.submitted = false
