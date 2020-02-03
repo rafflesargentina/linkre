@@ -12,10 +12,10 @@ export function initialState()
                 website: ""
             },
             description: "",
-            developer_id: "",
             featured_photo: {},
             name: "",
             slug: "",
+            user_id: "",
         },
     }
 }

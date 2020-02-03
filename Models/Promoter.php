@@ -15,9 +15,9 @@ class Promoter extends Model
      */
     protected $fillable = [
         'description',
-        'developer_id',
         'name',
         'slug',
+        'user_id',
     ];
 
     /**
@@ -36,14 +36,6 @@ class Promoter extends Model
     }
 
     /**
-     * Get the developer that owns the promoter.
-     */
-    public function developer()
-    {
-        return $this->belongsTo(Developer::class);
-    }
-
-    /**
      * Get the promoter's featured photo.
      */
     public function featured_photo()
@@ -57,5 +49,13 @@ class Promoter extends Model
     public function investments()
     {
         return $this->hasMany(Investment::class);
+    }
+
+    /**
+     * Get the user that owns the company.
+     */
+    public function user()
+    {
+        return $this->belongsTo(User::class);
     }
 }

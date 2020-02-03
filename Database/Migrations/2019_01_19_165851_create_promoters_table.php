@@ -15,8 +15,8 @@ class CreatePromotersTable extends Migration
     {
         Schema::create('promoters', function (Blueprint $table) {
             $table->increments('id');
-            $table->unsignedInteger('developer_id')->nullable();
-            $table->foreign('developer_id')->references('id')->on('users')->onDelete('cascade');
+            $table->unsignedInteger('user_id')->nullable();
+            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
             $table->string('slug')->nullable();
             $table->string('name');
             $table->text('description')->nullable();
