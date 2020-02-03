@@ -18,14 +18,6 @@ export const authNotRequired = (to, from, next) => {
     return next({ name: "Home"})
 }
 
-export const canSeeInvestment = (to, from, next) => {
-    if (store.getters["auth/isAuthenticated"] && (store.getters["auth/isAdmin"] || store.getters["auth/investments"].includes(to.params.id))) {
-        return next()
-    }
-
-    return next({ name: "Unauthorized" })
-}
-
 export const mustBeDeveloper = (to, from, next) => {
     var user = store.state.auth.user
     if (user.developer) {

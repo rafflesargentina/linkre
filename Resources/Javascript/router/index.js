@@ -328,7 +328,7 @@ router.addRoutes(
             component: require("./views/Projects/Index.vue")
         },
         {
-            beforeEnter: multiguard([middleware.authRequired, middleware.mustCompleteProfile, middleware.canSeeInvestment]),
+            beforeEnter: multiguard([middleware.authRequired, middleware.mustCompleteProfile]),
             name: "ProjectsShow",
             path: "/proyectos/:id",
             component: require("./views/Projects/Show.vue")
