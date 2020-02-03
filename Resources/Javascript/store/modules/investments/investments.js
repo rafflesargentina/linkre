@@ -23,7 +23,6 @@ export function initialState()
             context: "",
             description: "",
             documents: [],
-            developer_id: "",
             featured: "",
             featured_photo: {},
             financial: {},
@@ -40,6 +39,7 @@ export function initialState()
             resume: "",
             slug: "",
             total_area: "",
+            user_id: "",
         },
     }
 }
