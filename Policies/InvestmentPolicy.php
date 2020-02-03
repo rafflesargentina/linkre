@@ -22,11 +22,7 @@ class InvestmentPolicy
             return true;
         }
 
-        if ($user->can('view-investment')) {
-            return true;
-        }
-
-        return false;
+        return $user->can('view-investment');
     }
 
     /**
