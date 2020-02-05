@@ -111,7 +111,7 @@
                   Cuenta
                 </RouterLink>
                 <RouterLink
-                  v-if="isAdmin"
+                  v-if="isAdmin || isColaborador"
                   class="dropdown-item"
                   to="/admin"
                 >

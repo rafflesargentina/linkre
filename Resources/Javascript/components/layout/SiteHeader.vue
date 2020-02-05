@@ -161,7 +161,7 @@
                           Contacto
                         </RouterLink>
                       </li>
-                      <li v-if="isAuthenticated && isAdmin">
+                      <li v-if="isAuthenticated && (isAdmin || isColaborador)">
                         <RouterLink
                           :to="{ name: 'Dashboard' }"
                           style="padding: 10px 10px;"
