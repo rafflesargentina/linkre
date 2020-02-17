@@ -16,6 +16,7 @@ Route::get('account', Account\ValidateController::class);
 Route::get('validate', Account\ValidateController::class);
 Route::put('account', Account\UpdateController::class);
 
+Route::apiResource('articles', 'Articles\ArticleController');
 Route::apiResource('companies', 'CompanyController');
 Route::apiResource('documents', 'DocumentController');
 Route::apiResource('developers', 'DeveloperController');

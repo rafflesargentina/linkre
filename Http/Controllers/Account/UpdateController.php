@@ -6,7 +6,7 @@ use Raffles\Http\Controllers\Controller;
 use Raffles\Modules\Linkre\Http\Requests\AccountRequest;
 use Raffles\Modules\Linkre\Notifications\Admin\ProfileCompleted as ForAdmin;
 use Raffles\Modules\Linkre\Notifications\ProfileCompleted as ForUser;
-use Raffles\Modules\Linkre\Repositories\UserRepository;
+use Raffles\Modules\Linkre\Repositories\{ FeedRepository, UserRepository };
 
 use DB;
 use Log;
@@ -57,10 +57,40 @@ class UpdateController extends Controller
             if ($developerProfile || $investorProfile) {
                 if ($developerProfile) {
                     $model->developer_profile->investment_preferences()->sync($developerProfile['investment_preferences']);
+
+                    try {
+                        $repository = new FeedRepository;
+                        $repository->create(
+                            [
+                                'description' => 'El usuario '.$model->name.' ('.$model->document_type->name.' '.$model->document_number.') completó su perfil de Promotor.',
+                                'feedable_id' => $model->developer_profile->id,
+                                'feedable_type' => 'developer_profiles',
+                                'title' => 'Perfil de usuario Promotor completado',
+                                'user_id' => $model->id,
+                            ]
+                        );
+                    } catch (\Exception $e) {
+                        //
+                    }
                 }
 
                 if ($investorProfile) {
                     $model->investor_profile->investment_preferences()->sync($investorProfile['investment_preferences']);
+
+                    try {
+                        $repository = new FeedRepository;
+                        $repository->create(
+                            [
+                                'description' => 'El usuario '.$model->name.' ('.$model->document_type->name.' '.$model->document_number.') completó su perfil de Inversor.',
+                                'feedable_id' => $model->investor_profile->id,
+                                'feedable_type' => 'investor_profiles',
+                                'title' => 'Perfil de usuario Inversor completado',
+                                'user_id' => $model->id,
+                            ]
+                        );
+                    } catch (\Exception $e) {
+                        //
+                    }
                 }
 
                 try {

@@ -80,19 +80,19 @@ class Investor extends User
     }
 
     /**
+     * Get the feeds for the investor.
+     */
+    public function feeds()
+    {
+        return $this->hasMany(Feed::class, 'user_id')->latest();
+    }
+
+    /**
      * The investments that belong to the investor.
      */
     public function investments()
     {
         return $this->belongsToMany(Investment::class);
-    }
-
-    /**
-     * Get the investor's map.
-     */
-    public function map()
-    {
-        return $this->morphOne(Map::class, 'mapable');
     }
 
     /**

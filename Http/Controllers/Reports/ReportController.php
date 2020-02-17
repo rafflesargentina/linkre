@@ -4,7 +4,7 @@ namespace Raffles\Modules\Linkre\Http\Controllers\Reports;
 
 use Raffles\Modules\Linkre\Http\Requests\ReportRequest;
 use Raffles\Modules\Linkre\Models\Report;
-use Raffles\Modules\Linkre\Repositories\ReportRepository;
+use Raffles\Modules\Linkre\Repositories\{ FeedRepository, ReportRepository };
 
 use DB;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
@@ -66,6 +66,23 @@ class ReportController extends ApiResourceController
     {
         $model = $this->findFirstByKey($key);
         $this->authorize('view', $model);
+
+        try {
+            $user = $request->user('api');
+
+            $repository = new FeedRepository;
+            $repository->create(
+                [
+                    'description' => 'El usuario '.$user->name.' ('.$user->document_type->name.' '.$user->document_number.') visualizó el reporte "'.$model->title.'".',
+                    'feedable_id' => $model->id,
+                    'feedable_type' => 'reports',
+                    'title' => 'Visualización de Reporte',
+                    'user_id' => $user->id
+                ]
+            );
+        } catch (\Exception $e) {
+            //
+        }
 
         return parent::show($request, $key);
     }

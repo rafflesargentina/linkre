@@ -42,6 +42,12 @@
             slot="td" 
             slot-scope="item"
           >
+            <RouterLink
+              :to="{ name: 'AdminInvestorsShow', params: { id: item.id } }"
+              class="mr-2"
+            >
+              <span class="fa fa-eye pr-1" />Ver
+            </RouterLink>
             <RouterLink 
               :to="{ name: 'AdminInvestorsEdit', params: { id: item.id } }" 
               class="mr-2"

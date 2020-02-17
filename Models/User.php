@@ -2,7 +2,7 @@
 
 namespace Raffles\Modules\Linkre\Models;
 
-use Raffles\Models\{ FeaturedPhoto };
+use Raffles\Models\{ DocumentType, FeaturedPhoto };
 use Raffles\Models\User as Model;
 
 class User extends Model
@@ -42,11 +42,27 @@ class User extends Model
     }
 
     /**
+     * Get the document type that owns the user.
+     */
+    public function document_type()
+    {
+        return $this->belongsTo(DocumentType::class);
+    }
+
+    /**
      * Get the promoter's featured photo.
      */
     public function featured_photo()
     {
         return $this->morphOne(FeaturedPhoto::class, 'photoable')->withDefault();
+    }
+
+    /**
+     * Get the feeds for the user.
+     */
+    public function feeds()
+    {
+        return $this->hasMany(Feed::class)->latest();
     }
 
     /**

@@ -4,8 +4,10 @@ namespace Raffles\Modules\Linkre\Http\Controllers;
 
 use Raffles\Modules\Linkre\Http\Requests\InvestmentRequest;
 use Raffles\Modules\Linkre\Models\Investment;
-use Raffles\Modules\Linkre\Repositories\InvestmentRepository;
+use Raffles\Modules\Linkre\Repositories\{ FeedRepository, InvestmentRepository };
 
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Http\Request;
 use RafflesArgentina\ResourceController\ApiResourceController;
@@ -71,6 +73,23 @@ class InvestmentController extends ApiResourceController
 
         $model->loadMissing('address', 'company', 'documents', 'financial', 'map', 'unfeatured_photos');
 
+        try {
+            $user = $request->user('api');
+
+            $repository = new FeedRepository;
+            $repository->create(
+                [
+                    'description' => 'El usuario '.$user->name.' ('.$user->document_type->name.' '.$user->document_number.') visualizó el Proyecto "'.$model->name.'".',
+                    'feedable_id' => $model->id,
+                    'feedable_type' => 'investments',
+                    'title' => 'Visualización de Proyecto',
+                    'user_id' => $user->id
+                ]
+            );
+        } catch (\Exception $e) {
+            //
+        }
+
         return response()->json($model, 200, [], JSON_PRETTY_PRINT);
     }
 
@@ -131,5 +150,51 @@ class InvestmentController extends ApiResourceController
     protected function getDefaultRelativePath()
     {
         return 'uploads/projects/';
+    }
+
+    /**
+     * HasMany relation updateOrCreate logic.
+     *
+     * @param array    $fillable The relation fillable.
+     * @param Model    $model    The eloquent model.
+     * @param Relation $relation The eloquent relation.
+     *
+     * @return array
+     */
+    protected function updateOrCreateHasMany(array $fillable, Model $model, Relation $relation)
+    {
+        $keys = [];
+        $id = '';
+        $records = [];
+
+\Log::info($fillable);
+        foreach ($fillable as $fields) {
+            if (is_array($fields)) {
+                if (array_key_exists('id', $fields)) {
+                    $id = $fields['id'];
+                }
+
+                if (array_except($fields, ['id'])) {
+                    $record = $relation->updateOrCreate(['id' => $id], $fields);
+                    array_push($keys, $record->id);
+                    array_push($records, $record);
+                }
+            } else {
+                if (array_except($fillable, ['id'])) {
+                    $record = $relation->updateOrCreate(['id' => $id], $fillable);
+                    array_push($keys, $record->id);
+                    array_push($records, $record);
+                }
+            }
+        }
+
+        if ($keys && (property_exists($this, 'pruneHasMany') && $this->pruneHasMany !== false)) {
+            $notIn = $relation->getRelated()->whereNotIn('id', $keys)->get();
+            foreach ($notIn as $record) {
+                $record->delete();
+            }
+        }
+
+        return $records;
     }
 }

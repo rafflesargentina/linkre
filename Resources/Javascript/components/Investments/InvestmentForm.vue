@@ -520,7 +520,6 @@
                     @vdropzone-removed-file="dzUnfeaturedPhotosRemovedFile"
                     @vdropzone-processing="dzUnfeaturedPhotosProcessing"
                     @vdropzone-success-multiple="dzUnfeaturedPhotosSuccess"
-                    @vdropzone-complete-multiple="isProcessingUnfeaturedPhotos = false"
                     @vdropzone-upload-progress="dzUnfeaturedPhotosUploadProgress"
                   />
                 </div>
@@ -1056,24 +1055,24 @@ export default {
         ...promotersMethods,
 
         dzDocumentsSuccess() {
+console.log('Documents success')
             alertSuccessMessage("La inversión fue guardada correctamente.")
             return this.$router.push({ name: "AdminInvestmentsIndex" })
         },
 
         dzFeaturedPhotoSuccess() {
+console.log('Featured photo success')
             return this.dzUnfeaturedPhotosProcessQueue()
         },
 
         dzUnfeaturedPhotosSuccess() {
-            if (!this.isProcessingUnfeaturedPhotos) {
-                this.isProcessingUnfeaturedPhotos = true
-                return this.dzDocumentsProcessQueue()
-            }
-
-            return Promise.resolve()
+console.log('Unfeatured photos success.')
+            return this.dzDocumentsProcessQueue()
         },
 
         prepareCreate() {
+            this.isDestroying = false
+
             this.geolocate().then(coordinates => {
                 return this.geolocation = coordinates
             })
@@ -1106,6 +1105,8 @@ export default {
         },
 
         prepareEdit() {
+            this.isDestroying = false
+
             var investment = this.fetchOneInvestment(this.$route.params.id)
                 .then(value => {
                     if (value) {

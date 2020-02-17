@@ -11,6 +11,7 @@ import Chart from "chart.js"
 import Vue from "vue"
 import VueChartkick from "vue-chartkick"
 import VueMasonry from "vue-masonry-css"
+import VueTimeline from "@growthbunker/vuetimeline"
 
 require("./router")
 require("./store")
@@ -23,6 +24,9 @@ Vue.use(VueGoogleMaps, {
 
 Vue.use(VueChartkick, { adapter: Chart })
 Vue.use(VueMasonry)
+Vue.use(VueTimeline, {
+    theme: "dark"
+})
 
 /**
  * The following block of code may be used to automatically register your

@@ -3,6 +3,7 @@
 namespace Raffles\Modules\Linkre\Http\Controllers\Auth;
 
 use Raffles\Http\Controllers\Auth\LoginController as BaseLoginController;
+use Raffles\Modules\Linkre\Repositories\FeedRepository;
 
 use Illuminate\Http\Request;
 
@@ -79,6 +80,19 @@ class LoginController extends BaseLoginController
                 return $this->validInternalServerErrorJsonResponse($e, $e->getMessage());
             }
 
+            try {
+                $repository = new FeedRepository;
+                $repository->create(
+                    [
+                        'description' => 'El usuario '.$user->name.' ('.$user->document_type->name.' '.$user->document_number.') inició sesión.',
+                        'title' => 'Login de usuario',
+                        'user_id' => $user->id,
+                    ]
+                );
+            } catch (\Exception $e) {
+                //
+            }
+
             $data = [
                 'token' => $accessToken,
                 'remember' => $request->remember,
@@ -86,7 +100,7 @@ class LoginController extends BaseLoginController
             ];
 
             return $this->authenticated($request, $user)
-                    ?:  $this->validSuccessJsonResponse('Success', $data, $this->redirectPath());
+                ?: $this->validSuccessJsonResponse('Success', $data, $this->redirectPath());
         }
 
         $request->session()->regenerate();
@@ -94,7 +108,7 @@ class LoginController extends BaseLoginController
         $this->clearLoginAttempts($request);
 
         return $this->authenticated($request, $user)
-                ?: redirect()->intended($this->redirectPath());
+            ?: redirect()->intended($this->redirectPath());
     }
 
     /**

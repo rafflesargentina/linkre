@@ -3,7 +3,7 @@
 namespace Raffles\Modules\Linkre\Http\Controllers;
 
 use Raffles\Modules\Linkre\Http\Requests\InvestorRequest;
-use Raffles\Modules\Linkre\Repositories\UserRepository;
+use Raffles\Modules\Linkre\Repositories\{ FeedRepository, UserRepository };
 
 use DB;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
@@ -55,7 +55,10 @@ class InvestorController extends ApiResourceController
             $mergedRequest = $this->uploadFiles($request, $model);
             $this->updateOrCreateRelations($mergedRequest, $model);
 
-            $model->investor_profile->investment_preferences()->sync($data['investor_profile']['investment_preferences']);
+            $investmentPreferences = $data['investor_profile']['investment_preferences'];
+            if ($investmentPreferences) {
+                $model->investor_profile->investment_preferences()->sync($investmentPreferences);
+            }
         } catch (\Exception $e) {
             DB::rollback();
 
@@ -87,7 +90,7 @@ class InvestorController extends ApiResourceController
             return $this->validNotFoundJsonResponse();
         }
 
-        $model->loadMissing('contact', 'featured_photo', 'investments', 'investor_profile');
+        $model->loadMissing('contact', 'featured_photo', 'feeds', 'investments', 'investor_profile');
 
         return response()->json($model, 200, [], JSON_PRETTY_PRINT);
     }

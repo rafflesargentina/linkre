@@ -162,6 +162,15 @@ router.addRoutes(
                 },
                 {
                     beforeEnter: middleware.authRequired,
+                    component: require("./views/Admin/Investors/Show.vue"),
+                    meta: {
+                        footer: false,
+                    },
+                    name: "AdminInvestorsShow",
+                    path: "/admin/investors/:id",
+                },
+                {
+                    beforeEnter: middleware.authRequired,
                     component: require("./views/Admin/Leads/Index.vue"),
                     meta: {
                         footer: false,

@@ -4,6 +4,7 @@ namespace Raffles\Modules\Linkre\Http\Controllers\Auth;
 
 use Raffles\Http\Controllers\Auth\RegisterController as Controller;
 use Raffles\Modules\Linkre\Models\User;
+use Raffles\Modules\Linkre\Repositories\FeedRepository;
 
 use Illuminate\Validation\Rule;
 use Validator;
@@ -71,6 +72,19 @@ class RegisterController extends Controller
         if ($user->developer) {
             $user->developer_profile()->create([]);
         }
+
+        //try {
+            $repository = new FeedRepository;
+            $repository->create(
+                [
+                    'description' => 'El usuario '.$user->name.' ('.$user->document_type->name.' '.$user->document_number.') se registró en la plataforma con rol '.($user->investor ? 'Inversor' : 'Promotor').'.',
+                    'title' => 'Registro de usuario',
+                    'user_id' => $user->id
+                ]
+            );
+        //} catch (\Exception $e) {
+            //
+        //}
 
         return $user;
     }
