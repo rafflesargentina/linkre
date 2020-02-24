@@ -347,11 +347,11 @@
                               <tbody class="lead">
                                 <tr>
                                   <th>Oferta abierta</th>
-                                  <td>$ {{ oneInvestment.financial.open_offer }}</td>
+                                  <td>{{ formatMoney(oneInvestment.financial.open_offer) }}</td>
                                 </tr>
                                 <tr>
                                   <th>Financiado</th>
-                                  <td>$ {{ oneInvestment.financial.funded }}</td>
+                                  <td>{{ formatMoney(oneInvestment.financial.funded) }}</td>
                                 </tr>
                                 <tr>
                                   <th>Tasa Interna de Retorno</th>
@@ -364,7 +364,7 @@
                                 <tr>
                                   <th>Período Estimado de Tenencia</th>
                                   <td>
-                                    {{ oneInvestment.financial.ehp }}  meses
+                                    {{ oneInvestment.financial.ehp }} meses
                                   </td>
                                 </tr>
                               </tbody>
@@ -391,19 +391,19 @@
                               <tbody class="lead">
                                 <tr>
                                   <th>Deuda Senior</th>
-                                  <td>$ {{ oneInvestment.financial.senior_debt }}</td>
+                                  <td>{{ formatMoney(oneInvestment.financial.senior_debt) }}</td>
                                 </tr>
                                 <tr>
                                   <th>Deuda Mezzanine</th>
-                                  <td>$ {{ oneInvestment.financial.mezzanine_debt }}</td>
+                                  <td>{{ formatMoney(oneInvestment.financial.mezzanine_debt) }}</td>
                                 </tr>
                                 <tr>
                                   <th>Capital existente</th>
-                                  <td>$ {{ oneInvestment.financial.equity }}</td>
+                                  <td>{{ formatMoney(oneInvestment.financial.equity) }}</td>
                                 </tr>
                                 <tr>
                                   <th>Recursos totales</th>
-                                  <td>$ </td>
+                                  <td>{{ formatMoney(oneInvestment.financial.senior_debt + oneInvestment.financial.mezzanine_debt + oneInvestment.financial.equity) }}</td>
                                 </tr>
                               </tbody>
                             </table>
@@ -429,15 +429,15 @@
                               <tbody class="lead">
                                 <tr>
                                   <th>Adquisición</th>
-                                  <td>$ {{ oneInvestment.financial.adquisition }}</td>
+                                  <td>{{ formatMoney(oneInvestment.financial.adquisition_cost) }}</td>
                                 </tr>
                                 <tr>
                                   <th>Desarrollo</th>
-                                  <td>$ {{ oneInvestment.financial.development_cost }}</td>
+                                  <td>{{ formatMoney(oneInvestment.financial.development_cost) }}</td>
                                 </tr>
                                 <tr>
                                   <th>Costos totales</th>
-                                  <td>$ </td>
+                                  <td>{{ formatMoney(oneInvestment.financial.adquisition_cost + oneInvestment.financial.development_cost) }}</td>
                                 </tr>
                                 <tr>
                                   <th>Banco</th>
@@ -482,6 +482,7 @@
 
 <script>
 import * as VueGoogleMaps from "vue2-google-maps"
+import { formatMoney } from "@linkre/utilities/helpers"
 import { investmentsComputed, investmentsMethods, investmentViewsComputed, investmentViewsMethods } from "@linkre/store/helpers"
 import { pick } from "lodash"
 import store from "@/store"
@@ -529,6 +530,8 @@ export default {
     methods: {
         ...investmentsMethods,
         ...investmentViewsMethods,
+
+        formatMoney,
 
         magnific_popup() {
             window.$(".mfp-gallery").magnificPopup({
