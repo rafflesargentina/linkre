@@ -598,6 +598,7 @@
                         class="form-control"
                         name="financial.irr"
                         placeholder="Tasa Interna de Retorno (%)"
+                        step="0.1"
                         type="number"
                       >
                       <span
@@ -618,6 +619,7 @@
                         class="form-control"
                         name="financial.apr"
                         placeholder="Tasa Anual de Preferencia (%)"
+                        step="0.1"
                         type="number"
                       >
                       <span
