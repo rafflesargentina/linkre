@@ -54,6 +54,7 @@ class Financial extends Model
         'development_cost',
         'ehp',
         'equity',
+        'funded',
         'investment_id',
         'irr',
         'mezzanine_debt',
