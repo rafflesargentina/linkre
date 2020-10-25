@@ -18,7 +18,7 @@
               class="btn btn-block btn-primary text-white"
               :to="{ name: 'AdminDevelopersCreate' }"
             >
-              <span class="fa fa-plus pr-2" />Nuevo Promotor
+              <span class="fa fa-plus pr-2" />Nuevo Promotor (GP)
             </RouterLink>
           </div>
         </div>
@@ -72,6 +72,7 @@
 <script>
 import { destroyRecordConfirmation } from "@dashboard/utilities/helpers"
 import { developersComputed, developersMethods } from "@linkre/store/helpers"
+import { EventBus } from "@/eventBus"
 
 export default {
     data() {
@@ -101,18 +102,23 @@ export default {
     },
 
     created() {
+        EventBus.$on("developer-saved", ()=> {
+            this.prepare()
+        })
+
         return this.prepare().then(this.prepared = true)
     },
 
     methods: {
         ...developersMethods,
 
-        destroyRecord(url, id) {
-            return destroyRecordConfirmation(url, id).then(this.fetchAllDevelopers())
+        async destroyRecord(url, id) {
+            return await destroyRecordConfirmation(url, id)
+                .then(this.fetchAllDevelopers())
         },
 
-        prepare() {
-            return this.$store.dispatch("developers/fetchAllDevelopers")
+        async prepare() {
+            return await this.fetchAllDevelopers()
         }
     }
 }

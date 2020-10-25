@@ -10,7 +10,7 @@
           <div class="col-md-5">
             <quick-search
               ref="quickSearch"
-              :items="companies"
+              :items="allCompanies"
             />
           </div>
           <div class="col-md-3 offset-md-4">
@@ -84,7 +84,6 @@ export default {
                 updated_at: "Actualización"
             },
             prepared: false,
-            companies: [],
         }
     },
 
@@ -95,6 +94,7 @@ export default {
     watch: {
         "$route" (value) {
             if (value.name === "AdminCompaniesIndex" && this.prepared) {
+                this.$refs.quickSearch.search = ""
                 this.prepare()
             }
         }
@@ -111,28 +111,13 @@ export default {
     methods: {
         ...companiesMethods,
 
-        destroyRecord(url, id) {
-            return alertDestroyRecordConfirmation(url, id)
-                .then(value => {
-                    if (value) {
-                        return this.prepare()
-                    }
-
-                    return value
-                })
+        async destroyRecord(url, id) {
+            return await alertDestroyRecordConfirmation(url, id)
+                .then(this.prepare())
         },
 
-        prepare() {
-            var companies = this.fetchAllCompanies()
-                .then(value => {
-                    if (value) {
-                        this.companies = value
-                    }
-
-                    return value
-                })
-
-            return Promise.all([companies])
+        async prepare() {
+            return await this.fetchAllCompanies()
         }
     }
 }

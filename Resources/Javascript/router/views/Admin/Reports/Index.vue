@@ -10,7 +10,7 @@
           <div class="col-md-5">
             <quick-search
               ref="quickSearch"
-              :items="reports"
+              :items="allReports"
             />
           </div>
           <div class="col-md-3">
@@ -27,7 +27,7 @@
               class="btn btn-block btn-primary text-white"
               :to="{ name: 'AdminReportsCreate' }"
             >
-              <span class="fa fa-plus pr-2" />Nuevo Reporte
+              <span class="fa fa-plus pr-2" />Nuevo Informe
             </RouterLink>
           </div>
         </div>
@@ -86,7 +86,6 @@ import { EventBus } from "@/eventBus"
 export default {
     data() {
         return {
-            reports: [],
             columns: {
                 id: "Id.",
                 title: "Titulo",
@@ -105,6 +104,7 @@ export default {
     watch: {
         "$route" (value) {
             if (value.name === "AdminReportsIndex" && this.prepared) {
+                this.$refs.quickSearch.search = ""
                 return this.prepare()
             }
         }
@@ -121,26 +121,13 @@ export default {
     methods: {
         ...reportsMethods,
 
-        destroyRecord(url, id) {
-            return alertDestroyRecordConfirmation(url, id)
-                .then(value => {
-                    if (value) {
-                        return this.prepare()
-                    }
-                })
+        async destroyRecord(url, id) {
+            return await alertDestroyRecordConfirmation(url, id)
+                .then(this.prepare())
         },
 
-        prepare() {
-            var reports = this.fetchAllReports()
-                .then(value => {
-                    if (value) {
-                        this.reports = value
-                    }
-
-                    return value
-                })
-
-            return Promise.all([reports])
+        async prepare() {
+            return await this.fetchAllReports()
         }
     }
 }

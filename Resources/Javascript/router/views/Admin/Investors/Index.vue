@@ -10,7 +10,7 @@
           <div class="col-md-5">
             <quick-search
               ref="quickSearch"
-              :items="investors"
+              :items="allInvestors"
             />
           </div>
           <div class="col-md-3 offset-md-4">
@@ -90,7 +90,6 @@ export default {
                 created_at: "Registro",
                 updated_at: "Actualización"
             },
-            investors: [],
             prepared: false,
         }
     },
@@ -119,26 +118,13 @@ export default {
     methods: {
         ...investorsMethods,
 
-        destroyRecord(url, id) {
-            return alertDestroyRecordConfirmation(url, id)
-                .then(value => {
-                    if (value) {
-                        return this.prepare()
-                    }
-                })
+        async destroyRecord(url, id) {
+            return await alertDestroyRecordConfirmation(url, id)
+                .then(this.prepare())
         },
 
-        prepare() {
-            var investors = this.fetchAllInvestors()
-                .then(value => {
-                    if (value) {
-                        this.investors = value
-                    }
-
-                    return value
-                })
-
-            return Promise.all([value])
+        async prepare() {
+            return await this.fetchAllInvestors()
         }
     }
 }

@@ -1,7 +1,7 @@
 <template>
   <div>
     <h4 class="mb-3">
-      Proyectos
+      Inversiones
     </h4>
 
     <div class="card shadow">
@@ -10,7 +10,7 @@
           <div class="col-md-5">
             <quick-search
               ref="quickSearch"
-              :items="investments"
+              :items="allInvestments"
             />
           </div>
           <div class="col-md-3 offset-md-4">
@@ -18,7 +18,7 @@
               class="btn btn-block btn-primary text-white"
               :to="{ name: 'AdminInvestmentsCreate' }"
             >
-              <span class="fa fa-plus pr-2" />Nuevo Proyecto
+              <span class="fa fa-plus pr-2" />Nueva Inversión
             </router-link>
           </div>
         </div>
@@ -77,7 +77,6 @@ import { investmentsComputed, investmentsMethods } from "@linkre/store/helpers"
 export default {
     data() {
         return {
-            investments: [],
             prepared: false,
             columns: {
                 id: "Id.",
@@ -95,6 +94,7 @@ export default {
     watch: {
         "$route" (value) {
             if (value.name === "AdminInvestmentsIndex" && this.prepared) {
+                this.$refs.quickSearch.search = ""
                 this.prepare()
             }
         }
@@ -111,28 +111,13 @@ export default {
     methods: {
         ...investmentsMethods,
 
-        destroyRecord(url, id) {
-            return alertDestroyRecordConfirmation(url, id)
-                .then(value => {
-                    if (value) {
-                        return this.prepare()
-                    }
-
-                    return value
-                })
+        async destroyRecord(url, id) {
+            return await alertDestroyRecordConfirmation(url, id)
+                .then(this.prepare())
         },
 
-        prepare() {
-            var investments = this.fetchAllInvestments()
-                .then(value => {
-                    if (value) {
-                        this.investments = value
-                    }
-
-                    return value
-                })
-
-            return Promise.all([investments])
+        async prepare() {
+            return await this.fetchAllInvestments()
         }
     }
 }

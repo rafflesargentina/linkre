@@ -77,6 +77,7 @@ export default {
     watch: {
         "$route" (value) {
             if (value.name === "AdminLeadsIndex" && this.prepared) {
+                this.$refs.quickSearch.search = ""
                 this.prepare()
             }
         }
@@ -89,14 +90,8 @@ export default {
     methods: {
         ...leadsMethods,
 
-        prepare() {
-            window.$(()=> {
-                this.$refs.quickSearch.search = ""
-            })
-
-            var leads = this.fetchAllLeads()
-
-            return Promise.all([leads])
+        async prepare() {
+            return await this.fetchAllLeads()
         }
     }
 }

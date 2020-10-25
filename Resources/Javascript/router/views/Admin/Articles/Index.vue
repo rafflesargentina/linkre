@@ -10,7 +10,7 @@
           <div class="col-md-5">
             <quick-search
               ref="quickSearch"
-              :items="articles"
+              :items="allArticles"
             />
           </div>
           <div class="col-md-3 offset-md-4">
@@ -77,7 +77,6 @@ import { EventBus } from "@/eventBus"
 export default {
     data() {
         return {
-            articles: [],
             columns: {
                 id: "Id.",
                 title: "Titulo",
@@ -96,6 +95,7 @@ export default {
     watch: {
         "$route" (value) {
             if (value.name === "AdminArticlesIndex" && this.prepared) {
+                this.$refs.quickSearch.search = ""
                 return this.prepare()
             }
         }
@@ -112,26 +112,13 @@ export default {
     methods: {
         ...articlesMethods,
 
-        destroyRecord(url, id) {
-            return alertDestroyRecordConfirmation(url, id)
-                .then(value => {
-                    if (value) {
-                        return this.prepare()
-                    }
-                })
+        async destroyRecord(url, id) {
+            return await alertDestroyRecordConfirmation(url, id)
+                .then(this.prepare())
         },
 
-        prepare() {
-            var articles = this.fetchAllArticles()
-                .then(value => {
-                    if (value) {
-                        this.articles = value
-                    }
-
-                    return value
-                })
-
-            return Promise.all([articles])
+        async prepare() {
+            return await this.fetchAllArticles()
         }
     }
 }

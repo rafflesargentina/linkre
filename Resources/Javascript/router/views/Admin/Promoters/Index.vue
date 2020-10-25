@@ -10,7 +10,7 @@
           <div class="col-md-5">
             <quick-search
               ref="quickSearch"
-              :items="promoters"
+              :items="allPromoters"
             />
           </div>
           <div class="col-md-3 offset-md-4">
@@ -18,7 +18,7 @@
               class="btn btn-block btn-primary text-white"
               :to="{ name: 'AdminPromotersCreate' }"
             >
-              <span class="fa fa-plus pr-2" />Nuevo Promotor (GP)
+              <span class="fa fa-plus pr-2" />Nueva Desarroladora
             </RouterLink>
           </div>
         </div>
@@ -84,7 +84,6 @@ export default {
                 updated_at: "Actualización"
             },
             prepared: false,
-            promoters: [],
         }
     },
 
@@ -111,26 +110,13 @@ export default {
     methods: {
         ...promotersMethods,
 
-        destroyRecord(url, id) {
+        async destroyRecord(url, id) {
             return alertDestroyRecordConfirmation(url, id)
-                .then(value => {
-                    if (value) {
-                        return this.prepare()
-                    }
-                })
+                .then(this.prepare())
         },
 
-        prepare() {
-            var promoters = this.fetchAllPromoters()
-                .then(value => {
-                    if (value) {
-                        this.promoters = value
-                    }
-
-                    return value
-                })
-
-            return Promise.all([promoters])
+        async prepare() {
+            return await this.fetchAllPromoters()
         }
     }
 }
