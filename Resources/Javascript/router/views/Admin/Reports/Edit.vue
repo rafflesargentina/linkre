@@ -1,7 +1,7 @@
 <template>
   <div>
     <h4 class="mb-3">
-      Editar Reporte: {{ strLimit(oneReport.title) }}
+      Editar Informe: {{ strLimit(oneReport.title) }}
     </h4>
     <ReportForm
       :action="'/api/reports/' + $route.params.id"
