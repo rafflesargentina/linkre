@@ -376,7 +376,7 @@ export default {
         ...developersMethods,
 
         dzFeaturedPhotoSuccess() {
-            alertSuccessMessage("Desarrolladoras", "La desarrolladora fue guardada correctamente.")
+            alertSuccessMessage("Promotores", "El promotor fue guardado correctamente.")
             return this.$router.push({ name: "AdminDevelopersIndex" })
         },
 
