@@ -44,7 +44,9 @@ class InvestmentRequest extends ActionBasedFormRequest
 
         $id = $model ? $model->id : null;
 
-        return [
+	return [
+            'address.locality' => 'required',
+	    'address.country' => 'required',
             'company_id' => 'required',
             'description' => 'required',
             'financial.adquisition_cost' => 'numeric',

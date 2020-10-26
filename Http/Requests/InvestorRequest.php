@@ -22,15 +22,7 @@ class InvestorRequest extends ActionBasedFormRequest
             ];
         }
 
-        $repository = new InvestorRepository();
-        $model = $repository->findBy(
-            $repository->model->getRouteKeyName(),
-            request()->route(
-                str_singular('investors')
-            )
-        );
-
-        $id = $model ? $model->id : null;
+	$id = request()->route('investor');
 
         return [
             'document_number' => [
