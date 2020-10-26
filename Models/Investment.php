@@ -53,7 +53,7 @@ class Investment extends Model
      */
     public function address()
     {
-        return $this->morphOne(Address::class, 'addressable');
+        return $this->morphOne(Address::class, 'addressable')->withDefault();
     }
 
     /**

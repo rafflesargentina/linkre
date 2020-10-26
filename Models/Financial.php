@@ -11,35 +11,35 @@ class Financial extends Model
      *
      * @var array
      */
-    //protected $attributes = [
-        //'adquisition_cost' => 0,
-        //'apr' => 0,
-        //'development_cost' => 0,
-        //'equity' => 0,
-        //'funded' => 0,
-        //'irr' => 0,
-        //'mezzanine_debt' => 0,
-        //'senior_debt' => 0,
-        //'open_offer',
-    //];
+    protected $attributes = [
+        'adquisition_cost' => 0,
+        'apr' => 0,
+        'development_cost' => 0,
+        'equity' => 0,
+        'funded' => 0,
+        'irr' => 0,
+        'mezzanine_debt' => 0,
+        'senior_debt' => 0,
+        'open_offer' => 0,
+    ];
 
     /**
      * The attributes that should be cast to native types.
      *
      * @var array
      */
-    protected $casts = [
-        'adquisition_cost' => 'int',
-        'apr' => 'int',
-        'development_cost' => 'int',
-        'equity' => 'int',
-        'funded' => 'int',
-        'irr' => 'int',
-        'mezzanine_debt' => 'int',
-        'remaning' => 'int',
-        'senior_debt' => 'int',
-        'open_offer' => 'int'
-    ];
+    //protected $casts = [
+        //'adquisition_cost' => 'int',
+        //'apr' => 'int',
+        //'development_cost' => 'int',
+        //'equity' => 'int',
+        //'funded' => 'int',
+        //'irr' => 'int',
+        //'mezzanine_debt' => 'int',
+        //'remaning' => 'int',
+        //'senior_debt' => 'int',
+        //'open_offer' => 'int'
+    //];
 
     /**
      * The attributes that are mass assignable.
