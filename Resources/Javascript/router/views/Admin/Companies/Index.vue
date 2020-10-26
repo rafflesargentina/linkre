@@ -113,7 +113,7 @@ export default {
 
         async destroyRecord(url, id) {
             return await alertDestroyRecordConfirmation(url, id)
-                .then(this.prepare())
+                .then(()=> this.prepare())
         },
 
         async prepare() {

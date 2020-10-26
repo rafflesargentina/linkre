@@ -111,8 +111,8 @@ export default {
         ...promotersMethods,
 
         async destroyRecord(url, id) {
-            return alertDestroyRecordConfirmation(url, id)
-                .then(this.prepare())
+            return await alertDestroyRecordConfirmation(url, id)
+                .then(()=> this.prepare())
         },
 
         async prepare() {

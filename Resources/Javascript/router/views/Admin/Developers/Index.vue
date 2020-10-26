@@ -114,7 +114,7 @@ export default {
 
         async destroyRecord(url, id) {
             return await destroyRecordConfirmation(url, id)
-                .then(this.fetchAllDevelopers())
+                .then(()=> this.fetchAllDevelopers())
         },
 
         async prepare() {
