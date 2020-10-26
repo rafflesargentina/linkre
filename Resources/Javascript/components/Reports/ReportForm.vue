@@ -150,12 +150,11 @@
 </template>
 
 <script>
+import { alertErrorMessage, alertSuccessMessage, deepClone, getSavedState, removeDzPreviewTemplate, slugify } from "@/utilities/helpers"
+import { documentsMethods, reportsComputed, reportsMethods } from "@linkre/store/helpers"
 import { dz } from "@/utilities/mixins/dz"
-import { reportsComputed, reportsMethods, photosMethods } from "@linkre/store/helpers"
-import { alertErrorMessage, alertSuccessMessage, getSavedState } from "@/utilities/helpers"
+import { photosMethods } from "@/store/helpers"
 import { EventBus } from "@/eventBus"
-import { slugify } from "@/utilities/helpers"
-import { VueEditor } from "vue2-editor"
 
 import store from "@/store"
 import vue2Dropzone from "vue2-dropzone"
@@ -164,7 +163,7 @@ import Form from "@/utilities/Form"
 const token = getSavedState("auth.token")
 const csrfToken = document.head.querySelector("meta[name=\"csrf-token\"]").content
 
-var fields = store.state.reports.initialState.one
+var fields = deepClone(store.state.reports.initialState.one)
 
 export default {
 
@@ -172,7 +171,6 @@ export default {
 
     components: {
         VueDropzone: vue2Dropzone,
-        VueEditor
     },
 
     mixins: [dz],
@@ -240,12 +238,12 @@ export default {
     watch: {
         "$route" (value) {
             var routeName = value.name
-            if (routeName === "AdminReportsCreate") {
-                this.prepareCreate().then(this.prepared = true)
+            if (routeName === "AdminReportsCreate" && this.prepared) {
+                this.prepareCreate()
             }
 
-            if (routeName === "AdminReportsEdit") {
-                this.prepareEdit().then(this.prepared = true)
+            if (routeName === "AdminReportsEdit" && this.prepared) {
+                this.prepareEdit()
             }
         }
     },
@@ -266,11 +264,12 @@ export default {
     },
 
     methods: {
+        ...documentsMethods,
         ...reportsMethods,
         ...photosMethods, 
 
         dzDocumentsSuccess() {
-            alertSuccessMessage("Reportes", "El reporte fue guardado correctamente.")
+            alertSuccessMessage("Informes", "El reporte fue guardado correctamente.")
             return this.$router.push({ name: "AdminReportsIndex" })
         },
 
@@ -279,37 +278,32 @@ export default {
         },
 
         prepareCreate() {
+            this.isDestrying = false
+
+            store.dispatch("reports/reset")
             this.form.reset()
-            this.submitted = false
+            this.form = new Form(deepClone(this.oneReport))
 
             window.$(()=> {
-                this.dzDocumentsMounted()
-                this.dzFeaturedPhotoMounted()
+                removeDzPreviewTemplate(this.dzDocuments.dropzone)
+                removeDzPreviewTemplate(this.dzFeaturedPhoto.dropzone)
             })
 
-            return Promise.all([])
+            return Promise.resolve()
         },
 
-        prepareEdit() {
-            var report = this.fetchOneReport(this.$route.params.id)
+        async prepareEdit() {
+            this.isDestroying = false
+
+            return await this.fetchOneReport(this.$route.params.id)
                 .then(value => {
-                    if (value) {
-                        this.report = value
-                        this.form = new Form(value)
+                    this.form = new Form(value)
 
-                        if (value.documents) {
-                            this.dzDocumentsMounted(value.documents)
-                        }
-
-                        if (value.featured_photo) {
-                            this.dzFeaturedPhotoMounted(value.featured_photo)
-                        }
-                    }
+                    this.dzDocumentsMounted(value.documents)
+                    this.dzFeaturedPhotoMounted(value.featured_photo)
 
                     return value
                 })
-
-            return Promise.all([report])
         },
 
         handleSubmitForm() {
@@ -327,13 +321,27 @@ export default {
                     EventBus.$emit("report-saved", response.data[0])
 
                     this.dzFeaturedPhotoProcessQueue()
-                    return this.submitted = false
+
+                    this.submitted = false
+
+                    return response
                 }).catch(error => {
-                    if (error.status > 422) {
-                        alertErrorMessage("Noticias" + error.data.message)
+                    if (error.status === 422) {
+                        var message = ""
+                        Object.entries(error.data.errors).forEach(msg => {
+                            message += "<p>" + msg[1] + "</p>"
+                        })
+
+                        alertErrorMessage("Errores de validación", message)
                     }
 
-                    return this.submitted = false
+                    if (error.status !== 422) {
+                        alertErrorMessage("Informes" + error.data.message)
+                    }
+
+                    this.submitted = false
+
+                    return error
                 })
         },
 

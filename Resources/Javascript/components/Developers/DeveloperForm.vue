@@ -10,11 +10,11 @@
     :class="[validated ? 'needs-validation' : 'needs-validation']"
     :method="method"
     novalidate
-    @submit.prevent="submitForm"
+    @submit.prevent="handleSubmitForm"
     @keydown="form.errors.clear($event.target.name)"
   >
     <ul
-      id="investor-pills"
+      id="developer-pills"
       class="nav nav-pills mb-3"
       role="tablist"
     >
@@ -63,154 +63,32 @@
             <li class="list-group-item">
               <div class="form-group row mb-0">
                 <label
-                  for="document_type_id"
-                  class="col-6 col-form-label text-muted"
-                >
-                  Tipo *
-                </label>
-                <div class="col-6 col-lg-4">
-                  <select
-                    v-model="form.document_type_id"
-                    :class="{ 'is-invalid': form.errors.has('document_type_id') }"
-                    class="form-control"
-                    name="document_type_id"
-                    required
-                  >
-                    <option value="">
-                      Tipo
-                    </option>
-                    <option
-                      v-for="item in allDocumentTypes"
-                      :key="item.id"
-                      :value="item.id"
-                    >
-                      {{ item.name }}
-                    </option>
-                  </select>
-                  <span
-                    v-if="form.errors.has('document_type_id')"
-                    class="invalid-feedback"
-                    role="alert"
-                  >
-                    <strong v-text="form.errors.get('document_type_id')" />
-                  </span>
-                </div>
-              </div>
-            </li>
-            <li class="list-group-item">
-              <div class="form-group row mb-0">
-                <label
-                  for="document_number"
-                  class="col-6 col-form-label text-muted"
-                >
-                  Número *
-                </label>
-                <div class="col-6 col-lg-4">
-                  <input
-                    v-model="form.document_number"
-                    :class="{ 'is-invalid': form.errors.has('document_number') }"
-                    class="form-control"
-                    name="document_number"
-                    placeholder="Número"
-                    required
-                    type="text"
-                  >
-                  <span
-                    v-if="form.errors.has('document_number')"
-                    class="invalid-feedback"
-                    role="alert"
-                  >
-                    <strong v-text="form.errors.get('document_number')" />
-                  </span>
-                </div>
-              </div>
-            </li>
-            <li class="list-group-item">
-              <div class="form-group row mb-0">
-                <label
-                  for="first_name"
+                  for="name"
                   class="col-6 col-form-label text-muted"
                 >
                   Nombre *
                 </label>
                 <div class="col-6 col-lg-4">
                   <input
-                    v-model="form.first_name"
-                    :class="{ 'is-invalid': form.errors.has('first_name') }"
+                    v-model="form.name"
+                    :class="{ 'is-invalid': form.errors.has('name') }"
                     class="form-control"
-                    name="first_name"
+                    name="name"
                     placeholder="Nombre"
                     required
                     type="text"
-                  >
-                  <span
-                    v-if="form.errors.has('first_name')"
-                    class="invalid-feedback"
-                    role="alert"
-                  >
-                    <strong v-text="form.errors.get('first_name')" />
-                  </span>
-                </div>
-              </div>
-            </li>
-            <li class="list-group-item">
-              <div class="form-group row mb-0">
-                <label
-                  for="last_name"
-                  class="col-6 col-form-label text-muted"
-                >
-                  Apellido *
-                </label>
-                <div class="col-6 col-lg-4">
-                  <input
-                    v-model="form.last_name"
-                    :class="{ 'is-invalid': form.errors.has('last_name') }"
-                    class="form-control"
-                    name="last_name"
-                    placeholder="Apellido"
-                    required
-                    type="text"
-                  >
-                  <span
-                    v-if="form.errors.has('last_name')"
-                    class="invalid-feedback"
-                    role="alert"
-                  >
-                    <strong v-text="form.errors.get('last_name')" />
-                  </span>
-                </div>
-              </div>
-            </li>
-            <li class="list-group-item">
-              <div class="form-group row mb-0">
-                <label
-                  for="email"
-                  class="col-6 col-form-label text-muted"
-                >
-                  Email *
-                </label>
-                <div class="col-6 col-lg-4">
-                  <input
-                    v-model="form.email"
-                    :class="{ 'is-invalid': form.errors.has('email') }"
-                    class="form-control"
-                    name="email"
-                    placeholder="Email"
-                    required
-                    type="email"
                     @keyup="form.slug = updateSlug($event.target.value)"
                   >
                   <span
-                    v-if="form.errors.has('email')"
+                    v-if="form.errors.has('name')"
                     class="invalid-feedback"
                     role="alert"
                   >
-                    <strong v-text="form.errors.get('email')" />
+                    <strong v-text="form.errors.get('name')" />
                   </span>
                 </div>
               </div>
             </li>
-
             <li class="list-group-item">
               <div class="form-group row mb-0">
                 <label
@@ -244,62 +122,32 @@
 
           <div class="card-header bg-white p-2 p-md-4">
             <h5 class="text-primary m-0">
-              Contraseña
+              Descripción
             </h5>
           </div>
           <ul class="list-group list-group-flush">
             <li class="list-group-item">
               <div class="form-group row mb-0">
                 <label
-                  for="password"
-                  class="col-6 col-form-label text-muted"
+                  for="description"
+                  class="col-lg-3 col-form-label text-muted"
                 >
-                  Contraseña
+                  Descripción
                 </label>
-                <div class="col-6 col-lg-4">
-                  <input
-                    v-model="form.password"
-                    :class="{ 'is-invalid': form.errors.has('password') }"
-                    class="form-control"
-                    name="password"
-                    placeholder="Contraseña"
-                    required
-                    type="password"
-                  >
+                <div class="col-lg-9">
+                  <VueEditor
+                    v-model="form.description"
+                    :class="{ 'is-invalid': form.errors.has('description') }"
+                    class="bg-white"
+                    name="description"
+                    placeholder="Descripción"
+                  />
                   <span
-                    v-if="form.errors.has('password')"
-                    class="invalid-feedback"
+                    v-if="form.errors.has('description')"
+                    class="d-block invalid-feedback"
                     role="alert"
                   >
-                    <strong v-text="form.errors.get('password')" />
-                  </span>
-                </div>
-              </div>
-            </li>
-            <li class="list-group-item">
-              <div class="form-group row mb-0">
-                <label
-                  for="password"
-                  class="col-6 col-form-label text-muted"
-                >
-                  Confirmación de contraseña
-                </label>
-                <div class="col-6 col-lg-4">
-                  <input
-                    v-model="form.password_confirmation"
-                    :class="{ 'is-invalid': form.errors.has('password_confirmation') }"
-                    class="form-control"
-                    name="password_confirmation"
-                    placeholder="Confirmación de contraseña"
-                    required
-                    type="password"
-                  >
-                  <span
-                    v-if="form.errors.has('password_confirmation')"
-                    class="invalid-feedback"
-                    role="alert"
-                  >
-                    <strong v-text="form.errors.get('password_confirmation')" />
+                    <strong v-text="form.errors.get('description')" />
                   </span>
                 </div>
               </div>
@@ -332,164 +180,14 @@
                     id="dzFeaturedPhoto"
                     ref="dzFeaturedPhoto"
                     :options="dzFeaturedPhotoOptions"
-                    @vdropzone-error="dzFeaturedPhotoFail"
-                    @vdropzone-files-added="dzFeaturedPhotoAddOrRemoveFiles"
-                    @vdropzone-removed-file="dzFeaturedPhotoRemoveFile"
-                    @vdropzone-processing="dzFeaturedPhotoSetUrl"
-                    @vdropzone-success-multiple="dzFeaturedPhotoSucceed"
+                    @vdropzone-error="dzFeaturedPhotoError"
+                    @vdropzone-removed-file="dzFeaturedPhotoRemovedFile"
+                    @vdropzone-processing="dzFeaturedPhotoProcessing"
+                    @vdropzone-success-multiple="dzFeaturedPhotoSuccess"
+                    @vdropzone-upload-progress="dzFeaturedPhotoUploadProgress"
                   />
                 </div>
               </div>
-            </li>
-          </ul>
-
-          <div class="card-header bg-white p-2 p-md-4">
-            <h5 class="text-primary m-0">
-              Ubicación y Mapa
-            </h5>
-          </div>
-          <ul class="list-group list-group-flush">
-            <li class="list-group-item">
-              <div class="form-group row mb-0">
-                <label
-                  for="autocomplete"
-                  class="col-6 col-form-label text-muted"
-                >
-                  Ubicación *
-                </label>
-                <div class="col-6 col-lg-4">
-                  <input
-                    id="autocomplete"
-                    v-model="location"
-                    name="autocomplete"
-                    class="form-control"
-                    @input="geolocate"
-                  >
-                  <input
-                    id="country"
-                    v-model="form.address.country"
-                    name="address.country"
-                    class="form-control"
-                    type="hidden"
-                  >
-                  <input
-                    id="route"
-                    v-model="form.address.street_name"
-                    name="address.street_name"
-                    class="form-control"
-                    type="hidden"
-                  >
-                  <input
-                    id="locality"
-                    v-model="form.address.locality"
-                    name="address.locality"
-                    class="form-control"
-                    type="hidden"
-                  >
-                  <input
-                    id="administrative_area_level_1"
-                    v-model="form.address.state"
-                    name="address.state"
-                    class="form-control"
-                    type="hidden"
-                  >
-                  <input
-                    id="postal_code"
-                    v-model="form.address.zip"
-                    name="address.zip"
-                    class="form-control"
-                    type="hidden"
-                  >
-                </div>
-              </div>
-            </li>
-            <li class="list-group-item">
-              <div class="form-group row mb-0">
-                <label
-                  for="map.lat"
-                  class="col-6 col-form-label text-muted"
-                >
-                  Latitud
-                </label>
-                <div class="col-6 col-lg-4">
-                  <input
-                    v-model="form.map.lat"
-                    :class="{ 'is-invalid': form.errors.has('map.lat') }"
-                    class="form-control"
-                    name="map.lat"
-                    placeholder="Latitud"
-                    type="number"
-                  >
-                  <span
-                    v-if="form.errors.has('map.lat')"
-                    class="invalid-feedback"
-                    role="alert"
-                  >
-                    <strong v-text="form.errors.get('map.lat')" />
-                  </span>
-                </div>
-              </div>
-            </li>
-            <li class="list-group-item">
-              <div class="form-group row mb-0">
-                <label
-                  for="map.lng"
-                  class="col-6 col-form-label text-muted"
-                >
-                  Longitud
-                </label>
-                <div class="col-6 col-lg-4">
-                  <input
-                    v-model="form.map.lng"
-                    :class="{ 'is-invalid': form.errors.has('map.lng') }"
-                    class="form-control"
-                    name="map.lng"
-                    placeholder="Longitud"
-                    type="number"
-                  >
-                  <span
-                    v-if="form.errors.has('map.lng')"
-                    class="invalid-feedback"
-                    role="alert"
-                  >
-                    <strong v-text="form.errors.get('map.lng')" />
-                  </span>
-                </div>
-              </div>
-            </li>
-            <li class="list-group-item">
-              <div class="form-group row mb-0">
-                <label
-                  for="map.zoom"
-                  class="col-6 col-form-label text-muted"
-                >
-                  Zoom
-                </label>
-                <div class="col-6 col-lg-4">
-                  <input
-                    v-model="form.map.zoom"
-                    :class="{ 'is-invalid': form.errors.has('map.zoom') }"
-                    class="form-control"
-                    name="map.zoom"
-                    placeholder="Zoom"
-                    type="number"
-                  >
-                  <span
-                    v-if="form.errors.has('map.zoom')"
-                    class="invalid-feedback"
-                    role="alert"
-                  >
-                    <strong v-text="form.errors.get('map.zoom')" />
-                  </span>
-                </div>
-              </div>
-            </li>
-            <li class="list-group-item">
-              <div
-                id="map"
-                ref="map"
-                class="map"
-              />
             </li>
           </ul>
 
@@ -578,28 +276,28 @@
 
 <script>
 import { dz } from "@/utilities/mixins/dz"
-import { documentTypesComputed } from "@/store/helpers"
-import { developersComputed } from "@linkre/store/helpers"
-import { getSavedState } from "@/utilities/helpers"
+import { developersComputed, developersMethods } from "@linkre/store/helpers"
+import { alertErrorMessage, alertSuccessMessage, deepClone, getSavedState, removeDzPreviewTemplate, slugify } from "@/utilities/helpers"
 import { photosMethods } from "@/store/helpers"
-import { google } from "@/utilities/mixins/google"
-import { slugify } from "@/utilities/helpers"
+import { EventBus } from "@/eventBus"
+import { VueEditor } from "vue2-editor"
 
+import store from "@/store"
 import vue2Dropzone from "vue2-dropzone"
 import Form from "@/utilities/Form"
 
 const token = getSavedState("auth.token")
 const csrfToken = document.head.querySelector("meta[name=\"csrf-token\"]").content
 
+var fields = deepClone(store.state.developers.initialState.one)
+
 export default {
-
-    name: "DeveloperForm",
-
     components: {
         VueDropzone: vue2Dropzone,
+        VueEditor
     },
 
-    mixins: [dz, google],
+    mixins: [dz],
 
     props: {
         action: {
@@ -624,22 +322,20 @@ export default {
                     "Authorization": "Bearer " + token
                 },
                 maxFiles: 1,
-                maxFilesize: 0.4,
+                maxFilesize: 1,
                 method: "put",
                 paramName: "featured_photo",
                 uploadMultiple: true,
                 url: "/api/developers",
             },
-            form: new Form(),
+            form: new Form(fields),
             isDestroying: false,
-            location: "",
             submitted: false,
             url: "/api/developers",
         }
     },
 
     computed: {
-        ...documentTypesComputed,
         ...developersComputed,
 
         validated() {
@@ -647,39 +343,72 @@ export default {
         }
     },
 
-    created() {
-        this.prepare(this.oneDeveloper)
+    watch: {
+        "$route" (value) {
+            var routeName = value.name
+            if (routeName === "AdminDevelopersCreate" && this.prepared) {
+                this.prepareCreate()
+            }
 
-        this.$store.watch(state => state.developers.one, (value)=> {
-            this.isDestroying = false
-            this.prepare(value)
-            this.dzFeaturedPhotoMounted(value.featured_photo)
-        })
+            if (routeName === "AdminDevelopersEdit" && this.prepare) {
+                this.prepareEdit()
+            }
+        }
     },
 
-    mounted() {
-        return this.initAutocomplete()
+    beforeDestroy() {
+        this.isDestroying = true
+    },
+
+    created() {
+        var routeName = this.$route.name
+        if (routeName === "AdminDevelopersCreate") {
+            return this.prepareCreate().then(this.prepared = true)
+        }
+
+        if (routeName === "AdminDevelopersEdit") {
+            return this.prepareEdit().then(this.prepared = true)
+        }
     },
 
     methods: {
-        ...photosMethods, 
+        ...photosMethods,
+        ...developersMethods,
 
-        prepare(one) {
-            this.form = new Form(one)
-            this.location = one.address.location
-
-            this.geolocate().then(value => {
-                if (null !== one.map.lat || null !== one.map.lng) {
-                    return this.coordinates = one.map.coordinates
-                }
-            })
-
-            if (this.$refs.map) {
-                this.initMap("map", { center: this.geolocation, zoom: this.oneDeveloper.map.zoom })
-            }
+        dzFeaturedPhotoSuccess() {
+            alertSuccessMessage("Desarrolladoras", "La desarrolladora fue guardada correctamente.")
+            return this.$router.push({ name: "AdminDevelopersIndex" })
         },
 
-        submitForm() {
+        prepareCreate() {
+            this.isDestroying = false
+
+            store.dispatch("developers/reset")
+            this.form.reset()
+            this.form = new Form(this.oneDeveloper)
+
+            window.$(()=> {
+                removeDzPreviewTemplate(this.dzFeaturedPhoto.dropzone)
+            })
+
+            return Promise.resolve()
+        },
+
+        async prepareEdit() {
+            this.isDestroying = false
+
+            return await this.fetchOneDeveloper(this.$route.params.id)
+                .then(value => {
+                    this.form.reset()
+                    this.form = new Form(value)
+
+                    this.dzFeaturedPhotoMounted(value.featured_photo)
+
+                    return value
+                })
+        },
+
+        handleSubmitForm() {
             this.submitted = true
 
             this.form.featured_photo = {}
@@ -689,18 +418,31 @@ export default {
                 .then(response => {
                     id = response.data[0].id
                     this.url = "/api/developers/" + id
-                    return this.dzFeaturedPhotoProcessQueue()
-                })
-                .then(() => {
+
+                    EventBus.$emit("developer-saved", response.data[0])
+
+                    this.dzFeaturedPhotoProcessQueue()
+
                     this.submitted = false
-                    this.$snotify.success("El registro nº " + id + " fue guardado correctamente.")
-                    return this.$router.push({ name: "AdminDevelopersIndex" })
+
+                    return response
                 }).catch(error => {
-                    if (error.status > 422) {
-                        this.$snotify.error("Ocurrió un error con el siguiente mensaje: " + error.data.message)
+                    if (error.status === 422) {
+                        var message = ""
+                        Object.entries(error.data.errors).forEach(msg => {
+                            message += "<p>" + msg[1] + "</p>"
+                        })
+
+                        alertErrorMessage("Errores de validación", message)
                     }
 
-                    return this.submitted = false
+                    if (error.status !== 422) {
+                        alertErrorMessage(error.data.message)
+                    }
+
+                    this.submitted = false
+
+                    return error
                 })
         },
 

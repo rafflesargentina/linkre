@@ -66,8 +66,14 @@
                 </label>
                 <div class="col-6 col-lg-4">
                   <ul>
-                    <li v-for="item in investmentPreferences">
-                      <span v-if="oneInvestor.investor_profile.investment_preferences.map(i => { return i.id }).includes(item.id)">{{ item.name }}</span><del class="text-muted" v-else>{{ item.name }}</del>
+                    <li
+                      v-for="item in allInvestmentPreferences"
+                      :key="item.id"
+                    >
+                      <span v-if="oneInvestor.investor_profile.investment_preferences.map(i => i.id).includes(item.id)">{{ item.name }}</span><del
+                        v-else
+                        class="text-muted"
+                      >{{ item.name }}</del>
                     </li>
                   </ul>
                 </div>
@@ -98,7 +104,7 @@
                       Tipo de Inversor
                     </option>
                     <option
-                      v-for="item in investorTypes"
+                      v-for="item in allInvestorTypes"
                       :key="'investorType-' + item.id"
                       :value="item.id"
                     >
@@ -140,7 +146,7 @@
                       Tipo de Inversión
                     </option>
                     <option
-                      v-for="item in investmentTypes"
+                      v-for="item in allInvestmentTypes"
                       :key="'investmentType-' + item.id"
                       :value="item.id"
                     >
@@ -182,7 +188,7 @@
                       Valor de Inversión
                     </option>
                     <option
-                      v-for="item in investmentValues"
+                      v-for="item in allInvestmentValues"
                       :key="'investmentValue-' + item.id"
                       :value="item.id"
                     >
@@ -285,7 +291,7 @@
                       Tipo
                     </option>
                     <option
-                      v-for="item in documentTypes"
+                      v-for="item in allDocumentTypes"
                       :key="item.id"
                       :value="item.id"
                     >
@@ -470,7 +476,10 @@
                 </label>
                 <div class="col-6 col-lg-4">
                   <ul>
-                    <li v-for="item in investmentPreferences">
+                    <li
+                      v-for="item in allInvestmentPreferences"
+                      :key="item.id"
+                    >
                       <span v-if="oneInvestor.investor_profile.investment_preferences.find(investment_preference => investment_preference.id === item.id)">{{ item.name }}</span><del v-else>{{ item.name }}</del>
                     </li>
                   </ul>
@@ -502,7 +511,7 @@
                       Tipo de Inversor
                     </option>
                     <option
-                      v-for="item in investorTypes"
+                      v-for="item in allInvestorTypes"
                       :key="'investorType-' + item.id"
                       :value="item.id"
                     >
@@ -544,7 +553,7 @@
                       Tipo de Inversión
                     </option>
                     <option
-                      v-for="item in investmentTypes"
+                      v-for="item in allInvestmentTypes"
                       :key="'investmentType-' + item.id"
                       :value="item.id"
                     >
@@ -586,7 +595,7 @@
                       Valor de Inversión
                     </option>
                     <option
-                      v-for="item in investmentValues"
+                      v-for="item in allInvestmentValues"
                       :key="'investmentValue-' + item.id"
                       :value="item.id"
                     >
@@ -682,7 +691,7 @@
           <div class="card-body">
             <quick-search
               ref="quickSearch"
-              :items="investments"
+              :items="allInvestments"
             />
           </div>
 
@@ -752,14 +761,11 @@
 </template>
 
 <script>
+import { alertErrorMessage, alertSuccessMessage, deepClone, getSavedState, removeDzPreviewTemplate, slugify } from "@/utilities/helpers"
+import { documentTypesComputed, documentTypesMethods, photosMethods } from "@/store/helpers"
 import { dz } from "@/utilities/mixins/dz"
-import { documentTypesComputed, documentTypesMethods } from "@/store/helpers"
 import { investmentsComputed, investmentsMethods, investmentPreferencesComputed, investmentPreferencesMethods, investmentTypesComputed, investmentTypesMethods, investmentValuesComputed, investmentValuesMethods, investorsComputed, investorsMethods, investorTypesComputed, investorTypesMethods } from "@linkre/store/helpers"
-import { alertErrorMessage, alertSuccessMessage, getSavedState } from "@/utilities/helpers"
-import { photosMethods } from "@/store/helpers"
-import { deepClone } from "@/utilities/helpers"
 import { EventBus } from "@/eventBus"
-import { VueEditor } from "vue2-editor"
 
 import store from "@/store"
 import vue2Dropzone from "vue2-dropzone"
@@ -773,7 +779,6 @@ var fields = deepClone(store.state.investors.initialState.one)
 export default {
     components: {
         VueDropzone: vue2Dropzone,
-        VueEditor
     },
 
     mixins: [dz],
@@ -800,7 +805,6 @@ export default {
                 created_at: "Creación",
                 updated_at: "Actualización"
             },
-            documentTypes: [],
             dzFeaturedPhotoOptions: {
                 addRemoveLinks: true,
                 autoProcessQueue: false,
@@ -817,11 +821,6 @@ export default {
                 url: "/api/investors",
             },
             form: new Form(fields),
-            investments: [],
-            investmentPreferences: [],
-            investmentTypes: [],
-            investmentValues: [],
-            investorTypes: [],
             isDestroying: false,
             submitted: false,
             url: "/api/investors",
@@ -845,12 +844,12 @@ export default {
     watch: {
         "$route" (value) {
             var routeName = value.name
-            if (routeName === "AdminInvestorsCreate") {
-                this.prepareCreate().then(this.prepared = true)
+            if (routeName === "AdminInvestorsCreate" && this.prepared) {
+                this.prepareCreate()
             }
 
-            if (routeName === "AdminInvestorsEdit") {
-                this.prepareEdit().then(this.prepared = true)
+            if (routeName === "AdminInvestorsEdit" && this.prepared) {
+                this.prepareEdit()
             }
         }
     },
@@ -886,146 +885,67 @@ export default {
         },
 
         isInvestmentAssigned(id) {
-            return this.investments[id] !== undefined
+            return this.assignedInvestments[id] !== undefined
         },
 
         isInvestmentPreferenceSelected(id) {
             return this.investmentPreferences[id] !== undefined
         },
 
-        prepareCreate() {
-            this.submitted = false
-
-            var investments = this.fetchAllInvestments()
-                .then(value => {
-                    if (value) {
-                        this.investments = value
-                    }
-
-                    return value
-                })
-
-            var documentTypes = this.fetchAllDocumentTypes()
-                .then(value => {
-                    if (value) {
-                        this.documentTypes = value
-                    }
-
-                    return value
-                })
-
-            var investmentPreferences = this.fetchAllInvestmentPreferences()
-                .then(value => {
-                    if (value) {
-                        this.investmentPreferences = value
-                    }
-
-                    return value
-                })
-
-            var investmentTypes = this.fetchAllInvestmentTypes()
-                .then(value => {
-                    if (value) {
-                        this.investmentTypes = value
-                    }
-
-                    return value
-                })
-
-            var investmentValues = this.fetchAllInvestmentValues()
-                .then(value => {
-                    if (value) {
-                        this.investmentValues = value
-                    }
-
-                    return value
-                })
-
-            var investorTypes = this.fetchAllInvestorTypes()
-                .then(value => {
-                    if (value) {
-                        this.investorTypes = value
-                    }
-
-                    return value
-                })
-
-            return Promise.all([investments, documentTypes, investmentPreferences, investmentTypes, investmentValues, investorTypes])
+        async fetchOne(id) {
+            return await this.fetchOneInvestor(id)
         },
 
-        prepareEdit() {
-            var investor = this.fetchOneInvestor(this.$route.params.id)
-                .then(value => {
-                    if (value) {
-                        this.investor = value
-                        this.form = new Form(value)
+        async prepareCreate() {
+            this.isDestroying = false
 
-                        this.assignedInvestments = value.investments.map(item => { return item.id })
-                        this.selectedInvestmentPreferences = value.investor_profile.investment_preferences.map(item => { return item.id })
+            // Limpia valores de objetos anidados.
+            store.dispatch("investors/reset")
 
-                        if (value.featured_photo) {
-                            this.dzFeaturedPhotoMounted(value.featured_photo)
-                        }
-                    }
+            // Elimina errores de validación
+            this.form.reset()
 
-                    return value
-                })
+            this.form = new Form(deepClone(this.oneInvestor))
 
+            var investorTypes = this.fetchAllInvestorTypes()
+            var investmentTypes = this.fetchAllInvestmentTypes()
+            var investmentValues = this.fetchAllInvestmentValues()
+            var investmentPreferences = this.fetchAllInvestmentPreferences()
             var documentTypes = this.fetchAllDocumentTypes()
-                .then(value => {
-                    if (value) {
-                        this.documentTypes = value
-                    }
-
-                    return value
-                })
-
             var investments = this.fetchAllInvestments()
+
+            window.$(()=> {
+                removeDzPreviewTemplate(this.dzFeaturedPhoto.dropzone)
+            })
+
+            return await Promise.all([investments, documentTypes, investmentPreferences, investmentTypes, investmentValues, investorTypes])
+        },
+
+        async prepareEdit() {
+            this.isDestroying = false
+        
+            var investor = this.fetchOne(this.$route.params.id)
                 .then(value => {
-                    if (value) {
-                        this.investments = value
-                    }
+                // Elimina errores de validación.
+                    this.form.reset()
+                    this.form = new Form(value)
+
+                    this.assignedInvestments = value.investments.map(item => { return item.id })
+                    this.selectedInvestmentPreferences = value.investor_profile.investment_preferences.map(item => { return item.id })
+
+                    this.dzFeaturedPhotoMounted(value.featured_photo)
 
                     return value
                 })
 
             var investmentPreferences = this.fetchAllInvestmentPreferences()
-                .then(value => {
-                    if (value) {
-                        this.investmentPreferences = value
-                    }
-
-                    return value
-                })
-
-            var investmentTypes = this.fetchAllInvestmentTypes()
-                .then(value => {
-                    if (value) {
-                        this.investmentTypes = value
-                    }
-
-                    return value
-                })
-
-            var investmentValues = this.fetchAllInvestmentValues()
-                .then(value => {
-                    if (value) {
-                        this.investmentValues = value
-                    }
-
-                    return value
-                })
-
             var investorTypes = this.fetchAllInvestorTypes()
-                .then(value => {
-                    if (value) {
-                        this.investorTypes = value
-                    }
+            var investmentTypes = this.fetchAllInvestmentTypes()
+            var investmentValues = this.fetchAllInvestmentValues()
+            var documentTypes = this.fetchAllDocumentTypes()
+            var investments = this.fetchAllInvestments()
 
-                    return value
-                })
-
-            return Promise.all([investor, documentTypes, investments, investmentPreferences, investmentTypes, investmentValues, investorTypes])
+            return await Promise.all([investor, documentTypes, investments, investmentPreferences, investmentTypes, investmentValues, investorTypes])
         },
 
         handleSubmitForm() {
@@ -1052,13 +972,27 @@ export default {
                     EventBus.$emit("investor-saved", response.data[0])
 
                     this.dzFeaturedPhotoProcessQueue()
-                    return this.submitted = false
+
+                    this.submitted = false
+
+                    return response
                 }).catch(error => {
-                    if (error.status > 422) {
+                    if (error.status === 422) {
+                        var message = ""
+                        Object.entries(error.data.errors).forEach(msg => {
+                            message += "<p>" + msg[1] + "</p>"
+                        })
+
+                        alertErrorMessage("Errores de validación", message)
+                    }
+
+                    if (error.status !== 422) {
                         alertErrorMessage("Inversores", error.data.message)
                     }
 
-                    return this.submitted = false
+                    this.submitted = false
+
+                    return error
                 })
         },
 

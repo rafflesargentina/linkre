@@ -275,11 +275,10 @@
 </template>
 
 <script>
-import { dz } from "@/utilities/mixins/dz"
+import { alertErrorMessage, alertSuccessMessage, deepClone, getSavedState, removeDzPreviewTemplate, slugify } from "@/utilities/helpers"
 import { companiesComputed, companiesMethods } from "@linkre/store/helpers"
-import { alertErrorMessage, alertSuccessMessage, getSavedState } from "@/utilities/helpers"
+import { dz } from "@/utilities/mixins/dz"
 import { photosMethods } from "@/store/helpers"
-import { deepClone, slugify } from "@/utilities/helpers"
 import { EventBus } from "@/eventBus"
 import { VueEditor } from "vue2-editor"
 
@@ -347,12 +346,12 @@ export default {
     watch: {
         "$route" (value) {
             var routeName = value.name
-            if (routeName === "AdminCompaniesCreate") {
-                this.prepareCreate().then(this.prepared = true)
+            if (routeName === "AdminCompaniesCreate" && this.prepared) {
+                this.prepareCreate()
             }
 
-            if (routeName === "AdminCompaniesEdit") {
-                this.prepareEdit().then(this.prepared = true)
+            if (routeName === "AdminCompaniesEdit" && this.prepared) {
+                this.prepareEdit()
             }
         }
     },
@@ -376,34 +375,37 @@ export default {
         ...photosMethods,
         ...companiesMethods,
 
-        dzFeaturedPhotoSuccess()
-        {
+        dzFeaturedPhotoSuccess() {
             alertSuccessMessage("Compañías", "La compañía fue guardada correctamente.")
             return this.$router.push({ name: "AdminCompaniesIndex" })
         },
 
         prepareCreate() {
-            this.submitted = false
+            this.isDestroying = false
 
-            return Promise.all([])
+            store.dispatch("companies/reset")
+            this.form.reset()
+            this.form = new Form(deepClone(this.oneCompany))
+
+            window.$(()=> {
+                removeDzPreviewTemplate(this.dzFeaturedPhoto.dropzone)
+            })
+
+            return Promise.resolve()
         },
 
-        prepareEdit() {
-            var company = this.fetchOneCompany(this.$route.params.id)
-                .then(value => {
-                    if (value) {
-                        this.company = value
-                        this.form = new Form(value)
+        async prepareEdit() {
+            this.isDestroying = false
 
-                        if (value.featured_photo) {
-                            this.dzFeaturedPhotoMounted(value.featured_photo)
-                        }
-                    }
+            return await this.fetchOneCompany(this.$route.params.id)
+                .then(value => {
+                    this.form.reset()
+                    this.form = new Form(value)
+
+                    this.dzFeaturedPhotoMounted(value.featured_photo)
 
                     return value
                 })
-
-            return Promise.all([company])
         },
 
         handleSubmitForm() {
@@ -420,13 +422,27 @@ export default {
                     EventBus.$emit("company-saved", response.data[0])
 
                     this.dzFeaturedPhotoProcessQueue()
-                    return this.submitted = false
+
+                    this.submitted = false
+
+                    return response
                 }).catch(error => {
-                    if (error.status > 422) {
+                    if (error.status === 422) {
+                        var message = ""
+                        Object.entries(error.data.errors).forEach(msg => {
+                            message += "<p>" + msg[1] + "</p>"
+                        })
+
+                        alertErrorMessage("Errores de validación", message)
+                    }
+
+                    if (error.status !== 422) {
                         alertErrorMessage("Ocurrió un error con el siguiente mensaje: " + error.data.message)
                     }
 
-                    return this.submitted = false
+                    this.submitted = false
+
+                    return error
                 })
         },
 

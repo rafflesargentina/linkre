@@ -181,9 +181,8 @@
 <script>
 import { dz } from "@/utilities/mixins/dz"
 import { articlesComputed, articlesMethods, photosMethods } from "@/store/helpers"
-import { alertErrorMessage, alertSuccessMessage, getSavedState } from "@/utilities/helpers"
+import { alertErrorMessage, alertSuccessMessage, deepClone, getSavedState, removeDzPreviewTemplate, slugify } from "@/utilities/helpers"
 import { EventBus } from "@/eventBus"
-import { slugify } from "@/utilities/helpers"
 import { VueEditor } from "vue2-editor"
 
 import store from "@/store"
@@ -193,7 +192,7 @@ import Form from "@/utilities/Form"
 const token = getSavedState("auth.token")
 const csrfToken = document.head.querySelector("meta[name=\"csrf-token\"]").content
 
-var fields = store.state.articles.initialState.one
+var fields = deepClone(store.state.articles.initialState.one)
 
 export default {
 
@@ -254,12 +253,12 @@ export default {
     watch: {
         "$route" (value) {
             var routeName = value.name
-            if (routeName === "AdminArticlesCreate") {
-                this.prepareCreate().then(this.prepared = true)
+            if (routeName === "AdminArticlesCreate" && this.prepared) {
+                this.prepareCreate()
             }
 
-            if (routeName === "AdminArticlesEdit") {
-                this.prepareEdit().then(this.prepared = true)
+            if (routeName === "AdminArticlesEdit" && this.prepared) {
+                this.prepareEdit()
             }
         }
     },
@@ -289,28 +288,34 @@ export default {
         },
 
         prepareCreate() {
-            this.form.reset()
-            this.submitted = false
+            this.isDestroying = false
 
-            return Promise.all([])
+            store.dispatch("articles/reset")
+
+            // Elimina errores de validación
+            this.form.reset()
+
+            this.form = new Form(deepClone(this.oneArticle))
+
+            window.$(()=> {
+                removeDzPreviewTemplate(this.dzFeaturedPhoto.dropzone)
+            })
+
+            return Promise.resolve()
         },
 
-        prepareEdit() {
-            var article = this.fetchOneArticle(this.$route.params.id)
-                .then(value => {
-                    if (value) {
-                        this.article = value
-                        this.form = new Form(value)
+        async prepareEdit() {
+            this.isDestroying = false
 
-                        if (value.featured_photo) {
-                            this.dzFeaturedPhotoMounted(value.featured_photo)
-                        }
-                    }
+            return await this.fetchOneArticle(this.$route.params.id)
+                .then(value => {
+                    this.form.reset()
+                    this.form = new Form(value)
+
+                    this.dzFeaturedPhotoMounted(value.featured_photo)
 
                     return value
                 })
-
-            return Promise.all([article])
         },
 
         handleSubmitForm() {
@@ -327,13 +332,27 @@ export default {
                     EventBus.$emit("article-saved", response.data[0])
 
                     this.dzFeaturedPhotoProcessQueue()
-                    return this.submitted = false
+
+                    this.submitted = false
+
+                    return response
                 }).catch(error => {
-                    if (error.status > 422) {
+                    if (error.status === 422) {
+                        var message = ""
+                        Object.entries(error.data.errors).forEach(msg => {
+                            message += "<p>" + msg[1] + "</p>"
+                        })
+
+                        alertErrorMessage("Errores de validación", message)
+                    }
+
+                    if (error.status !== 422) {
                         alertErrorMessage("Noticias" + error.data.message)
                     }
 
-                    return this.submitted = false
+                    this.submitted = false
+
+                    return error
                 })
         },
 

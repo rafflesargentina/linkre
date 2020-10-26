@@ -277,9 +277,8 @@
 <script>
 import { dz } from "@/utilities/mixins/dz"
 import { promotersComputed, promotersMethods } from "@linkre/store/helpers"
-import { alertErrorMessage, alertSuccessMessage, getSavedState } from "@/utilities/helpers"
+import { alertErrorMessage, alertSuccessMessage, deepClone, getSavedState, removeDzPreviewTemplate, slugify } from "@/utilities/helpers"
 import { photosMethods } from "@/store/helpers"
-import { deepClone, slugify } from "@/utilities/helpers"
 import { EventBus } from "@/eventBus"
 import { VueEditor } from "vue2-editor"
 
@@ -314,7 +313,6 @@ export default {
 
     data() {
         return {
-            developers: [],
             dzFeaturedPhotoOptions: {
                 addRemoveLinks: true,
                 autoProcessQueue: false,
@@ -348,12 +346,12 @@ export default {
     watch: {
         "$route" (value) {
             var routeName = value.name
-            if (routeName === "AdminPromotersCreate") {
-                this.prepareCreate().then(this.prepared = true)
+            if (routeName === "AdminPromotersCreate" && this.prepared) {
+                this.prepareCreate()
             }
 
-            if (routeName === "AdminPromotersEdit") {
-                this.prepareEdit().then(this.prepared = true)
+            if (routeName === "AdminPromotersEdit" && this.prepared) {
+                this.prepareEdit()
             }
         }
     },
@@ -377,34 +375,37 @@ export default {
         ...photosMethods,
         ...promotersMethods,
 
-        dzFeaturedPhotoSuccess()
-        {
+        dzFeaturedPhotoSuccess() {
             alertSuccessMessage("Promotores", "El promotor fue guardado correctamente.")
             return this.$router.push({ name: "AdminPromotersIndex" })
         },
 
         prepareCreate() {
-            this.submitted = false
+            this.isDestroying = false
 
-            return Promise.all([])
+            store.dispatch("promoters/reset")
+            this.form.reset()
+            this.form = new Form(deepClone(this.onePromoter))
+
+            window.$(()=> {
+                removeDzPreviewTemplate(this.dzFeaturedPhoto.dropzone)
+            })
+
+            return Promise.resolve()
         },
 
-        prepareEdit() {
-            var promoter = this.fetchOnePromoter(this.$route.params.id)
-                .then(value => {
-                    if (value) {
-                        this.promoter = value
-                        this.form = new Form(value)
+        async prepareEdit() {
+            this.isDestroying = false
 
-                        if (value.featured_photo) {
-                            this.dzFeaturedPhotoMounted(value.featured_photo)
-                        }
-                    }
+            return await this.fetchOnePromoter(this.$route.params.id)
+                .then(value => {
+                    this.form.reset()
+                    this.form = new Form(value)
+
+                    this.dzFeaturedPhotoMounted(value.featured_photo)
 
                     return value
                 })
-
-            return Promise.all([promoter])
         },
 
         handleSubmitForm() {
@@ -421,13 +422,27 @@ export default {
                     EventBus.$emit("promoter-saved", response.data[0])
 
                     this.dzFeaturedPhotoProcessQueue()
-                    return this.submitted = false
+
+                    this.submitted = false
+
+                    return response
                 }).catch(error => {
-                    if (error.status > 422) {
+                    if (error.status === 422) {
+                        var message = ""
+                        Object.entries(error.data.errors).forEach(msg => {
+                            message += "<p>" + msg[1] + "</p>"
+                        })
+
+                        alertErrorMessage("Errores de validación", message)
+                    }
+
+                    if (error.status !== 422) {
                         alertErrorMessage(error.data.message)
                     }
 
-                    return this.submitted = false
+                    this.submitted = false
+
+                    return error
                 })
         },
 

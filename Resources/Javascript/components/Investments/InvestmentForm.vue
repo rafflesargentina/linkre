@@ -107,7 +107,7 @@
                       Companía
                     </option>
                     <option
-                      v-for="item in companies"
+                      v-for="item in allCompanies"
                       :key="item.id"
                       :value="item.id"
                     >
@@ -147,7 +147,7 @@
                       Promotor
                     </option>
                     <option
-                      v-for="item in promoters"
+                      v-for="item in allPromoters"
                       :key="item.id"
                       :value="item.id"
                     >
@@ -378,6 +378,7 @@
                   <input
                     id="country"
                     v-model="form.address.country"
+                    autocomplete="off"
                     name="address.country"
                     class="form-control"
                     type="hidden"
@@ -385,6 +386,7 @@
                   <input
                     id="route"
                     v-model="form.address.street_name"
+                    autocomplete="off"
                     name="address.street_name"
                     class="form-control"
                     type="hidden"
@@ -392,6 +394,7 @@
                   <input
                     id="locality"
                     v-model="form.address.locality"
+                    autocomplete="off"
                     name="address.locality"
                     class="form-control"
                     type="hidden"
@@ -399,6 +402,7 @@
                   <input
                     id="administrative_area_level_1"
                     v-model="form.address.state"
+                    autocomplete="off"
                     name="address.state"
                     class="form-control"
                     type="hidden"
@@ -406,6 +410,7 @@
                   <input
                     id="postal_code"
                     v-model="form.address.zip"
+                    autocomplete="off"
                     name="address.zip"
                     class="form-control"
                     type="hidden"
@@ -424,6 +429,7 @@
                 <div class="col-6 col-lg-4">
                   <input
                     v-model="form.map.lat"
+                    autocomplete="off"
                     :class="{ 'is-invalid': form.errors.has('map.lat') }"
                     class="form-control"
                     name="map.lat"
@@ -451,6 +457,7 @@
                 <div class="col-6 col-lg-4">
                   <input
                     v-model="form.map.lng"
+                    autocomplete="off"
                     :class="{ 'is-invalid': form.errors.has('map.lng') }"
                     class="form-control"
                     name="map.lng"
@@ -467,6 +474,122 @@
                 </div>
               </div>
             </li>
+            <li class="list-group-item">
+              <div class="form-group row mb-0">
+                <label
+                  for="address.locality"
+                  class="col-6 col-form-label text-muted"
+                >
+                  Localidad *
+                </label>
+                <div class="col-6 col-lg-4">
+                  <input
+                    v-model="form.address.locality"
+                    autocomplete="off"
+                    :class="{ 'is-invalid': form.errors.has('address.locality') }"
+                    class="form-control"
+                    name="address.locality"
+                    placeholder="Localidad"
+                    type="text"
+                  >
+                  <span
+                    v-if="form.errors.has('address.locality')"
+                    class="invalid-feedback"
+                    role="alert"
+                  >
+                    <strong v-text="form.errors.get('address.locality')" />
+                  </span>
+                </div>
+              </div>
+            </li>
+
+            <li class="list-group-item">
+              <div class="form-group row mb-0">
+                <label
+                  for="address.sublocality"
+                  class="col-6 col-form-label text-muted"
+                >
+                  Sublocalidad
+                </label>
+                <div class="col-6 col-lg-4">
+                  <input
+                    v-model="form.address.sublocality"
+                    autocomplete="off"
+                    :class="{ 'is-invalid': form.errors.has('address.sublocality') }"
+                    class="form-control"
+                    name="address.sublocality"
+                    placeholder="Sublocalidad"
+                    type="text"
+                  >
+                  <span
+                    v-if="form.errors.has('address.sublocality')"
+                    class="invalid-feedback"
+                    role="alert"
+                  >
+                    <strong v-text="form.errors.get('address.sublocality')" />
+                  </span>
+                </div>
+              </div>
+            </li>
+
+            <li class="list-group-item">
+              <div class="form-group row mb-0">
+                <label
+                  for="address.sublocality"
+                  class="col-6 col-form-label text-muted"
+                >
+                  Departamento / Provincia / Estado
+                </label>
+                <div class="col-6 col-lg-4">
+                  <input
+                    v-model="form.address.state"
+                    autocomplete="off"
+                    :class="{ 'is-invalid': form.errors.has('address.state') }"
+                    class="form-control"
+                    name="address.state"
+                    placeholder="Departamento / Provincia / Estado"
+                    type="text"
+                  >
+                  <span
+                    v-if="form.errors.has('address.state')"
+                    class="invalid-feedback"
+                    role="alert"
+                  >
+                    <strong v-text="form.errors.get('address.state')" />
+                  </span>
+                </div>
+              </div>
+            </li>
+
+            <li class="list-group-item">
+              <div class="form-group row mb-0">
+                <label
+                  for="address.country"
+                  class="col-6 col-form-label text-muted"
+                >
+                  País *
+                </label>
+                <div class="col-6 col-lg-4">
+                  <input
+                    v-model="form.address.country"
+                    autocomplete="off"
+                    :class="{ 'is-invalid': form.errors.has('address.country') }"
+                    class="form-control"
+                    name="address.country"
+                    placeholder="País"
+                    type="text"
+                  >
+                  <span
+                    v-if="form.errors.has('address.country')"
+                    class="invalid-feedback"
+                    role="alert"
+                  >
+                    <strong v-text="form.errors.get('address.country')" />
+                  </span>
+                </div>
+              </div>
+            </li>
+
             <li class="list-group-item">
               <div class="form-group row mb-0">
                 <label
@@ -552,6 +675,7 @@
                         v-model="form.financial.open_offer"
                         :class="{ 'is-invalid': form.errors.has('financial.open_offer') }"
                         class="form-control"
+                        min="0"
                         name="financial.open_offer"
                         placeholder="Oferta abierta"
                         type="number"
@@ -573,6 +697,7 @@
                         v-model="form.financial.funded"
                         :class="{ 'is-invalid': form.errors.has('financial.funded') }"
                         class="form-control"
+                        min="0"
                         name="financial.funded"
                         placeholder="Financiado"
                         type="number"
@@ -596,6 +721,7 @@
                         v-model="form.financial.irr"
                         :class="{ 'is-invalid': form.errors.has('financial.irr') }"
                         class="form-control"
+                        min="0"
                         name="financial.irr"
                         placeholder="Tasa Interna de Retorno (%)"
                         step="0.1"
@@ -617,6 +743,7 @@
                         v-model="form.financial.apr"
                         :class="{ 'is-invalid': form.errors.has('financial.apr') }"
                         class="form-control"
+                        min="0"
                         name="financial.apr"
                         placeholder="Tasa Anual de Preferencia (%)"
                         step="0.1"
@@ -638,6 +765,7 @@
                         v-model="form.financial.ehp"
                         :class="{ 'is-invalid': form.errors.has('financial.ehp') }"
                         class="form-control"
+                        min="0"
                         name="financial.ehp"
                         placeholder="Período Estimado de Tenencia (meses)"
                         type="number"
@@ -680,6 +808,7 @@
                       v-model="form.financial.senior_debt"
                       :class="{ 'is-invalid': form.errors.has('financial.senior_debt') }"
                       class="form-control"
+                      min="0"
                       name="financial.senior_debt"
                       placeholder="Deuda Senior"
                       type="number"
@@ -701,6 +830,7 @@
                       v-model="form.financial.mezzanine_debt"
                       :class="{ 'is-invalid': form.errors.has('financial.mezzanine_debt') }"
                       class="form-control"
+                      min="0"
                       name="financial.mezzanine_debt"
                       placeholder="Deuda Mezzanine"
                       type="number"
@@ -722,6 +852,7 @@
                       v-model="form.financial.equity"
                       :class="{ 'is-invalid': form.errors.has('financial.equity') }"
                       class="form-control"
+                      min="0"
                       name="financial.equity"
                       placeholder="Capital Existente"
                       type="number"
@@ -763,6 +894,7 @@
                       v-model="form.financial.adquisition_cost"
                       :class="{ 'is-invalid': form.errors.has('financial.adquisition_cost') }"
                       class="form-control"
+                      min="0"
                       name="financial.adquisition_cost"
                       placeholder="Costos de Adquisición"
                       type="number"
@@ -784,6 +916,7 @@
                       v-model="form.financial.development_cost"
                       :class="{ 'is-invalid': form.errors.has('financial.development_cost') }"
                       class="form-control"
+                      min="0"
                       name="financial.development_cost"
                       placeholder="Costos de Desarrollo"
                       type="number"
@@ -910,13 +1043,12 @@
 </template>
 
 <script>
-import { companiesComputed, companiesMethods, documentsComputed, documentsMethods, investmentsComputed, investmentsMethods, promotersComputed, promotersMethods } from "@linkre/store/helpers"
-import { alertErrorMessage, alertSuccessMessage, deepClone, getSavedState } from "@/utilities/helpers"
+import { companiesComputed, companiesMethods, documentsMethods, investmentsComputed, investmentsMethods, promotersComputed, promotersMethods } from "@linkre/store/helpers"
+import { alertErrorMessage, alertSuccessMessage, deepClone, getSavedState, removeDzPreviewTemplate, slugify } from "@/utilities/helpers"
 import { dz } from "@/utilities/mixins/dz"
-import { EventBus } from "@/eventBus"
 import { gmaps } from "@/utilities/mixins/gmaps"
 import { photosMethods } from "@/store/helpers"
-import { slugify } from "@/utilities/helpers"
+import { EventBus } from "@/eventBus"
 import { VueEditor } from "vue2-editor"
 
 import store from "@/store"
@@ -950,7 +1082,6 @@ export default {
 
     data() {
         return {
-            companies: [],
             dzDocumentsOptions: {
                 addRemoveLinks: true,
                 autoProcessQueue: false,
@@ -997,11 +1128,8 @@ export default {
                 url: "/api/investments",
             },
             form: new Form(fields),
-            investments: [],
             isDestroying: false,
-            isProcessingUnfeaturedPhotos: false,
             location: "",
-            promoters: [],
             submitted: false,
             url: "/api/investments/",
         }
@@ -1020,12 +1148,12 @@ export default {
     watch: {
         "$route" (value) {
             var routeName = value.name
-            if (routeName === "AdminInvestmentsCreate") {
-                this.prepareCreate().then(this.prepared = true)
+            if (routeName === "AdminInvestmentsCreate" && this.prepared) {
+                this.prepareCreate()
             }
 
-            if (routeName === "AdminInvestmentsEdit") {
-                this.prepareEdit().then(this.prepared = true)
+            if (routeName === "AdminInvestmentsEdit" && this.prepared) {
+                this.prepareEdit()
             }
         }
     },
@@ -1056,106 +1184,93 @@ export default {
         ...photosMethods, 
         ...promotersMethods,
 
+        async fetchOne(id) {
+            return await this.fetchOneInvestment(id)
+        },
+
         dzDocumentsSuccess() {
-console.log('Documents success')
             alertSuccessMessage("La inversión fue guardada correctamente.")
             return this.$router.push({ name: "AdminInvestmentsIndex" })
         },
 
         dzFeaturedPhotoSuccess() {
-console.log('Featured photo success')
             return this.dzUnfeaturedPhotosProcessQueue()
         },
 
         dzUnfeaturedPhotosSuccess() {
-console.log('Unfeatured photos success.')
             return this.dzDocumentsProcessQueue()
         },
 
-        prepareCreate() {
+        async prepareCreate() {
             this.isDestroying = false
+
+            this.location = ""
+
+            store.dispatch("investments/reset")
+
+            // Elimina errores de validación
+            this.form.reset()
+            this.form = new Form(deepClone(this.oneInvestment))
+
+            var companies = this.fetchAllCompanies()
+            var promoters = this.fetchAllPromoters()
 
             this.geolocate().then(coordinates => {
                 return this.geolocation = coordinates
             })
+                .catch(err => console.err(err))
 
             window.$(()=> {
+                removeDzPreviewTemplate(this.dzFeaturedPhoto.dropzone)
+                removeDzPreviewTemplate(this.dzUnfeaturedPhotos.dropzone)
+                removeDzPreviewTemplate(this.dzDocuments.dropzone)
+
                 if (this.$refs.map) {
                     this.initMap("map", { center: this.geolocation, zoom: 14 })
                 }
             })
 
-            var companies = this.fetchAllCompanies()
-                .then(value => {
-                    if (value) {
-                        this.companies = value
-                    }
-
-                    return value
-                })
-
-            var promoters = this.fetchAllPromoters()
-                .then(value => {
-                    if (value) {
-                        this.promoters = value
-                    }
-
-                    return value
-                })
-
-            return Promise.all([companies, promoters])
+            return await Promise.all([companies, promoters])
         },
 
-        prepareEdit() {
+        async prepareEdit() {
             this.isDestroying = false
 
-            var investment = this.fetchOneInvestment(this.$route.params.id)
+            var investment = this.fetchOne(this.$route.params.id)
                 .then(value => {
-                    if (value) {
-                        this.investment = value
-                        this.location = value.address.location
+                    this.location = ""
 
-                        this.form = new Form(value)
+                    this.form.reset()
+                    this.form = new Form(value)
 
-                        this.dzFeaturedPhotoMounted(value.featured_photo)
-                        this.dzUnfeaturedPhotosMounted(value.unfeatured_photos)
-                        this.dzDocumentsMounted(value.documents)
+                    this.dzFeaturedPhotoMounted(value.featured_photo)
+                    this.dzUnfeaturedPhotosMounted(value.unfeatured_photos)
+                    this.dzDocumentsMounted(value.documents)
 
-                        this.geolocate().then(coordinates => {
-                            if (null !== this.investment.map.lat && null !== this.investment.map.lng) {
-                                return this.geolocation = this.investment.map.coordinates
-                            }
-                        })
-
-                        window.$(()=> {
-                            if (this.$refs.map) {
-                                this.initMap("map", { center: this.geolocation, zoom: value.map.zoom })
-                            }
-                        })
-                    }
+                    window.$(()=> {
+                        if (this.$refs.map) {
+                            this.initMap("map", { center: this.geolocation, zoom: value.map.zoom })
+                        }
+                    })
 
                     return value
                 })
+
+            this.geolocate().then(coordinates => {
+                if (null !== this.oneInvestment.map.lat && null !== this.oneInvestment.map.lng) {
+                    this.geolocation = this.oneInvestment.map.coordinates
+
+                    return
+                }
+                
+                return coordinates
+            })
+                .catch(err => console.err(err))
 
             var companies = this.fetchAllCompanies()
-                .then(value => {
-                    if (value) {
-                        this.companies = value
-                    }
-
-                    return value
-                })
-
             var promoters = this.fetchAllPromoters()
-                .then(value => {
-                    if (value) {
-                        this.promoters = value
-                    }
 
-                    return value
-                })
-
-            return Promise.all([investment, companies, promoters])
+            return await Promise.all([investment, companies, promoters])
         },
 
         handleSubmitForm() {
@@ -1179,13 +1294,26 @@ console.log('Unfeatured photos success.')
 
                     this.dzFeaturedPhotoProcessQueue()
 
-                    return this.submitted = false
+                    this.submitted = false
+
+                    return response
                 }).catch(error => {
-                    if (error.status > 422) {
+                    if (error.status === 422) {
+                        var message = ""
+                        Object.entries(error.data.errors).forEach(msg => {
+                            message += "<p>" + msg[1] + "</p>"
+                        })
+
+                        alertErrorMessage("Errores de validación", message)
+                    }
+
+                    if (error.status !== 422) {
                         alertErrorMessage(error.data.message)
                     }
 
-                    return this.submitted = false
+                    this.submitted = false
+
+                    return error
                 })
         },
 

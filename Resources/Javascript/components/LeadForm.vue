@@ -223,8 +223,8 @@
 </template>
 
 <script>
-import { alertErrorMessage, alertSuccessMessage, deepClone } from "@/utilities/helpers"
-import { leadsComputed, leadsMethods } from "@linkre/store/helpers"
+import { alertErrorMessage, deepClone } from "@/utilities/helpers"
+import { leadsComputed } from "@linkre/store/helpers"
 
 import store from "@/store"
 import Form from "@/utilities/Form"
@@ -264,7 +264,7 @@ export default {
             this.submitted = true
 
             this.form[this.method](this.action)
-                .then(response => {
+                .then(()=> {
                 //alertSuccessMessage("Reportes", "Gracias por dejarnos tus datos. Ya puedes descargar el informe.")
                     this.$router.push({ name: "ReportsShow", params: { id: this.$route.params.id }})
                     return this.submitted = false
