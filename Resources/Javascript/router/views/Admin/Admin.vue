@@ -82,7 +82,7 @@
                 :to="{ name: 'AdminInvestmentsIndex' }"
                 class="sidebar-nav__link sidebar-nav__link--dark"
               >
-                Proyectos
+                Inversiones
               </RouterLink>
             </li>
             <li class="sidebar-nav__item sidebar-nav__item--dark">
