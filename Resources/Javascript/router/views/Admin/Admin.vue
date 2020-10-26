@@ -42,7 +42,7 @@
         <div class="logo">
           <RouterLink :to="{ name: 'Home' }">
             <img
-              src="/images/logo_linkRE-blanco.svg"
+              src="/img/logoarkana.png"
               style="height: 49px;"
             >
           </RouterLink>
