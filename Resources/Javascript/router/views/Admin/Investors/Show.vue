@@ -40,7 +40,10 @@
           </div>
 
           <div class="card-body">
-            <div v-for="feed in oneInvestor.feeds">
+            <div
+              v-for="feed in oneInvestor.feeds"
+              :key="feed.id"
+            >
               <vue-timeline-update
                 theme="dark"
                 :date="new Date(moment(feed.created_at))"
