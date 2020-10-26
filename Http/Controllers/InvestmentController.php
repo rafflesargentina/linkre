@@ -2,8 +2,9 @@
 
 namespace Raffles\Modules\Linkre\Http\Controllers;
 
+use Raffles\Models\{ Address, FeaturedPhoto };
 use Raffles\Modules\Linkre\Http\Requests\InvestmentRequest;
-use Raffles\Modules\Linkre\Models\Investment;
+use Raffles\Modules\Linkre\Models\{ Financial, Investment };
 use Raffles\Modules\Linkre\Repositories\{ FeedRepository, InvestmentRepository };
 
 use Illuminate\Database\Eloquent\Model;
@@ -196,5 +197,31 @@ class InvestmentController extends ApiResourceController
         }
 
         return $records;
+    }
+
+    /**
+     * HasOne relation updateOrCreate logic.
+     *
+     * @param array    $fillable The relation fillable.
+     * @param Model    $model    The eloquent model.
+     * @param Relation $relation The eloquent relation.
+     *
+     * @return Model | null
+     */
+    protected function updateOrCreateHasOne(array $fillable, Model $model, Relation $relation)
+    {
+	$related = $relation->getRelated();
+
+        if ($related instanceof Address) {
+            $model->address()->updateOrCreate(['addressable_id' => $model->id, 'addressable_type' => 'investments'], $fillable);
+        }
+
+        if ($related instanceof FeaturedPhoto) {
+            $model->featured_photo()->updateOrCreate(['photoable_id' => $model->id, 'photoable_type' => 'investments'], $fillable);
+	}
+
+	if ($related instanceof Financial) {
+            $model->financial()->updateOrCreate(['investment_id' => $model->id], $fillable);
+        }
     }
 }

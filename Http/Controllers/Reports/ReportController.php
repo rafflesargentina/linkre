@@ -2,14 +2,18 @@
 
 namespace Raffles\Modules\Linkre\Http\Controllers\Reports;
 
+use Raffles\Models\FeaturedPhoto;
 use Raffles\Modules\Linkre\Http\Requests\ReportRequest;
 use Raffles\Modules\Linkre\Models\Report;
 use Raffles\Modules\Linkre\Repositories\{ FeedRepository, ReportRepository };
 
 use DB;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Http\Request;
 use RafflesArgentina\ResourceController\ApiResourceController;
+use RafflesArgentina\ResourceController\Exceptions\ResourceControllerException;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 
 class ReportController extends ApiResourceController
@@ -65,7 +69,7 @@ class ReportController extends ApiResourceController
     public function show(Request $request, $key)
     {
         $model = $this->findFirstByKey($key);
-        $this->authorize('view', $model);
+	$this->authorize('view', $model);
 
         try {
             $user = $request->user('api');
@@ -146,5 +150,22 @@ class ReportController extends ApiResourceController
         $filename = $uploadedFile->getClientOriginalName();
 
         return $filename;
+    }
+
+    /**
+     * HasOne relation updateOrCreate logic.
+     *
+     * @param array    $fillable The relation fillable.
+     * @param Model    $model    The eloquent model.
+     * @param Relation $relation The eloquent relation.
+     *
+     * @return Model | null
+     */
+    protected function updateOrCreateHasOne(array $fillable, Model $model, Relation $relation)
+    {
+	$related = $relation->getRelated();
+	if ($related instanceof FeaturedPhoto) {
+            $model->featured_photo()->updateOrCreate(['featured' => '1'], $fillable);
+        }
     }
 }

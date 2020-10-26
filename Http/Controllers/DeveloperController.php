@@ -2,10 +2,13 @@
 
 namespace Raffles\Modules\Linkre\Http\Controllers;
 
+use Raffles\Models\{ Address, Contact, FeaturedPhoto };
 use Raffles\Modules\Linkre\Http\Requests\DeveloperRequest;
 use Raffles\Modules\Linkre\Models\Developer;
 use Raffles\Modules\Linkre\Repositories\DeveloperRepository;
 
+use Illuminate\Database\Eloquent\Relations\Relation;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Http\Request;
 use RafflesArgentina\ResourceController\ApiResourceController;
@@ -114,5 +117,31 @@ class DeveloperController extends ApiResourceController
     protected function getDefaultRelativePath()
     {
         return 'uploads/developers/';
+    }
+
+    /**
+     * HasOne relation updateOrCreate logic.
+     *
+     * @param array    $fillable The relation fillable.
+     * @param Model    $model    The eloquent model.
+     * @param Relation $relation The eloquent relation.
+     *
+     * @return Model | null
+     */
+    protected function updateOrCreateHasOne(array $fillable, Model $model, Relation $relation)
+    {
+        $related = $relation->getRelated();
+
+        if ($related instanceof Address) {
+            $model->address()->updateOrCreate(['addressable_id' => $model->id, 'addressable_type' => 'investments'], $fillable);
+	}
+
+        if ($related instanceof Contact) {
+            $model->contact()->updateOrCreate(['contactable_type' => 'Raffles\Modules\Linkre\Models\Developer', 'contactable_id' => $model->id], $fillable);
+        }
+
+        if ($related instanceof FeaturedPhoto) {
+            $model->featured_photo()->updateOrCreate(['photoable_id' => $model->id, 'photoable_type' => 'investments'], $fillable);
+        }
     }
 }
