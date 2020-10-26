@@ -899,6 +899,9 @@ export default {
         async prepareCreate() {
             this.isDestroying = false
 
+            this.assignedInvestments = []
+            this.selectedInvestmentPreferences = []
+
             // Limpia valores de objetos anidados.
             store.dispatch("investors/reset")
 
