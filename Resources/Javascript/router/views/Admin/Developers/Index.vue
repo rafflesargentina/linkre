@@ -70,7 +70,7 @@
 </template>
 
 <script>
-import { destroyRecordConfirmation } from "@dashboard/utilities/helpers"
+import { alertDestroyRecordConfirmation } from "@/utilities/helpers"
 import { developersComputed, developersMethods } from "@linkre/store/helpers"
 import { EventBus } from "@/eventBus"
 
@@ -113,7 +113,7 @@ export default {
         ...developersMethods,
 
         async destroyRecord(url, id) {
-            return await destroyRecordConfirmation(url, id)
+            return await alertDestroyRecordConfirmation(url, id)
                 .then(()=> this.fetchAllDevelopers())
         },
 
